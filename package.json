@@ -1,0 +1,19 @@
+{
+  "name": "aqa-bahave-taf",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test:e2e": "cross-env TS_NODE_PROJECT=tests/tsconfig.cucumber.json cucumber-js --require-module ts-node/register --require-module tsconfig-paths/register --require tests/support/**/*.ts --require tests/steps/**/*.ts",
+    "test:e2e:ci": "cross-env CI=true TS_NODE_PROJECT=tests/tsconfig.cucumber.json cucumber-js --require-module ts-node/register --require-module tsconfig-paths/register --require tests/support/**/*.ts --require tests/steps/**/*.ts"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "@faker-js/faker": "^10.1.0",
+    "@playwright/test": "^1.56.1",
+    "@types/node": "22.15.17",
+    "cross-env": "^10.1.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.8.3"
+  }
+}

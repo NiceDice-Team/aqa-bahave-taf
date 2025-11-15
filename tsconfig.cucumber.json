@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs"
+  },
+  "include": [
+    "./support/**/*.ts",
+    "./steps/registration.steps.ts",
+    "./steps/hooks.ts",
+    "./sdk/**/*.ts",
+    "./adapters/auth.*.ts",
+    "./adapters/base.adapter.ts",
+    "./adapters/registration.adapter.ts",
+    "./constants/**/*.ts",
+    "./page-objects/**/*.ts",
+    "./helpers/**/*.ts"
+  ]
+}

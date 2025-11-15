@@ -1,0 +1,41 @@
+export const ERROR_MESSAGES = {
+  AUTH: {
+    EMAIL_REQUIRED: 'Email is required',
+    PASSWORD_REQUIRED: 'Password is required',
+    INVALID_EMAIL: 'Invalid email',
+    EMAIL_EXISTS: 'Email already registered',
+    PASSWORDS_MISMATCH: 'Passwords do not match',
+    PRIVACY_POLICY_REQUIRED: 'You must agree to the Privacy Policy',
+    INVALID_CREDENTIALS: 'Invalid credentials',
+    ACCOUNT_NOT_FOUND: 'No account found with this email',
+    ACCOUNT_NOT_ACTIVATED: 'Account not activated. Please check your email.',
+    INVALID_TOKEN: 'Invalid or expired token',
+  },
+  CART: {
+    QUANTITY_REQUIRED: 'Quantity must be at least 1',
+    INSUFFICIENT_STOCK: 'Not enough stock available',
+    OUT_OF_STOCK: 'Product is out of stock',
+    EMPTY_CART: 'Your cart is empty',
+  },
+  CHECKOUT: {
+    ADDRESS_REQUIRED: 'Address is required',
+    INVALID_PHONE: 'Invalid phone number',
+    INVALID_ZIP: 'Invalid ZIP Code',
+    CARD_REQUIRED: 'Card number is required',
+    CARD_EXPIRED: 'Card expired',
+    INVALID_CVV: 'Invalid CVV',
+    PAYMENT_DECLINED: 'Payment declined',
+  },
+  ORDERS: {
+    ALREADY_PAID: 'Order already paid',
+    CANNOT_CANCEL: 'Cannot cancel a paid order',
+  },
+  PROMO: {
+    INVALID_CODE: 'Invalid promo code',
+    EXPIRED: 'Promo code expired',
+    INACTIVE: 'Promo code is not active',
+    MINIMUM_VALUE: 'Order does not meet minimum value requirement',
+    ALREADY_APPLIED: 'Promo code already applied',
+    CANNOT_APPLY: 'Cannot apply promo code to paid order',
+  },
+} as const;
