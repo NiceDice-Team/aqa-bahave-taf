@@ -4,26 +4,6 @@
 
 The test suite is organized into distinct approaches, each serving different testing needs:
 
-tests/
-├── bdd/              # Behavior Driven Development tests
-│   ├── features/     # Gherkin feature files
-│   ├── steps/        # Step definitions
-│   └── support/      # Support code and hooks
-├── e2e/              # End-to-end tests using Playwright
-│   ├── specs/        # Test specifications
-│   └── fixtures/     # Test data and helpers
-├── poms/            # Page Object Models
-│   ├── pages/       # Page classes
-│   ├── components/  # Reusable UI components
-│   └── fragments/   # Page fragments/sections
-├── unit/            # Unit tests (Jest)
-│   ├── components/  # React component tests
-│   └── hooks/       # Custom hook tests
-└── lib/            # Shared test utilities
-    ├── setup/      # Test setup helpers
-    └── fixtures/   # Shared test fixtures
-```
-
 ```
 aqa-bahave-taf/
 ├── features/         # Gherkin feature files (BDD)
