@@ -3,7 +3,7 @@ export interface CartItem {
   quantity: number;
 }
 
-export interface ICartAdapter {
+export interface ICart {
   addToCart(productId: string, quantity: number): Promise<void>;
   updateQuantity(productId: string, quantity: number): Promise<void>;
   removeFromCart(productId: string): Promise<void>;

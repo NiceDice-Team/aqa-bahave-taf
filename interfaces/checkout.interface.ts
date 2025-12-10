@@ -22,7 +22,7 @@ export interface OrderStatus {
   total: number;
 }
 
-export interface ICheckoutAdapter {
+export interface ICheckout {
   startCheckout(): Promise<void>;
   fillShippingDetails(details: ShippingDetails): Promise<void>;
   useShippingAsBilling(): Promise<void>;

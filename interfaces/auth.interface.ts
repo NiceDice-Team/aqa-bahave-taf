@@ -27,7 +27,7 @@ export interface RegistrationStatus {
   statusMessage: string;
 }
 
-export interface IAuthAdapter {
+export interface IAuth {
   register(params: RegisterParams): Promise<void>;
   login(params: LoginParams): Promise<void>;
   loginWithOAuth(provider: OAuthProvider): Promise<void>;

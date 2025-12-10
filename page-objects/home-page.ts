@@ -1,4 +1,4 @@
-import { Locator } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base-page';
 import { ProductCard } from './components/product-card';
 
@@ -11,7 +11,7 @@ export class HomePage extends BasePage {
   readonly boardGamesLink: Locator;
   readonly firstProductCard: ProductCard;
 
-  constructor(page) {
+  constructor(page: Page) {
     super(page);
     this.newArrivalsHeading = page.getByRole('heading', { name: 'NEW ARRIVALS' });
     this.nextSlideButton = page.getByRole('button', { name: 'Next slide' });

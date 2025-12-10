@@ -1,8 +1,8 @@
 import { ApiAdapter } from './base.adapter';
-import { ENDPOINTS } from '../../constants/endpoints';
-import { ICartAdapter, CartItem } from '../interfaces/cart.interface';
+import { ENDPOINTS } from '../constants/endpoints';
+import { ICart, CartItem } from '../interfaces/cart.interface';
 
-export class ApiCartAdapter extends ApiAdapter implements ICartAdapter {
+export class CartApiAdapter extends ApiAdapter implements ICart {
   async addToCart(productId: string, quantity: number): Promise<void> {
     await this.request('POST', ENDPOINTS.CART.ADD, { productId, quantity });
   }

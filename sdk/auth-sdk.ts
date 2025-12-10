@@ -1,47 +1,44 @@
-import { Page } from '@playwright/test';
-import { Page } from '@playwright/test';
-import { BaseSDK } from './base-sdk';
-import { WebAuthAdapter } from '../adapters/WebAuthAdapter';
-import { RegisterParams, LoginParams, PasswordResetParams } from '../adapters/WebAuthAdapter';
+import { AuthApiAdapter, AuthWebAdapter } from '../adapters';
+import { IAuth, RegisterParams, LoginParams, OAuthProvider, PasswordResetParams } from '../interfaces/auth.interface';
+import { th } from '@faker-js/faker/.';
 
-export class AuthSDK extends BaseSDK {
-  private webAdapter: WebAuthAdapter;
-  
-  constructor(page: Page) {
-    super(page);
-    this.webAdapter = new WebAuthAdapter(this.page);
+
+export class AuthSDK implements IAuth {
+  private adapter: AuthApiAdapter | AuthWebAdapter;
+
+  constructor(adapter: AuthApiAdapter | AuthWebAdapter) {
+    this.adapter = adapter;
   }
 
   async register(params: RegisterParams): Promise<void> {
-    await this.webAdapter.register(params);
+    await this.adapter.register(params);
   }
 
   async login(params: LoginParams): Promise<void> {
-    await this.webAdapter.login(params);
+    await this.adapter.login(params);
   }
 
-  async loginWithOAuth(provider: 'google' | 'facebook'): Promise<void> {
-    await this.webAdapter.loginWithOAuth(provider);
+  async loginWithOAuth(provider: OAuthProvider): Promise<void> {
+    await this.adapter.loginWithOAuth(provider);
   }
 
   async continueAsGuest(): Promise<void> {
-    await this.webAdapter.continueAsGuest();
+    await this.adapter.continueAsGuest();
   }
 
   async requestPasswordReset(email: string): Promise<void> {
-    // Implement password reset request
+    await this.adapter.requestPasswordReset(email);
   }
 
   async resetPassword(params: PasswordResetParams): Promise<void> {
-    // Implement password reset
+    await this.adapter.resetPassword(params);
   }
 
   async isLoggedIn(): Promise<boolean> {
-    // Implement logged in check
-    return false;
+    return await this.adapter.isLoggedIn();
   }
 
   async logout(): Promise<void> {
-    // Implement logout
+    await this.adapter.logout();
   }
 }

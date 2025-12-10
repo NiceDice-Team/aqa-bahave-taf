@@ -1,7 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs"
+    "module": "commonjs",
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "./support/**/*.ts",
@@ -14,5 +15,10 @@
     "./constants/**/*.ts",
     "./page-objects/**/*.ts",
     "./helpers/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "**/*.test.ts"
   ]
 }

@@ -1,13 +1,13 @@
 import { ApiAdapter } from './base.adapter';
 import { ENDPOINTS } from '../constants/endpoints';
 import { 
-  IProductAdapter, 
+  IProduct, 
   ProductDetails, 
   ProductFilter, 
   ReviewData 
 } from '../interfaces/product.interface';
 
-export class ApiProductAdapter extends ApiAdapter implements IProductAdapter {
+export class ProductApiAdapter extends ApiAdapter implements IProduct {
   async viewProduct(productId: string): Promise<void> {
     await this.request('GET', ENDPOINTS.PRODUCTS.DETAILS(productId));
   }
@@ -32,6 +32,6 @@ export class ApiProductAdapter extends ApiAdapter implements IProductAdapter {
   }
 
   async switchImage(index: number): Promise<void> {
-    // This is a UI-only operation, not needed in API adapter
+    // Not implemented in API adapter
   }
 }

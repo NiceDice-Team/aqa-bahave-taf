@@ -27,14 +27,14 @@ export class ProductPage extends BasePage {
   }
 
   async getPrice(): Promise<string> {
-    return this.productPrice.textContent() || '';
+    return (await this.productPrice.textContent()) ?? '';
   }
 
   async getTitle(): Promise<string> {
-    return this.productTitle.textContent() || '';
+    return (await this.productTitle.textContent()) ?? '';
   }
 
   async getDescription(): Promise<string> {
-    return this.productDescription.textContent() || '';
+    return (await this.productDescription.textContent()) ?? '';
   }
 }

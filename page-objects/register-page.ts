@@ -80,11 +80,11 @@ export class RegisterPage extends BasePage {
   }
 
   async getErrorMessage(): Promise<string | null> {
-    return this.errorMessage.isVisible() ? this.errorMessage.textContent() : null;
+    return (await this.errorMessage.isVisible()) ? this.errorMessage.textContent() : null;
   }
 
   async getActivationMessage(): Promise<string | null> {
-    return this.activationMessage.isVisible() ? this.activationMessage.textContent() : null;
+    return (await this.activationMessage.isVisible()) ? this.activationMessage.textContent() : null;
   }
 
   async getRegistrationStatus(): Promise<RegistrationStatus> {

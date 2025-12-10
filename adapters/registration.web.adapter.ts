@@ -1,9 +1,11 @@
 import { BaseAdapter } from './base.adapter';
 import { Page } from '@playwright/test';
 
-export class RegistrationPage extends BaseAdapter {
+export class RegistrationPage {
+  private page: Page;
+  
   constructor(page: Page) {
-    super(page);
+    this.page = page;
   }
 
   async navigate(path: string) {

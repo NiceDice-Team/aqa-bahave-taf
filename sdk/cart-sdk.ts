@@ -1,48 +1,46 @@
-import { Page } from '@playwright/test';
-import { BaseSDK } from './base-sdk';
-import { WebCartAdapter, CartItem } from '../adapters/WebCartAdapter';
+import { ICart, CartItem } from '../interfaces/cart.interface';
+import { CartApiAdapter, CartWebAdapter } from '../adapters';
 
-export class CartSDK extends BaseSDK {
-  private webAdapter: WebCartAdapter;
+export class CartSDK implements ICart {
+  private adapter: CartApiAdapter | CartWebAdapter;
 
-  constructor(page: Page) {
-    super(page);
-    this.webAdapter = new WebCartAdapter(this.page);
+  constructor(adapter: CartApiAdapter | CartWebAdapter) {
+    this.adapter = adapter;
   }
 
   async addToCart(productId: string, quantity: number): Promise<void> {
-    await this.webAdapter.addToCart(productId, quantity);
+    await this.adapter.addToCart(productId, quantity);
   }
 
   async updateQuantity(productId: string, quantity: number): Promise<void> {
-    await this.webAdapter.updateQuantity(productId, quantity);
+    await this.adapter.updateQuantity(productId, quantity);
   }
 
   async removeFromCart(productId: string): Promise<void> {
-    await this.webAdapter.removeFromCart(productId);
+    await this.adapter.removeFromCart(productId);
   }
 
   async viewCart(): Promise<void> {
-    await this.webAdapter.viewCart();
+    await this.adapter.viewCart();
   }
 
   async applyPromoCode(code: string): Promise<void> {
-    await this.webAdapter.applyPromoCode(code);
+    await this.adapter.applyPromoCode(code);
   }
 
   async proceedToCheckout(): Promise<void> {
-    await this.webAdapter.proceedToCheckout();
+    await this.adapter.proceedToCheckout();
   }
 
   async getSubtotal(): Promise<string> {
-    return this.webAdapter.getSubtotal();
+    return this.adapter.getSubtotal();
   }
 
   async isCartEmpty(): Promise<boolean> {
-    return this.webAdapter.isCartEmpty();
+    return this.adapter.isCartEmpty();
   }
 
   async getCartItems(): Promise<CartItem[]> {
-    return this.webAdapter.getCartItems();
+    return this.adapter.getCartItems();
   }
 }

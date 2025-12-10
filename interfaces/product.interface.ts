@@ -21,7 +21,7 @@ export interface ReviewData {
   comment: string;
 }
 
-export interface IProductAdapter {
+export interface IProduct {
   viewProduct(productId: string): Promise<void>;
   getProductDetails(productId: string): Promise<ProductDetails>;
   getProducts(filter?: ProductFilter): Promise<ProductDetails[]>;

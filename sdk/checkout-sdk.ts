@@ -1,45 +1,42 @@
-import { Page } from '@playwright/test';
-import { BaseSDK } from './base-sdk';
-import { 
-  WebCheckoutAdapter, 
-  ShippingDetails, 
-  PaymentDetails, 
-  OrderStatus 
-} from '../adapters/WebCheckoutAdapter';
+import { ICheckout, ShippingDetails, OrderStatus, PaymentDetails} from '../interfaces';
+import {CheckoutApiAdapter, CheckoutWebAdapter} from '../adapters'
 
-export class CheckoutSDK extends BaseSDK {
-  private webAdapter: WebCheckoutAdapter;
+export class CheckoutSDK implements ICheckout {
+  private adapter: CheckoutApiAdapter | CheckoutWebAdapter;
 
-  constructor(page: Page) {
-    super(page);
-    this.webAdapter = new WebCheckoutAdapter(this.page);
+  constructor(adapter: CheckoutApiAdapter | CheckoutWebAdapter) {
+    this.adapter = adapter;
   }
 
   async startCheckout(): Promise<void> {
-    await this.webAdapter.startCheckout();
+    await this.adapter.startCheckout();
   }
 
   async fillShippingDetails(details: ShippingDetails): Promise<void> {
-    await this.webAdapter.fillShippingDetails(details);
+    await this.adapter.fillShippingDetails(details);
   }
 
   async useShippingAsBilling(): Promise<void> {
-    await this.webAdapter.useShippingAsBilling();
+    await this.adapter.useShippingAsBilling();
   }
 
   async fillPaymentDetails(details: PaymentDetails): Promise<void> {
-    await this.webAdapter.fillPaymentDetails(details);
+    await this.adapter.fillPaymentDetails(details);
   }
 
   async placeOrder(): Promise<string> {
-    return this.webAdapter.placeOrder();
+    return this.adapter.placeOrder();
   }
 
   async getOrderStatus(orderId: string): Promise<OrderStatus> {
-    return this.webAdapter.getOrderStatus(orderId);
+    return this.adapter.getOrderStatus(orderId);
   }
 
   async cancelOrder(orderId: string): Promise<void> {
-    await this.webAdapter.cancelOrder(orderId);
+    await this.adapter.cancelOrder(orderId);
+  }
+
+  async getOrders(): Promise<OrderStatus[]> {
+    return this.adapter.getOrders();
   }
 }

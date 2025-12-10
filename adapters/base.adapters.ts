@@ -1,12 +1,13 @@
 import { Page } from '@playwright/test';
 import { BasePage } from '../page-objects/base-page';
 import { PlaywrightFetch } from '../utils/playwright-fetch';
+import { th } from '@faker-js/faker/.';
 
 export abstract class BaseAdapter {
-  protected page: Page;
+    protected page: Page;
 
-  constructor(page: Page) {
-    this.page = page;
+  constructor() {
+    this.page = ; // Placeholder, actual Page should be passed in derived classes
   }
 
   async waitForReady() {
@@ -35,12 +36,19 @@ export abstract class BaseAdapter {
 }
 
 export abstract class WebAdapter extends BaseAdapter {
+  protected page: Page;
+
   constructor(page: Page) {
     super(page);
+    this.page = page;
   }
 
   protected async navigateTo(url: string): Promise<void> {
     await this.page.goto(this.resolveUrl(url));
+  }
+
+  resolveUrl(url: string): string {
+    throw new Error('Method not implemented.');
   }
 
   protected getPage<T extends BasePage>(PageClass: new (page: Page) => T): T {

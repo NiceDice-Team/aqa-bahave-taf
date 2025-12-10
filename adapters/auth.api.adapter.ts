@@ -1,13 +1,14 @@
 import { ApiAdapter } from './base.adapter';
 import { ENDPOINTS } from '../constants/endpoints';
 import { 
-  IAuthAdapter, 
+  IAuth, 
   RegisterParams, 
   LoginParams, 
-  PasswordResetParams 
+  PasswordResetParams,
+  OAuthProvider
 } from '../interfaces/auth.interface';
 
-export class AuthApiAdapter extends ApiAdapter implements IAuthAdapter {
+export class AuthApiAdapter extends ApiAdapter implements IAuth {
   async register(params: RegisterParams): Promise<void> {
     await this.request('POST', ENDPOINTS.AUTH.REGISTER, params);
   }
@@ -16,7 +17,7 @@ export class AuthApiAdapter extends ApiAdapter implements IAuthAdapter {
     await this.request('POST', ENDPOINTS.AUTH.LOGIN, params);
   }
 
-  async loginWithOAuth(provider: 'google' | 'facebook'): Promise<void> {
+  async loginWithOAuth(provider: OAuthProvider): Promise<void> {
     await this.request('POST', `/api/auth/${provider}`);
   }
 

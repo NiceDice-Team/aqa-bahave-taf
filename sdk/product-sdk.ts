@@ -1,32 +1,34 @@
-import { Page } from '@playwright/test';
-import { BaseSDK } from './base-sdk';
-import { WebProductAdapter, ProductDetails, ReviewData } from '../adapters/WebProductAdapter';
+import { IProduct, ProductDetails, ReviewData } from '../interfaces/product.interface';
+import { ProductApiAdapter, ProductWebAdapter } from '../adapters';
 
-export class ProductSDK extends BaseSDK {
-  private webAdapter: WebProductAdapter;
+export class ProductSDK implements IProduct {
+  private adapter: ProductApiAdapter | ProductWebAdapter;
 
-  constructor(page: Page) {
-    super(page);
-    this.webAdapter = new WebProductAdapter(this.page);
+  constructor(adapter: ProductApiAdapter | ProductWebAdapter) {
+    this.adapter = adapter;
   }
 
   async viewProduct(productId: string): Promise<void> {
-    await this.webAdapter.viewProduct(productId);
+    await this.adapter.viewProduct(productId);
   }
 
   async getProductDetails(productId: string): Promise<ProductDetails> {
-    return this.webAdapter.getProductDetails(productId);
+    return this.adapter.getProductDetails(productId);
+  }
+
+  async getProducts(filter?: any): Promise<ProductDetails[]> {
+    return this.adapter.getProducts(filter);
   }
 
   async addReview(productId: string, data: ReviewData): Promise<void> {
-    await this.webAdapter.addReview(productId, data);
+    await this.adapter.addReview(productId, data);
   }
 
   async getReviews(productId: string): Promise<ReviewData[]> {
-    return this.webAdapter.getReviews(productId);
+    return this.adapter.getReviews(productId);
   }
 
   async switchImage(index: number): Promise<void> {
-    await this.webAdapter.switchImage(index);
+    await this.adapter.switchImage(index);
   }
 }

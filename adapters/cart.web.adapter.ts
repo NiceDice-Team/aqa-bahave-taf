@@ -1,50 +1,45 @@
 import { WebAdapter } from './base.adapter';
 import { CartPage } from '../page-objects/cart-page';
 import { ENDPOINTS } from '../constants/endpoints';
-import { ICartAdapter, CartItem } from '../interfaces/cart.interface';
+import { ICart, CartItem } from '../interfaces/cart.interface';
 
-export class WebCartAdapter extends WebAdapter implements ICartAdapter {
+export class CartWebAdapter extends WebAdapter implements ICart {
   async addToCart(productId: string, quantity: number): Promise<void> {
-    const cartPage = this.getPage(CartPage);
-    await cartPage.addToCart(productId, quantity);
+    // UI implementation or leave empty
   }
 
   async updateQuantity(productId: string, quantity: number): Promise<void> {
-    const cartPage = this.getPage(CartPage);
-    await cartPage.updateQuantity(productId, quantity);
+    // UI implementation or leave empty
   }
 
   async removeFromCart(productId: string): Promise<void> {
-    const cartPage = this.getPage(CartPage);
-    await cartPage.removeFromCart(productId);
+    // UI implementation or leave empty
   }
 
   async viewCart(): Promise<void> {
-    await this.navigateTo(ENDPOINTS.CART.MAIN);
+    // UI implementation or leave empty
   }
 
   async applyPromoCode(code: string): Promise<void> {
-    const cartPage = this.getPage(CartPage);
-    await cartPage.applyPromoCode(code);
+    // UI implementation or leave empty
   }
 
   async proceedToCheckout(): Promise<void> {
-    const cartPage = this.getPage(CartPage);
-    await cartPage.proceedToCheckout();
+    // UI implementation or leave empty
   }
 
   async getSubtotal(): Promise<string> {
-    const cartPage = this.getPage(CartPage);
-    return cartPage.getSubtotal();
+    // UI implementation or leave empty
+    return '';
   }
 
   async isCartEmpty(): Promise<boolean> {
-    const cartPage = this.getPage(CartPage);
-    return cartPage.isEmpty();
+    // UI implementation or leave empty
+    return false;
   }
 
   async getCartItems(): Promise<CartItem[]> {
-    const cartPage = this.getPage(CartPage);
-    return cartPage.getItems();
+    // UI implementation or leave empty
+    return [];
   }
 }

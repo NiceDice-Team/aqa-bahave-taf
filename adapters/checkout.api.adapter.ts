@@ -1,13 +1,13 @@
 import { ApiAdapter } from './base.adapter';
-import { ENDPOINTS } from '../../constants/endpoints';
+import { ENDPOINTS } from '../constants/endpoints';
 import { 
-  ICheckoutAdapter,
+  ICheckout,
   ShippingDetails,
   PaymentDetails,
   OrderStatus
 } from '../interfaces/checkout.interface';
 
-export class ApiCheckoutAdapter extends ApiAdapter implements ICheckoutAdapter {
+export class CheckoutApiAdapter extends ApiAdapter implements ICheckout {
   async startCheckout(): Promise<void> {
     await this.request('POST', ENDPOINTS.CHECKOUT.MAIN);
   }

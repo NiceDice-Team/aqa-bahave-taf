@@ -1,8 +1,13 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { CustomWorld } from '../support/world';
+import { CartSDK } from '../sdk';
+import { CartApiAdapter } from '../adapters';
 
 Given('I am on the cart page', async function(this: CustomWorld) {
-  await this.cart.goto('/cart');
+  if (!this.cart) {
+    const adapter = new CartApiAdapter(); // or AdapterType.API based on your test context
+    const cartSdk = new CartSDK(adapter);
+  }
 });
 
 When('I add product {string} to cart', async function(this: CustomWorld, productId: string) {
@@ -22,8 +27,8 @@ Then('the cart should be empty', async function(this: CustomWorld) {
 });
 
 Then('the cart total should be {float}', async function(this: CustomWorld, expected: number) {
-  const total = await this.cart.getCartTotal();
+  const total = await this.cart.getTotal();
   if (total !== expected) {
-    throw new Error(`Cart total is ${total}, expected ${expected}`);
+    throw new Error(`Expected cart total to be ${expected}, but got ${total}`);
   }
 });

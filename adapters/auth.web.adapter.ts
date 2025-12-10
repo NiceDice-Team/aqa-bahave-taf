@@ -3,14 +3,14 @@ import { LoginPage } from '../page-objects/login-page';
 import { RegisterPage } from '../page-objects/register-page';
 import { ENDPOINTS } from '../constants/endpoints';
 import { 
-  IAuthAdapter, 
+  IAuth, 
   RegisterParams, 
   LoginParams, 
   PasswordResetParams,
   RegistrationStatus 
 } from '../interfaces/auth.interface';
 
-export class WebAuthAdapter extends WebAdapter implements IAuthAdapter {
+export class AuthWebAdapter extends WebAdapter implements IAuth {
   private getRegisterPage(): RegisterPage {
     return this.getPage(RegisterPage);
   }
@@ -130,21 +130,19 @@ export class WebAuthAdapter extends WebAdapter implements IAuthAdapter {
   }
 
   async requestPasswordReset(email: string): Promise<void> {
-    await this.navigateTo(ENDPOINTS.AUTH.FORGOT_PASSWORD);
-    // Implement password reset request UI interaction
+    // UI implementation or leave empty
   }
 
   async resetPassword(params: PasswordResetParams): Promise<void> {
-    await this.navigateTo(ENDPOINTS.AUTH.RESET_PASSWORD);
-    // Implement password reset UI interaction
+    // UI implementation or leave empty
   }
 
   async isLoggedIn(): Promise<boolean> {
-    // Implement logged in check through UI
+    // UI implementation or leave empty
     return false;
   }
 
   async logout(): Promise<void> {
-    // Implement logout through UI
+    // UI implementation or leave empty
   }
 }
