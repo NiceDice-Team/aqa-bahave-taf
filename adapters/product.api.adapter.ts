@@ -1,4 +1,4 @@
-import { ApiAdapter } from './base.adapter';
+import { ApiAdapter } from './base.adapters';
 import { ENDPOINTS } from '../constants/endpoints';
 import { 
   IProduct, 

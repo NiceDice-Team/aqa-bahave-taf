@@ -1,4 +1,4 @@
-import { WebAdapter } from './base.adapter';
+import { WebAdapter } from './base.adapters';
 import { LoginPage } from '../page-objects/login-page';
 import { RegisterPage } from '../page-objects/register-page';
 import { ENDPOINTS } from '../constants/endpoints';

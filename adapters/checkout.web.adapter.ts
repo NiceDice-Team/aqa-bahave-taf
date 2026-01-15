@@ -1,4 +1,4 @@
-import { WebAdapter } from './base.adapter';
+import { WebAdapter } from './base.adapters';
 import { ICheckout, ShippingDetails, PaymentDetails, OrderStatus } from '../interfaces/checkout.interface';
 
 export class CheckoutWebAdapter extends WebAdapter implements ICheckout {

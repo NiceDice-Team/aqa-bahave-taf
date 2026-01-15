@@ -1,35 +1,36 @@
-import { ApiAdapter } from './base.adapter';
+import { ApiAdapter } from './base.adapters';
 import { ENDPOINTS } from '../constants/endpoints';
 import { ICart, CartItem } from '../interfaces/cart.interface';
 
 export class CartApiAdapter extends ApiAdapter implements ICart {
   async addToCart(productId: string, quantity: number): Promise<void> {
-    await this.request('POST', ENDPOINTS.CART.ADD, { productId, quantity });
+    await this.request.post(ENDPOINTS.CART.ADD, { data: { productId, quantity } });
   }
 
   async updateQuantity(productId: string, quantity: number): Promise<void> {
-    await this.request('PUT', ENDPOINTS.CART.UPDATE, { productId, quantity });
+    await this.request.put(ENDPOINTS.CART.UPDATE, { data: { productId, quantity } });
   }
 
   async removeFromCart(productId: string): Promise<void> {
-    await this.request('DELETE', `${ENDPOINTS.CART.REMOVE}/${productId}`);
+    await this.request.delete(`${ENDPOINTS.CART.REMOVE}/${productId}`);
   }
 
   async viewCart(): Promise<void> {
-    await this.request('GET', ENDPOINTS.CART.MAIN);
+    await this.request.get(ENDPOINTS.CART.MAIN);
   }
 
   async applyPromoCode(code: string): Promise<void> {
-    await this.request('POST', ENDPOINTS.PROMO.APPLY, { code });
+    await this.request.post(ENDPOINTS.PROMO.APPLY, { data: { code } });
   }
 
   async proceedToCheckout(): Promise<void> {
-    await this.request('POST', ENDPOINTS.CHECKOUT.MAIN);
+    await this.request.post(ENDPOINTS.CHECKOUT.MAIN);
   }
 
   async getSubtotal(): Promise<string> {
-    const response = await this.request<{ subtotal: string }>('GET', '/api/cart/subtotal');
-    return response.subtotal;
+    const response = await this.request.get('/api/cart/subtotal');
+    const data = await response.json();
+    return data.subtotal;
   }
 
   async isCartEmpty(): Promise<boolean> {
@@ -38,7 +39,8 @@ export class CartApiAdapter extends ApiAdapter implements ICart {
   }
 
   async getCartItems(): Promise<CartItem[]> {
-    const response = await this.request<{ items: CartItem[] }>('GET', '/api/cart/items');
-    return response.items;
+    const response = await this.request.get('/api/cart/items');
+    const data = await response.json();
+    return data.items;
   }
 }

@@ -1,6 +1,6 @@
 export { AuthApiAdapter } from './auth.api.adapter';
 export { AuthWebAdapter } from './auth.web.adapter';
-export { BaseAdapter } from './base.adapter';
+export { BaseAdapter } from './base.adapters';
 export { CartApiAdapter } from './cart.api.adapter';
 export { CartWebAdapter } from './cart.web.adapter';
 export { ProductApiAdapter } from './product.api.adapter';

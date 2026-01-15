@@ -1,13 +1,17 @@
-import { Page } from '@playwright/test';
+import { Page, APIRequestContext } from '@playwright/test';
 import { BasePage } from '../page-objects/base-page';
 import { PlaywrightFetch } from '../utils/playwright-fetch';
 import { th } from '@faker-js/faker/.';
 
 export abstract class BaseAdapter {
     protected page: Page;
+    protected request: APIRequestContext;
+    protected faker = th;
 
-  constructor() {
-    this.page = ; // Placeholder, actual Page should be passed in derived classes
+  constructor(page: Page) {
+    this.page = page;
+    this.request = page.request;
+    this.faker = th;
   }
 
   async waitForReady() {
@@ -74,7 +78,7 @@ export abstract class ApiAdapter extends BaseAdapter {
     this.fetch = new PlaywrightFetch(page);
   }
 
-  protected async request<T>(method: string, url: string, data?: any): Promise<T> {
+  protected async sendRequest<T>(method: string, url: string, data?: any): Promise<T> {
     const targetUrl = this.resolveUrl(url);
     return this.fetch.request<T>(method, targetUrl, data);
   }

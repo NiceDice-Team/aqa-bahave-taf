@@ -1,4 +1,4 @@
-import { WebAdapter } from './base.adapter';
+import { WebAdapter } from './base.adapters';
 import { IProduct, ProductDetails, ProductFilter, ReviewData } from '../interfaces/product.interface';
 
 export class ProductWebAdapter extends WebAdapter implements IProduct {

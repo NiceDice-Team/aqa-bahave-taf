@@ -1,4 +1,4 @@
-import { BaseAdapter } from './base.adapter';
+import { BaseAdapter } from './base.adapters';
 import { Page } from '@playwright/test';
 
 export class RegistrationPage {

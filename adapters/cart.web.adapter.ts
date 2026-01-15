@@ -1,4 +1,4 @@
-import { WebAdapter } from './base.adapter';
+import { WebAdapter } from './base.adapters';
 import { CartPage } from '../page-objects/cart-page';
 import { ENDPOINTS } from '../constants/endpoints';
 import { ICart, CartItem } from '../interfaces/cart.interface';
