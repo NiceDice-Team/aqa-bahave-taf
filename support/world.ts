@@ -1,11 +1,11 @@
 import { CartPage } from '../page-objects/cart-page';
 import { chromium, Browser, Page } from '@playwright/test';
 import { Before, After, setWorldConstructor, World } from '@cucumber/cucumber';
-import { AuthSDK } from '../sdk/auth.sdk';
-import { CartSDK } from '../sdk/cart.sdk';
-import { ProductSDK } from '../sdk/product.sdk';
-import { CheckoutSDK } from '../sdk/checkout.sdk';
-import { RegistrationPage } from '../adapters/registration.adapter';
+import { AuthSDK } from '../sdk/auth-sdk';
+import { CartSDK } from '../sdk/cart-sdk';
+import { ProductSDK } from '../sdk/product-sdk';
+import { CheckoutSDK } from '../sdk/checkout-sdk';
+import { RegistrationPage } from '../adapters/registration.web.adapter';
 
 export type AdapterType = 'web' | 'api' | 'both';
 
@@ -67,28 +67,67 @@ export class CustomWorld extends World {
 
   private getAuthSDK(): AuthSDK {
     if (!this._auth) {
-      this._auth = new AuthSDK(this.page);
+      if (this._adapterType === 'web') {
+        // Assuming AuthWebAdapter takes a Page in its constructor
+        const { AuthWebAdapter } = require('../adapters/auth.web.adapter');
+        this._auth = new AuthSDK(new AuthWebAdapter(this.page));
+      } else if (this._adapterType === 'api') {
+        // Assuming AuthApiAdapter does not require a Page
+        const { AuthApiAdapter } = require('../adapters/auth.api.adapter');
+        this._auth = new AuthSDK(new AuthApiAdapter());
+      } else {
+        // Default to 'both' using web adapter
+        const { AuthWebAdapter } = require('../adapters/auth.web.adapter');
+        this._auth = new AuthSDK(new AuthWebAdapter(this.page));
+      }
     }
     return this._auth;
   }
 
   private getCartSDK(): CartSDK {
     if (!this._cart) {
-  this._cart = new CartSDK();
+      if (this._adapterType === 'web') {
+        const { CartWebAdapter } = require('../adapters/cart.web.adapter');
+        this._cart = new CartSDK(new CartWebAdapter(this.page));
+      } else if (this._adapterType === 'api') {
+        const { CartApiAdapter } = require('../adapters/cart.api.adapter');
+        this._cart = new CartSDK(new CartApiAdapter());
+      } else {
+        const { CartWebAdapter } = require('../adapters/cart.web.adapter');
+        this._cart = new CartSDK(new CartWebAdapter(this.page));
+      }
     }
     return this._cart;
   }
 
   private getProductSDK(): ProductSDK {
     if (!this._product) {
-  this._product = new ProductSDK();
+      if (this._adapterType === 'web') {
+        const { ProductWebAdapter } = require('../adapters/product.web.adapter');
+        this._product = new ProductSDK(new ProductWebAdapter(this.page));
+      } else if (this._adapterType === 'api') {
+        const { ProductApiAdapter } = require('../adapters/product.api.adapter');
+        this._product = new ProductSDK(new ProductApiAdapter());
+      } else {
+        const { ProductWebAdapter } = require('../adapters/product.web.adapter');
+        this._product = new ProductSDK(new ProductWebAdapter(this.page));
+      }
     }
     return this._product;
   }
 
   private getCheckoutSDK(): CheckoutSDK {
     if (!this._checkout) {
-  this._checkout = new CheckoutSDK();
+      if (this._adapterType === 'web') {
+        const { CheckoutWebAdapter } = require('../adapters/checkout.web.adapter');
+        this._checkout = new CheckoutSDK(new CheckoutWebAdapter(this.page));
+      } else if (this._adapterType === 'api') {
+        const { CheckoutApiAdapter } = require('../adapters/checkout.api.adapter');
+        this._checkout = new CheckoutSDK(new CheckoutApiAdapter());
+      } else {
+        const { CheckoutWebAdapter } = require('../adapters/checkout.web.adapter');
+        this._checkout = new CheckoutSDK(new CheckoutWebAdapter(this.page));
+      }
     }
     return this._checkout;
   }
