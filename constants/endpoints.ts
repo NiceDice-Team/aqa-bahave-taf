@@ -14,6 +14,8 @@ export const ENDPOINTS = {
     ADD: '/api/cart/add',
     REMOVE: '/api/cart/remove',
     UPDATE: '/api/cart/update',
+    SUBTOTAL: '/api/cart/subtotal',
+    ITEMS: '/api/cart/items'
   },
   CHECKOUT: {
     MAIN: '/checkout',

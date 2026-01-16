@@ -5,12 +5,10 @@ import { th } from '@faker-js/faker/.';
 
 export abstract class BaseAdapter {
     protected page: Page;
-    protected request: APIRequestContext;
     protected faker = th;
 
   constructor(page: Page) {
     this.page = page;
-    this.request = page.request;
     this.faker = th;
   }
 

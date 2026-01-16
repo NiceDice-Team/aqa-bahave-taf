@@ -10,35 +10,39 @@ import {
 
 export class AuthApiAdapter extends ApiAdapter implements IAuth {
   async register(params: RegisterParams): Promise<void> {
-    await this.request.post(ENDPOINTS.AUTH.REGISTER, { data: params });
+    await this.sendRequest('POST', ENDPOINTS.AUTH.REGISTER, params);
   }
 
   async login(params: LoginParams): Promise<void> {
-    await this.request.post(ENDPOINTS.AUTH.LOGIN, { data: params });
+    await this.sendRequest('POST', ENDPOINTS.AUTH.LOGIN, params);
   }
 
   async loginWithOAuth(provider: OAuthProvider): Promise<void> {
-    await this.request.post(`/api/auth/${provider}`);
+    await this.sendRequest('POST', `/api/auth/${provider}`);
   }
 
   async continueAsGuest(): Promise<void> {
-    await this.request.post('/api/auth/guest');
+    await this.sendRequest('POST', '/api/auth/guest');
   }
 
   async requestPasswordReset(email: string): Promise<void> {
-    await this.request.post(ENDPOINTS.AUTH.FORGOT_PASSWORD, { data: { email } });
+    await this.sendRequest('POST', ENDPOINTS.AUTH.FORGOT_PASSWORD, { email });
   }
 
   async resetPassword(params: PasswordResetParams): Promise<void> {
-    await this.request.post(ENDPOINTS.AUTH.RESET_PASSWORD, { data: params });
+    await this.sendRequest('POST', ENDPOINTS.AUTH.RESET_PASSWORD, params);
   }
 
   async isLoggedIn(): Promise<boolean> {
-    const response = await this.request.get('/api/auth/status');
-    return Boolean(response.text);
+    const response = await this.sendRequest('GET', '/api/auth/status');
+    // Narrow the type of response to access isLoggedIn property
+    if (typeof response === 'object' && response !== null && 'isLoggedIn' in response) {
+      return Boolean((response as { isLoggedIn: unknown }).isLoggedIn);
+    }
+    return false;
   }
 
   async logout(): Promise<void> {
-    await this.request.post('/api/auth/logout');
+    await this.sendRequest('POST', '/api/auth/logout');
   }
 }
