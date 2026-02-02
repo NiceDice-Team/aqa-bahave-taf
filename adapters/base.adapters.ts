@@ -1,48 +1,14 @@
 import { Page, APIRequestContext } from '@playwright/test';
 import { BasePage } from '../page-objects/base-page';
-import { PlaywrightFetch } from '../utils/playwright-fetch';
-import { th } from '@faker-js/faker/.';
+import { Faker } from '@faker-js/faker';
 
-export abstract class BaseAdapter {
-    protected page: Page;
-    protected faker = th;
+export abstract class WebAdapter {
+  protected readonly page: Page;
+  protected readonly faker: Faker;
 
-  constructor(page: Page) {
+  constructor(page: Page, faker: Faker) {
     this.page = page;
-    this.faker = th;
-  }
-
-  async waitForReady() {
-    // Default implementation - override in specific adapters
-    await this.page.waitForLoadState('networkidle');
-  }
-
-  protected getBaseUrl(): string {
-    return (
-      process.env.TEST_BASE_URL ||
-      process.env.APP_BASE_URL ||
-      process.env.NEXT_PUBLIC_APP_URL ||
-      'http://localhost:3000'
-    );
-  }
-
-  protected resolveUrl(path: string): string {
-    if (/^https?:\/\//i.test(path)) {
-      return path;
-    }
-
-    const normalizedBase = this.getBaseUrl().replace(/\/$/, '');
-    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-    return `${normalizedBase}${normalizedPath}`;
-  }
-}
-
-export abstract class WebAdapter extends BaseAdapter {
-  protected page: Page;
-
-  constructor(page: Page) {
-    super(page);
-    this.page = page;
+    this.faker = faker;
   }
 
   protected async navigateTo(url: string): Promise<void> {
@@ -64,20 +30,28 @@ export abstract class WebAdapter extends BaseAdapter {
 
   protected async clickAndWait(selector: string): Promise<void> {
     await this.page.click(selector);
-    await this.waitForReady();
+    await this.page.waitForLoadState('networkidle');
   }
 }
 
-export abstract class ApiAdapter extends BaseAdapter {
-  private fetch: PlaywrightFetch;
+export abstract class ApiAdapter {
+  protected readonly request: APIRequestContext;
+  protected readonly faker: Faker;
 
-  constructor(page: Page) {
-    super(page);
-    this.fetch = new PlaywrightFetch(page);
+  constructor(request: APIRequestContext, faker: Faker) {
+    this.request = request;
+    this.faker = faker;
   }
 
-  protected async sendRequest<T>(method: string, url: string, data?: any): Promise<T> {
-    const targetUrl = this.resolveUrl(url);
-    return this.fetch.request<T>(method, targetUrl, data);
+  protected async sendRequest(method: string, url: string, headers?: Record<string, string>, data?: any): Promise<any> {
+    const response = await this.request.fetch(url, {
+      method,
+      headers: headers || { 'Content-Type': 'application/json' },
+      data: data ? JSON.stringify(data) : undefined,
+    });
+    if (response.headers()['content-type']?.includes('application/json')) {
+      return await response.json();
+    }
+    return response;
   }
 }

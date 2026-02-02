@@ -137,3 +137,14 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+# add gihub actions files
+.github/workflows/*.yml
+.github/workflows/*.yaml
+.github/agents/*.md
+#add vscode settings
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+.vscode/*.code-workspace
+.vscode/mcp.json

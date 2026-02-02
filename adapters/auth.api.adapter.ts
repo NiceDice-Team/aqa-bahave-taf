@@ -10,11 +10,11 @@ import {
 
 export class AuthApiAdapter extends ApiAdapter implements IAuth {
   async register(params: RegisterParams): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.AUTH.REGISTER, params);
+    await this.sendRequest('POST', ENDPOINTS.AUTH.REGISTER, undefined, params);
   }
 
   async login(params: LoginParams): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.AUTH.LOGIN, params);
+    await this.sendRequest('POST', ENDPOINTS.AUTH.LOGIN, undefined, params);
   }
 
   async loginWithOAuth(provider: OAuthProvider): Promise<void> {
@@ -30,7 +30,7 @@ export class AuthApiAdapter extends ApiAdapter implements IAuth {
   }
 
   async resetPassword(params: PasswordResetParams): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.AUTH.RESET_PASSWORD, params);
+    await this.sendRequest('POST', ENDPOINTS.AUTH.RESET_PASSWORD, undefined, params);
   }
 
   async isLoggedIn(): Promise<boolean> {

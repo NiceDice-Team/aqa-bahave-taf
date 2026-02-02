@@ -1,4 +1,4 @@
-import { Given, When, Then } from '@cucumber/cucumber';
+import { Given, When, Then } from 'playwright-bdd';
 import { CustomWorld } from '../support/world';
 import { CartSDK } from '../sdk';
 import { CartApiAdapter } from '../adapters';

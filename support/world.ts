@@ -1,11 +1,11 @@
 import { CartPage } from '../page-objects/cart-page';
 import { chromium, Browser, Page } from '@playwright/test';
-import { Before, After, setWorldConstructor, World } from '@cucumber/cucumber';
+import { Before, After, setWorldConstructor, World } from 'playwright-bdd';
 import { AuthSDK } from '../sdk/auth-sdk';
 import { CartSDK } from '../sdk/cart-sdk';
 import { ProductSDK } from '../sdk/product-sdk';
 import { CheckoutSDK } from '../sdk/checkout-sdk';
-import { RegistrationPage } from '../adapters/registration.web.adapter';
+import { RegisterPage } from '../page-objects';
 
 export type AdapterType = 'web' | 'api' | 'both';
 
@@ -14,7 +14,7 @@ export class CustomWorld extends World {
   private browser: Browser | undefined;
   private _page: Page | undefined;
   private _cartPage: CartPage | undefined;
-  private _registrationPage: RegistrationPage | undefined;
+  private _registrationPage: RegisterPage | undefined;
   private _adapterType: AdapterType = 'both';
 
   // SDK instances
@@ -40,9 +40,9 @@ export class CustomWorld extends World {
     return this._cartPage;
   }
 
-  get registration(): RegistrationPage {
+  get registration(): RegisterPage {
     if (!this._registrationPage) {
-      this._registrationPage = new RegistrationPage(this.page);
+      this._registrationPage = new RegisterPage(this.page);
     }
     return this._registrationPage;
   }

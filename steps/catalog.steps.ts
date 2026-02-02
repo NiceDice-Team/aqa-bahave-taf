@@ -1,4 +1,4 @@
-import { Given, When, Then } from '@cucumber/cucumber';
+import { Given, When, Then } from 'playwright-bdd';
 import { CustomWorld } from './hooks';
 import { ProductCatalogAdapter } from '../adapters/ProductCatalogAdapter';
 

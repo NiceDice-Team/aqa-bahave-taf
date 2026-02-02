@@ -1,8 +1,10 @@
 
-import { Given, When, Then } from '@cucumber/cucumber';
+import { Given, When, Then } from 'playwright-bdd';
 import { expect } from '@playwright/test';
 import { CustomWorld } from '../support/world';
 import { LoginPage } from '../page-objects/login-page';
+import { AuthApiAdapter, AuthWebAdapter } from 'adapters';
+
 
 function getLoginPage(world: CustomWorld): LoginPage {
   return new LoginPage(world.page);

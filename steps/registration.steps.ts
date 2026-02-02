@@ -1,4 +1,4 @@
-import { Given, When, Then } from '@cucumber/cucumber';
+import { Given, When, Then } from 'playwright-bdd';
 import { expect } from '@playwright/test';
 import { CustomWorld } from '../support/world';
 import { faker } from '@faker-js/faker';
