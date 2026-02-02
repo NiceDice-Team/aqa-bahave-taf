@@ -1,18 +1,17 @@
 import { CartPage } from '../page-objects/cart-page';
-import { chromium, Browser, Page } from '@playwright/test';
-import { Before, After, setWorldConstructor, World } from 'playwright-bdd';
+import { Page } from '@playwright/test';
 import { AuthSDK } from '../sdk/auth-sdk';
 import { CartSDK } from '../sdk/cart-sdk';
 import { ProductSDK } from '../sdk/product-sdk';
 import { CheckoutSDK } from '../sdk/checkout-sdk';
 import { RegisterPage } from '../page-objects';
+import { config, EnvironmentConfig } from '../config/environment';
+import { fixtureLoader } from '../utils/fixture-loader';
 
 export type AdapterType = 'web' | 'api' | 'both';
 
-// Extend World to include our page objects and SDKs
-export class CustomWorld extends World {
-  private browser: Browser | undefined;
-  private _page: Page | undefined;
+// CustomWorld now receives Page from Playwright's fixture
+export class CustomWorld {
   private _cartPage: CartPage | undefined;
   private _registrationPage: RegisterPage | undefined;
   private _adapterType: AdapterType = 'both';
@@ -23,15 +22,14 @@ export class CustomWorld extends World {
   private _product: ProductSDK | undefined;
   private _checkout: CheckoutSDK | undefined;
 
+  // Configuration and fixtures
+  public readonly config: EnvironmentConfig = config;
+  public readonly fixtures = fixtureLoader;
+
   // Test data storage
   public testData: Record<string, any> = {};
 
-  get page(): Page {
-    if (!this._page) {
-      throw new Error('Page not initialized. Call initBrowser() first');
-    }
-    return this._page;
-  }
+  constructor(public readonly page: Page) {}
 
   get cart(): CartPage {
     if (!this._cartPage) {
@@ -68,15 +66,12 @@ export class CustomWorld extends World {
   private getAuthSDK(): AuthSDK {
     if (!this._auth) {
       if (this._adapterType === 'web') {
-        // Assuming AuthWebAdapter takes a Page in its constructor
         const { AuthWebAdapter } = require('../adapters/auth.web.adapter');
         this._auth = new AuthSDK(new AuthWebAdapter(this.page));
       } else if (this._adapterType === 'api') {
-        // Assuming AuthApiAdapter does not require a Page
         const { AuthApiAdapter } = require('../adapters/auth.api.adapter');
         this._auth = new AuthSDK(new AuthApiAdapter());
       } else {
-        // Default to 'both' using web adapter
         const { AuthWebAdapter } = require('../adapters/auth.web.adapter');
         this._auth = new AuthSDK(new AuthWebAdapter(this.page));
       }
@@ -131,29 +126,10 @@ export class CustomWorld extends World {
     }
     return this._checkout;
   }
-
-  async initBrowser() {
-    this.browser = await chromium.launch();
-    this._page = await this.browser.newPage();
-  }
-
-  async closeBrowser() {
-    if (this.browser) {
-      await this.browser.close();
-      this.browser = undefined;
-      this._page = undefined;
-      this._cartPage = undefined;
-    }
-  }
 }
 
-setWorldConstructor(CustomWorld);
-
-// Hooks
-Before(async function(this: CustomWorld) {
-  await this.initBrowser();
-});
-
-After(async function(this: CustomWorld) {
-  await this.closeBrowser();
-});
+// Export as a Playwright fixture
+export const customWorldFixture = async ({ page }: { page: Page }, use: any) => {
+  const world = new CustomWorld(page);
+  await use(world);
+};

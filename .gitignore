@@ -137,14 +137,140 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-# add gihub actions files
+
+# GitHub Actions files
 .github/workflows/*.yml
 .github/workflows/*.yaml
 .github/agents/*.md
-#add vscode settings
-.vscode/settings.json
-.vscode/tasks.json
-.vscode/launch.json
-.vscode/extensions.json
-.vscode/*.code-workspace
-.vscode/mcp.json
+
+# VSCode settings (all personal)
+.vscode/
+
+# ============================================
+# Playwright & Test Framework Specific
+# ============================================
+
+# Playwright test results and reports
+test-results/
+playwright-report/
+reports/
+*.html-report/
+
+# Playwright generated test files
+.features-gen/
+
+# Playwright screenshots and videos
+screenshots/
+videos/
+traces/
+
+# Playwright authentication state
+.auth/
+playwright/.auth/
+
+# ============================================
+# Security & Sensitive Data
+# ============================================
+
+# Environment files (keep .env.example)
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+.env.staging
+
+# Credentials and tokens
+**/credentials.json
+**/token.json
+**/secrets.json
+**/.secrets/
+**/auth-tokens/
+
+# SSH keys and certificates
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# ============================================
+# IDE & Editor Specific
+# ============================================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# WebStorm
+.webstorm/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+
+# ============================================
+# Build & Temporary Files
+# ============================================
+
+# Compiled output
+dist/
+build/
+out/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# ============================================
+# Package Manager Specific
+# ============================================
+
+# pnpm
+.pnpm-debug.log*
+pnpm-lock.yaml
+
+# Yarn
+yarn-error.log
+
+# npm
+.npmrc
+package-lock.json.backup

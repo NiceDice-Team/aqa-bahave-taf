@@ -11,7 +11,7 @@ aqa-bahave-taf/
 │   ├── catalog/
 │   ├── checkout/
 │   └── users/
-├── steps/            # Step definitions (Cucumber)
+├── steps/            # Step definitions (playwright-bdd)
 │   ├── cart.steps.ts
 │   ├── catalog.steps.ts
 │   ├── hooks.ts
@@ -35,7 +35,7 @@ aqa-bahave-taf/
 ├── interfaces/       # TypeScript interfaces
 ├── constants/        # Constants (endpoints, errors)
 ├── utils/            # Utility functions
-├── reports/          # Test reports (Cucumber, HTML)
+├── reports/          # Test reports (HTML, JSON)
 ├── package.json      # Project config
 ├── tsconfig.json     # TypeScript config
 ├── tsconfig.cucumber.json # Cucumber/TS config
@@ -46,14 +46,15 @@ aqa-bahave-taf/
 
 
 ### BDD Tests
-- Uses Cucumber.js with Playwright
+- Uses playwright-bdd (Playwright + Gherkin)
 - Business-readable specifications
 - Good for acceptance testing and documentation
+- Runs with Playwright Test runner
 - Example: `features/checkout/checkout.feature`
 
 
 ### End-to-End Tests
-*Not present in this repo. All E2E and BDD are unified under Cucumber/Playwright with page objects.*
+*Not present in this repo. All E2E and BDD are unified under playwright-bdd with page objects.*
 
 
 ### Page Object Models
@@ -86,7 +87,7 @@ aqa-bahave-taf/
 
 4. **Running Tests**
 ```bash
-# Run all BDD (Cucumber) tests
+# Run all BDD (playwright-bdd) tests
 npm run test:e2e
 
 # CI mode
@@ -107,13 +108,14 @@ export class CartPage {
 }
 ```
 
-### BDD Step using Page Object
+### BDD Step using Page Object (playwright-bdd)
 ```typescript
 // steps/cart.steps.ts
+import { When } from '@cucumber/cucumber';
 import { CartPage } from '../page-objects/cart-page';
 
-When('I add {string} to cart', async function(productId: string) {
-  const cart = new CartPage(this.page);
+When('I add {string} to cart', async function({ page }, productId: string) {
+  const cart = new CartPage(page);
   await cart.addToCart(productId);
 });
 ```

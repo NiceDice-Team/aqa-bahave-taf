@@ -1,0 +1,48 @@
+{
+  "standard_user": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@nicedice.test",
+    "password": "Secret123!",
+    "phone": "+380991234567",
+    "isActive": true,
+    "role": "customer"
+  },
+  "premium_user": {
+    "firstName": "Jane",
+    "lastName": "Smith",
+    "email": "jane.smith@nicedice.test",
+    "password": "Premium456!",
+    "phone": "+380992345678",
+    "isActive": true,
+    "role": "customer",
+    "isPremium": true
+  },
+  "inactive_user": {
+    "firstName": "Bob",
+    "lastName": "Inactive",
+    "email": "bob.inactive@nicedice.test",
+    "password": "Inactive789!",
+    "phone": "+380993456789",
+    "isActive": false,
+    "role": "customer"
+  },
+  "admin_user": {
+    "firstName": "Admin",
+    "lastName": "User",
+    "email": "admin@nicedice.test",
+    "password": "Admin999!",
+    "phone": "+380994567890",
+    "isActive": true,
+    "role": "admin"
+  },
+  "guest_user": {
+    "firstName": "Guest",
+    "lastName": "User",
+    "email": "guest@nicedice.test",
+    "password": "",
+    "phone": "",
+    "isActive": false,
+    "role": "guest"
+  }
+}
