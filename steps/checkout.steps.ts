@@ -1,4 +1,4 @@
-import { Given, When, Then, expect } from './bdd';
+import { Given, When, Then } from './bdd';
 
 // Background steps
 Given('the cart contains {int} products with subtotal {string}', async ({ world }, count: number, subtotal: string) => {
