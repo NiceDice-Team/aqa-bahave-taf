@@ -1,4 +1,4 @@
-# Nice Dice - Automated QA Test Framework
+# Nice Dice - Automated QA Test Solution
 
 BDD (Behavior-Driven Development) test automation solution for the Nice Dice application using TypeScript/Node.js.
 
