@@ -1,6 +1,6 @@
 # Nice Dice - Automated QA Test Framework
 
-BDD (Behavior-Driven Development) test automation framework for the Nice Dice application using Behave (Python) and TypeScript/Node.js.
+BDD (Behavior-Driven Development) test automation solution for the Nice Dice application using TypeScript/Node.js.
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
@@ -15,8 +15,7 @@ BDD (Behavior-Driven Development) test automation framework for the Nice Dice ap
 
 ## Prerequisites
 
-- **Node.js** 16+ and npm
-- **Python** 3.8+
+- **Node.js** 24+ and npm
 - **Docker** and Docker Compose (optional)
 - **Git**
 
@@ -31,7 +30,6 @@ cd aqa-bahave-taf
 ### 2. Install Dependencies
 ```bash
 npm install
-python3 -m pip install behave
 ```
 
 ### 3. Configure the Project
