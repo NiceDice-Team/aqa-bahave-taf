@@ -8,11 +8,11 @@ Feature: User Login
     Given the user opened the login page "/login"
 
   Scenario: Successful login
-    When the user entered Email "john.doe@example.com"
-    And the user entered Password "Secret123"
+    When the user entered Email "tchallengevasyalex+1@gmail.com"
+    And the user entered Password "secret123"
     And the user clicked the "Sign In" button
     Then the system authenticates the user
-    And the user is redirected to the account page "/account"
+    And the user can go to the account page "/account"
 
   Scenario: Login with incorrect password
     When the user entered Email "john.doe@example.com"
@@ -44,14 +44,14 @@ Feature: User Login
   Scenario: Login with Google OAuth successfully
     When the user clicked "Sign in with Google"
     And the OAuth provider authenticated the user
-    Then the system logs the user in
-    And the user is redirected to the account page "/account"
+    Then the system authenticates the user
+    And the user can go to the account page "/account
 
   Scenario: Login with Facebook OAuth successfully
     When the user clicked "Sign in with Facebook"
     And the OAuth provider authenticated the user
-    Then the system logs the user in
-    And the user is redirected to the account page "/account"
+    Then the system authenticates the user
+    And the user can go to the account page "/account
 
   Scenario: Continue as guest
     When the user clicked "Continue as Guest"

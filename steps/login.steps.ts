@@ -24,12 +24,18 @@ When('the user clicked {string}', async ({ world }, button: string) => {
 });
 
 Then('the system authenticates the user', async ({ world }) => {
-  // Wait for redirect to account page or dashboard
-  await expect(world.page).toHaveURL(/\/account|\/dashboard/, { timeout: 10000 });
+  // Wait for popup message about successful login
+  const successMessage = world.page.locator('[role="alert"], .success-message, .alert-success');
+  await expect(successMessage).toBeVisible({ timeout: 10000 });
 });
 
-Then('the user is redirected to the account page {string}', async ({ world }, url: string) => {
+Then('the user can go to the account page {string}', async ({ world }, url: string) => {
+  //User click on the account page link in the header
+  // User see welcome message with user name in the header
+  await world.page.click('a:has-text("Account"), a:has-text("My Account"), a:has-text("Profile")');
   await expect(world.page).toHaveURL(url, { timeout: 10000 });
+  const welcomeMessage = world.page.locator('header:has-text("Welcome")');
+  await expect(welcomeMessage).toBeVisible({ timeout: 10000 });
 });
 
 Then('the user is not logged in', async ({ world }) => {
