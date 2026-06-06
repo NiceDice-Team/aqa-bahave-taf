@@ -120,10 +120,13 @@ jobs:
   critical:
     name: 🔴 Critical Tests
     runs-on: ubuntu-latest
+    needs: smoke
+    # Only run when smoke passed, and when suite selection allows it
     if: >
-      github.event_name != 'workflow_dispatch' ||
-      inputs.suite == 'critical' ||
-      inputs.suite == 'all'
+      needs.smoke.result == 'success' &&
+      (github.event_name != 'workflow_dispatch' ||
+       inputs.suite == 'critical' ||
+       inputs.suite == 'all')
     outputs:
       status:   ${{ steps.run.outcome }}
       total:    ${{ steps.stats.outputs.total }}
@@ -195,12 +198,16 @@ jobs:
   regression:
     name: 🔁 Regression Tests
     runs-on: ubuntu-latest
-    # On PRs: only run when manually dispatched with regression/all.
-    # On push to main/develop: always run.
+    needs: [smoke, critical]
+    # Only run when both smoke and critical passed.
+    # On PRs: only when manually dispatched with regression/all.
+    # On push to main/develop: always (if gates pass).
     if: >
-      (github.event_name == 'push') ||
-      (github.event_name == 'workflow_dispatch' &&
-        (inputs.suite == 'regression' || inputs.suite == 'all'))
+      needs.smoke.result == 'success' &&
+      needs.critical.result == 'success' &&
+      ((github.event_name == 'push') ||
+       (github.event_name == 'workflow_dispatch' &&
+        (inputs.suite == 'regression' || inputs.suite == 'all')))
     outputs:
       status:   ${{ steps.run.outcome }}
       total:    ${{ steps.stats.outputs.total }}
