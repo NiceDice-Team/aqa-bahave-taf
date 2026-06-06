@@ -95,7 +95,7 @@ export abstract class ApiAdapter {
 
     if (config.enableApiLogging) {
       // eslint-disable-next-line no-console
-      console.log(`API ${method.toUpperCase()} ${sanitizeUrlForLogging(absoluteUrl)}`);
+      console.log(`API ${method.toUpperCase()} [REDACTED_ENDPOINT]`);
     }
 
     const response = await this.request.fetch(absoluteUrl, {
