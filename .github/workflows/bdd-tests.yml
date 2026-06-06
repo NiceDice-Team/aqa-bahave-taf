@@ -92,7 +92,7 @@ jobs:
               const total   = r.stats.expected   ?? 0;
               const failed  = r.stats.unexpected ?? 0;
               const skipped = r.stats.skipped    ?? 0;
-              const passed  = total - failed - skipped;
+              const passed  = Math.max(0, total - failed - skipped);
               const dur = Math.round((r.stats.duration ?? 0) / 1000);
               const m = Math.floor(dur / 60), s = dur % 60;
               process.stdout.write('total='    + total   + '\n');
@@ -170,7 +170,7 @@ jobs:
               const total   = r.stats.expected   ?? 0;
               const failed  = r.stats.unexpected ?? 0;
               const skipped = r.stats.skipped    ?? 0;
-              const passed  = total - failed - skipped;
+              const passed  = Math.max(0, total - failed - skipped);
               const dur = Math.round((r.stats.duration ?? 0) / 1000);
               const m = Math.floor(dur / 60), s = dur % 60;
               process.stdout.write('total='    + total   + '\n');
@@ -251,7 +251,7 @@ jobs:
               const total   = r.stats.expected   ?? 0;
               const failed  = r.stats.unexpected ?? 0;
               const skipped = r.stats.skipped    ?? 0;
-              const passed  = total - failed - skipped;
+              const passed  = Math.max(0, total - failed - skipped);
               const dur = Math.round((r.stats.duration ?? 0) / 1000);
               const m = Math.floor(dur / 60), s = dur % 60;
               process.stdout.write('total='    + total   + '\n');
