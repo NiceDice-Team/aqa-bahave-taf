@@ -142,6 +142,7 @@ jobs:
     env:
       CI: 'true'
       NODE_ENV: staging
+      HEADLESS: 'true'
       API_BASE_URL:         ${{ secrets.API_BASE_URL }}
       FRONTEND_BASE_URL:    ${{ secrets.FRONTEND_BASE_URL }}
       TEST_USER_EMAIL:      ${{ secrets.TEST_USER_EMAIL }}
