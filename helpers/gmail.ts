@@ -4,10 +4,8 @@
  */
 export const canUseGmailApi = (): boolean =>
   Boolean(
-    (process.env.GMAIL_CLIENT_ID &&
-      process.env.GMAIL_CLIENT_SECRET &&
-      process.env.GMAIL_REFRESH_TOKEN) ||
-      process.env.GMAIL_ACCESS_TOKEN
+    (process.env.GMAIL_CLIENT_ID && process.env.GMAIL_CLIENT_SECRET && process.env.GMAIL_REFRESH_TOKEN) ||
+    process.env.GMAIL_ACCESS_TOKEN
   );
 
 type WaitForGmailMessageParams = {

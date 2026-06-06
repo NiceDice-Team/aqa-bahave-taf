@@ -1,3 +1,4 @@
+@checkout @orders
 Feature: Orders
   The order feature allows customers to convert their shopping cart into a confirmed order.
   As a customer
@@ -7,6 +8,7 @@ Feature: Orders
   Background:
     Given the user is logged in
 
+  @smoke @critical @ui
   Scenario: Place an order successfully
     Given the cart contains 2 products
     And the user opened the checkout page "/checkout"
@@ -17,12 +19,14 @@ Feature: Orders
     And products are moved from cart_items to order_items
     And the cart is emptied
 
+  @smoke @critical @api
   Scenario: View own orders
     Given the database contains 3 orders for the logged in user
     When the user requests GET /api/orders/
     Then the response returns 3 orders
     And each order contains items and total price
 
+  @critical @api
   Scenario: View another user's order
     Given the database contains an order owned by user "UserA"
     And the current logged in user is "UserB"

@@ -4,10 +4,13 @@ export const isEmailValid = (email: string): boolean => EMAIL_REGEX.test(String(
 
 export const isGmailAddress = (email: string): boolean => /@gmail\.com$/i.test(String(email || '').trim());
 
-export const isGmailPlusAlias = (email: string): boolean => /^[^\s@+]+\+[^\s@]+@gmail\.com$/i.test(String(email || '').trim());
+export const isGmailPlusAlias = (email: string): boolean =>
+  /^[^\s@+]+\+[^\s@]+@gmail\.com$/i.test(String(email || '').trim());
 
 export const toGmailPlusAlias = (baseEmail: string, suffix?: string): string => {
-  const normalizedBase = String(baseEmail || '').trim().toLowerCase();
+  const normalizedBase = String(baseEmail || '')
+    .trim()
+    .toLowerCase();
   if (!isGmailAddress(normalizedBase)) {
     throw new Error(`Base email must be gmail.com to create plus alias: ${baseEmail}`);
   }
@@ -24,7 +27,9 @@ export const getPreferredGmailBase = (testUserEmail?: string): string => {
     return configured;
   }
 
-  const fromTestUser = String(testUserEmail || '').trim().toLowerCase();
+  const fromTestUser = String(testUserEmail || '')
+    .trim()
+    .toLowerCase();
   if (fromTestUser && isGmailAddress(fromTestUser)) {
     return fromTestUser;
   }

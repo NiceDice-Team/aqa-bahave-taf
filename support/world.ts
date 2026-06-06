@@ -7,42 +7,48 @@ import { CheckoutSDK } from '../sdk/checkout-sdk';
 import { RegisterPage } from '../page-objects';
 import { config, EnvironmentConfig } from '../config/environment';
 import { fixtureLoader } from '../utils/fixture-loader';
+import { BasePage } from '../page-objects/base-page';
+import { AuthWebAdapter } from '../adapters/auth.web.adapter';
+import { AuthApiAdapter } from '../adapters/auth.api.adapter';
+import { CartWebAdapter } from '../adapters/cart.web.adapter';
+import { CartApiAdapter } from '../adapters/cart.api.adapter';
+import { ProductWebAdapter } from '../adapters/product.web.adapter';
+import { ProductApiAdapter } from '../adapters/product.api.adapter';
+import { CheckoutWebAdapter } from '../adapters/checkout.web.adapter';
+import { CheckoutApiAdapter } from '../adapters/checkout.api.adapter';
 
 export type AdapterType = 'web' | 'api' | 'both';
 
-// CustomWorld now receives Page from Playwright's fixture
 export class CustomWorld {
   private _cartPage: CartPage | undefined;
   private _registrationPage: RegisterPage | undefined;
   private _adapterType: AdapterType = 'both';
+  private _ui: BasePage | undefined;
 
-  // SDK instances
   private _auth: AuthSDK | undefined;
   private _cart: CartSDK | undefined;
   private _product: ProductSDK | undefined;
   private _checkout: CheckoutSDK | undefined;
 
-  // Configuration and fixtures
   public readonly config: EnvironmentConfig = config;
   public readonly fixtures = fixtureLoader;
-
-  // Test data storage
   public testData: Record<string, any> = {};
 
   constructor(public readonly page: Page) {}
 
   get cart(): CartPage {
-    if (!this._cartPage) {
-      this._cartPage = new CartPage(this.page);
-    }
+    if (!this._cartPage) this._cartPage = new CartPage(this.page);
     return this._cartPage;
   }
 
   get registration(): RegisterPage {
-    if (!this._registrationPage) {
-      this._registrationPage = new RegisterPage(this.page);
-    }
+    if (!this._registrationPage) this._registrationPage = new RegisterPage(this.page);
     return this._registrationPage;
+  }
+
+  get ui(): BasePage {
+    if (!this._ui) this._ui = new BasePage(this.page);
+    return this._ui;
   }
 
   get sdk() {
@@ -50,85 +56,52 @@ export class CustomWorld {
       auth: this.getAuthSDK(),
       cart: this.getCartSDK(),
       product: this.getProductSDK(),
-      checkout: this.getCheckoutSDK()
+      checkout: this.getCheckoutSDK(),
     };
   }
 
   useAdapter(type: AdapterType) {
     this._adapterType = type;
-    // Reset SDKs so they'll be recreated with new adapter type
-    this._auth = undefined;
-    this._cart = undefined;
-    this._product = undefined;
-    this._checkout = undefined;
+    this._auth = this._cart = this._product = this._checkout = undefined;
   }
 
   private getAuthSDK(): AuthSDK {
     if (!this._auth) {
-      if (this._adapterType === 'web') {
-        const { AuthWebAdapter } = require('../adapters/auth.web.adapter');
-        this._auth = new AuthSDK(new AuthWebAdapter(this.page));
-      } else if (this._adapterType === 'api') {
-        const { AuthApiAdapter } = require('../adapters/auth.api.adapter');
-        this._auth = new AuthSDK(new AuthApiAdapter());
-      } else {
-        const { AuthWebAdapter } = require('../adapters/auth.web.adapter');
-        this._auth = new AuthSDK(new AuthWebAdapter(this.page));
-      }
+      const adapter =
+        this._adapterType === 'api' ? new AuthApiAdapter(this.page.request) : new AuthWebAdapter(this.page);
+      this._auth = new AuthSDK(adapter);
     }
     return this._auth;
   }
 
   private getCartSDK(): CartSDK {
     if (!this._cart) {
-      if (this._adapterType === 'web') {
-        const { CartWebAdapter } = require('../adapters/cart.web.adapter');
-        this._cart = new CartSDK(new CartWebAdapter(this.page));
-      } else if (this._adapterType === 'api') {
-        const { CartApiAdapter } = require('../adapters/cart.api.adapter');
-        this._cart = new CartSDK(new CartApiAdapter());
-      } else {
-        const { CartWebAdapter } = require('../adapters/cart.web.adapter');
-        this._cart = new CartSDK(new CartWebAdapter(this.page));
-      }
+      const adapter =
+        this._adapterType === 'api' ? new CartApiAdapter(this.page.request) : new CartWebAdapter(this.page);
+      this._cart = new CartSDK(adapter);
     }
     return this._cart;
   }
 
   private getProductSDK(): ProductSDK {
     if (!this._product) {
-      if (this._adapterType === 'web') {
-        const { ProductWebAdapter } = require('../adapters/product.web.adapter');
-        this._product = new ProductSDK(new ProductWebAdapter(this.page));
-      } else if (this._adapterType === 'api') {
-        const { ProductApiAdapter } = require('../adapters/product.api.adapter');
-        this._product = new ProductSDK(new ProductApiAdapter());
-      } else {
-        const { ProductWebAdapter } = require('../adapters/product.web.adapter');
-        this._product = new ProductSDK(new ProductWebAdapter(this.page));
-      }
+      const adapter =
+        this._adapterType === 'api' ? new ProductApiAdapter(this.page.request) : new ProductWebAdapter(this.page);
+      this._product = new ProductSDK(adapter);
     }
     return this._product;
   }
 
   private getCheckoutSDK(): CheckoutSDK {
     if (!this._checkout) {
-      if (this._adapterType === 'web') {
-        const { CheckoutWebAdapter } = require('../adapters/checkout.web.adapter');
-        this._checkout = new CheckoutSDK(new CheckoutWebAdapter(this.page));
-      } else if (this._adapterType === 'api') {
-        const { CheckoutApiAdapter } = require('../adapters/checkout.api.adapter');
-        this._checkout = new CheckoutSDK(new CheckoutApiAdapter());
-      } else {
-        const { CheckoutWebAdapter } = require('../adapters/checkout.web.adapter');
-        this._checkout = new CheckoutSDK(new CheckoutWebAdapter(this.page));
-      }
+      const adapter =
+        this._adapterType === 'api' ? new CheckoutApiAdapter(this.page.request) : new CheckoutWebAdapter(this.page);
+      this._checkout = new CheckoutSDK(adapter);
     }
     return this._checkout;
   }
 }
 
-// Export as a Playwright fixture
 export const customWorldFixture = async ({ page }: { page: Page }, use: any) => {
   const world = new CustomWorld(page);
   await use(world);

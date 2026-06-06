@@ -1,0 +1,15 @@
+# ZAP Baseline scan rule overrides
+# Format: rule-id  IGNORE|WARN|FAIL  [reason]
+#
+# Override noisy informational rules that are false positives for the AUT.
+# Add new rows as needed; keep reasons concise.
+#
+# rule-id   action  reason
+10015       IGNORE  # Incomplete or No Cache-control Header Set – informational only
+10016       IGNORE  # Web Browser XSS Protection Not Enabled – obsolete header
+10017       IGNORE  # Cross-Domain JavaScript Source File Inclusion – CDN assets
+10027       IGNORE  # Information Disclosure – Suspicious Comments – test env only
+10037       IGNORE  # Server Leaks Information via X-Powered-By – informational
+10038       IGNORE  # Content Security Policy Header Not Set – tracked separately
+10096       IGNORE  # Timestamp Disclosure – UTC timestamps not sensitive
+90022       IGNORE  # Application Error Disclosure – staging env only

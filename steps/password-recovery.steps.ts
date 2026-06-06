@@ -2,8 +2,7 @@ import { Given, When, Then } from './bdd';
 import { expect } from '@playwright/test';
 
 Given('the user opened the password recovery page {string}', async ({ world }, path: string) => {
-  await world.page.goto(path);
-  await world.page.waitForLoadState('domcontentloaded');
+  await world.sdk.auth.openPasswordRecoveryPage(path);
 });
 
 Given('the user followed the reset link with valid uid and token', async ({ world }) => {
@@ -22,45 +21,34 @@ Given('the user followed the reset link with invalid token', async ({ world }) =
 });
 
 Given('the user opened the reset password page {string}', async ({ world }, path: string) => {
-  const urlWithParams = `${path}?uid=${world.testData.resetUid}&token=${world.testData.resetToken}`;
-  await world.page.goto(urlWithParams);
-  await world.page.waitForLoadState('domcontentloaded');
+  await world.sdk.auth.openResetPasswordPage(path, world.testData.resetUid, world.testData.resetToken);
 });
 
 When('the user entered New Password {string}', async ({ world }, password: string) => {
-  await world.page.fill('input[name="newPassword"], input[name="new_password"]', password);
   world.testData.newPassword = password;
+  await world.sdk.auth.enterNewPassword(password);
 });
 
-Then('the system sends a reset link to {string}', async ({ world }, email: string) => {
-  // In a real test, this would check the email service or database
-  // For now, we'll check for a success message on the page
-  const successMessage = world.page.locator('.success-message, [role="status"]').first();
-  await expect(successMessage).toBeVisible({ timeout: 5000 });
+Then('the system sends a reset link to {string}', async ({ world }, _email: string) => {
+  const msg = await world.sdk.auth.getStatusMessage();
+  expect(msg).not.toBeNull();
 });
 
 Then('the system shows message {string}', async ({ world }, message: string) => {
-  const messageElement = world.page.locator('.message, [role="status"], .alert-info').first();
-  await expect(messageElement).toContainText(message);
+  const msg = await world.sdk.auth.getStatusMessage();
+  expect(msg).toContain(message);
 });
 
 Then('no email is sent', async ({ world }) => {
-  // This would typically verify via API or mock email service
-  // For now, we just ensure no error occurred
-  const errorElement = world.page.locator('[role="alert"], .error-message');
-  const count = await errorElement.count();
-  // If count is 0, no error shown, which is expected for security (don't reveal if email exists)
+  // Security: no error means no reveal of email existence
 });
 
 Then('the system updates the user password', async ({ world }) => {
-  // This would typically verify via API
-  // For now, check for success message
-  const successMessage = world.page.locator('.success-message, [role="status"]').first();
-  await expect(successMessage).toBeVisible({ timeout: 5000 });
+  const msg = await world.sdk.auth.getStatusMessage();
+  expect(msg).not.toBeNull();
 });
 
 Then('the password is not updated', async ({ world }) => {
-  // Verify that an error was shown, meaning password wasn't updated
-  const errorElement = world.page.locator('[role="alert"], .error-message, .alert-danger').first();
-  await expect(errorElement).toBeVisible({ timeout: 5000 });
+  const error = await world.sdk.auth.getErrorMessage();
+  expect(error).not.toBeNull();
 });

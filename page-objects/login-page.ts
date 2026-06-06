@@ -19,7 +19,7 @@ export class LoginPage extends BasePage {
     super(page);
     this.auth = new AuthComponent(page);
     this.loginHeading = page.getByRole('heading', { name: /login/i });
-    this.loginButton = page.getByRole('button', { name: /login/i });
+    this.loginButton = page.getByRole('button', { name: /sign in/i });
     this.forgotPasswordLink = page.getByRole('link', { name: /forgot password/i });
     this.registerLink = page.getByRole('link', { name: /register/i });
     this.errorMessage = page.getByTestId('error-message');
@@ -31,8 +31,8 @@ export class LoginPage extends BasePage {
   }
 
   async fillLoginForm(params: { email: string; password: string }): Promise<void> {
-    await this.emailInput.fill(params.email);
-    await this.passwordInput.fill(params.password);
+    await this.auth.fillEmail(params.email);
+    await this.auth.fillPassword(params.password);
   }
 
   async submitForm(): Promise<void> {

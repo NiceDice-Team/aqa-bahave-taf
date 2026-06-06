@@ -51,7 +51,7 @@ class FixtureLoader {
     }
 
     const filePath = path.join(this.fixturesPath, filename);
-    
+
     if (!fs.existsSync(filePath)) {
       throw new Error(`Fixture file not found: ${filePath}`);
     }

@@ -19,14 +19,14 @@ export class HomePage extends BasePage {
     this.bestsellersLink = page.getByRole('link', { name: 'BESTSELLERS Shop now →' });
     this.saleLink = page.getByRole('link', { name: 'SALE Shop now →' });
     this.boardGamesLink = page.getByRole('link', { name: 'BOARD GAMES Shop now →' });
-    
+
     const firstCardContainer = page.locator('[data-testid="product-card"]').first();
     this.firstProductCard = new ProductCard(page, firstCardContainer);
   }
 
   async getProductCards(): Promise<ProductCard[]> {
     const containers = await this.page.locator('[data-testid="product-card"]').all();
-    return containers.map(container => new ProductCard(this.page, container));
+    return containers.map((container) => new ProductCard(this.page, container));
   }
 
   async navigateToBestsellers() {

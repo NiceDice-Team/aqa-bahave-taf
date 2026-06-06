@@ -7,13 +7,13 @@ Feature: Product Catalog Browsing
   Background:
     Given I am on the product catalog page
 
-  @smoke
+  @smoke @critical
   Scenario: Filter products by category
     When I filter by category "board-games"
     Then I should see products in the "board-games" category
     And I should see the category filter is active
 
-  @smoke
+  @smoke @critical
   Scenario: Sort products by price
     When I sort products by "price-asc"
     Then I should see products sorted by price in ascending order

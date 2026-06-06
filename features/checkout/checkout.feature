@@ -1,3 +1,4 @@
+@checkout
 Feature: Checkout
   The checkout feature allows customers to provide shipping and payment details
   As a customer
@@ -8,6 +9,7 @@ Feature: Checkout
     Given the user is logged in
     And the cart contains 2 products with subtotal "100"
 
+  @smoke @critical @ui
   Scenario: Successful checkout with shipping and payment
     Given the user opened the checkout page "/checkout"
     And the user entered valid shipping details

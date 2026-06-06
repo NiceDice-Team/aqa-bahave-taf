@@ -1,6 +1,6 @@
 export enum AdapterType {
   WEB = 'web',
-  API = 'api'
+  API = 'api',
 }
 
 export interface SDKOptions {
