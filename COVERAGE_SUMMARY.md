@@ -8,19 +8,20 @@
 
 ## 📊 Coverage Overview
 
-| Module | Features | Scenarios | Status |
-|--------|----------|-----------|--------|
-| **Users** | 3 | 20 | ✅ Complete |
-| **Cart** | 2 | 11 | ✅ Complete |
-| **Catalog** | 1 | 2 | ✅ Complete |
-| **Checkout** | 4 | 28 | ✅ Complete |
-| **TOTAL** | **10** | **61** | **✅ 100%** |
+| Module       | Features | Scenarios | Status      |
+| ------------ | -------- | --------- | ----------- |
+| **Users**    | 3        | 20        | ✅ Complete |
+| **Cart**     | 2        | 11        | ✅ Complete |
+| **Catalog**  | 1        | 2         | ✅ Complete |
+| **Checkout** | 4        | 28        | ✅ Complete |
+| **TOTAL**    | **10**   | **61**    | **✅ 100%** |
 
 ---
 
 ## 📁 Detailed Breakdown
 
 ### ✅ USERS MODULE (20 scenarios)
+
 Located in: `features/users/`
 
 1. **registration.feature** - 5 scenarios
@@ -50,6 +51,7 @@ Located in: `features/users/`
 ---
 
 ### ✅ CART MODULE (11 scenarios)
+
 Located in: `features/cart/`
 
 1. **shopping_cart.feature** - 9 scenarios
@@ -70,6 +72,7 @@ Located in: `features/cart/`
 ---
 
 ### ✅ CATALOG MODULE (2 scenarios)
+
 Located in: `features/catalog/`
 
 1. **catalog.feature** - 2 scenarios
@@ -82,6 +85,7 @@ Located in: `features/catalog/`
 ---
 
 ### ✅ CHECKOUT MODULE (28 scenarios) 🆕
+
 Located in: `features/checkout/`
 
 1. **checkout.feature** - 8 scenarios
@@ -126,15 +130,15 @@ Located in: `features/checkout/`
 
 All step definitions have been created and are executable:
 
-| File | Step Count | Purpose |
-|------|------------|---------|
-| `common.steps.ts` | 15+ | Shared steps (buttons, fields, errors) |
-| `registration.steps.ts` | 12 | User registration flows |
-| `login.steps.ts` | 8 | Login and OAuth |
-| `password-recovery.steps.ts` | 10 | Password reset flows |
-| `cart.steps.ts` | 19 | Cart management |
-| `catalog.steps.ts` | 7 | Product browsing |
-| `checkout.steps.ts` | 45+ 🆕 | Checkout, orders, payments, promo codes |
+| File                         | Step Count | Purpose                                 |
+| ---------------------------- | ---------- | --------------------------------------- |
+| `common.steps.ts`            | 15+        | Shared steps (buttons, fields, errors)  |
+| `registration.steps.ts`      | 12         | User registration flows                 |
+| `login.steps.ts`             | 8          | Login and OAuth                         |
+| `password-recovery.steps.ts` | 10         | Password reset flows                    |
+| `cart.steps.ts`              | 19         | Cart management                         |
+| `catalog.steps.ts`           | 7          | Product browsing                        |
+| `checkout.steps.ts`          | 45+ 🆕     | Checkout, orders, payments, promo codes |
 
 **Total Step Definitions:** ~115+ covering all 61 scenarios
 
@@ -143,6 +147,7 @@ All step definitions have been created and are executable:
 ## 📈 Progress Timeline
 
 ### Phase 1: User Tests (Completed)
+
 - ✅ Fixed syntax errors in step files
 - ✅ Corrected field selectors (firstname, lastname vs camelCase)
 - ✅ Fixed Privacy Policy checkbox (button component)
@@ -150,6 +155,7 @@ All step definitions have been created and are executable:
 - ✅ All 20 user scenarios executable
 
 ### Phase 2: Cart & Catalog (Completed)
+
 - ✅ Enabled cart features (2 files, 11 scenarios)
 - ✅ Created 19 cart step definitions
 - ✅ Enabled catalog features (1 file, 2 scenarios)
@@ -157,7 +163,8 @@ All step definitions have been created and are executable:
 - ✅ Coverage: 75% (3/4 modules)
 
 ### Phase 3: Checkout Module (Completed) 🎯
-- ✅ Moved 4 checkout features from _disabled to active
+
+- ✅ Moved 4 checkout features from \_disabled to active
 - ✅ Created comprehensive checkout.steps.ts (45+ steps)
 - ✅ Generated 4 test spec files
 - ✅ Coverage: **100% (4/4 modules)**
@@ -188,7 +195,9 @@ npx playwright test --list
 ```
 
 ### Generated Test Files
+
 All feature files have corresponding spec files in `.features-gen/`:
+
 ```
 .features-gen/features/
 ├── users/
@@ -224,12 +233,14 @@ All feature files have corresponding spec files in `.features-gen/`:
 ## 📝 Notes
 
 ### Known Issues
+
 - Some tests may fail due to application behavior (missing error messages, timing issues)
 - Field selectors are based on inspection but may need adjustment
 - Payment gateway tests use placeholder implementations (would need mocking)
 - API tests (orders.feature) require backend integration
 
 ### Next Steps (Optional)
+
 1. Run full test suite to identify failing scenarios
 2. Fix application-related failures (missing error messages, etc.)
 3. Add API mocking for payment and order tests
@@ -242,6 +253,7 @@ All feature files have corresponding spec files in `.features-gen/`:
 ## 🎉 Achievement
 
 **100% test coverage achieved!** All major application features now have comprehensive BDD test scenarios:
+
 - ✅ User authentication and registration
 - ✅ Shopping cart management
 - ✅ Product catalog browsing

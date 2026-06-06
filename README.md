@@ -40,14 +40,14 @@ Copy `.env.example` to `.env` and fill in the values:
 cp .env.example .env
 ```
 
-| Variable | Description | Example |
-|---|---|---|
-| `API_BASE_URL` | Backend API base URL | `https://bgshop.work.gd` |
-| `FRONTEND_BASE_URL` | Frontend base URL | `https://team-challange-front.vercel.app` |
-| `TEST_USER_EMAIL` | Test account email | `user@example.com` |
-| `TEST_USER_PASSWORD` | Test account password | `secret123` |
-| `HEADLESS` | Run browser headless | `true` / `false` |
-| `SLOW_MO` | Slow down actions (ms) | `0` |
+| Variable             | Description            | Example                                   |
+| -------------------- | ---------------------- | ----------------------------------------- |
+| `API_BASE_URL`       | Backend API base URL   | `https://bgshop.work.gd`                  |
+| `FRONTEND_BASE_URL`  | Frontend base URL      | `https://team-challange-front.vercel.app` |
+| `TEST_USER_EMAIL`    | Test account email     | `user@example.com`                        |
+| `TEST_USER_PASSWORD` | Test account password  | `secret123`                               |
+| `HEADLESS`           | Run browser headless   | `true` / `false`                          |
+| `SLOW_MO`            | Slow down actions (ms) | `0`                                       |
 
 ## Project Structure
 
@@ -89,15 +89,16 @@ The framework enforces strict layering to keep tests readable and maintainable:
 Steps → SDK → Adapter → PageObject → Component
 ```
 
-| Layer | Location | Responsibility |
-|---|---|---|
-| **Steps** | `steps/*.ts` | BDD glue only — calls SDK, asserts with `expect` |
-| **SDK** | `sdk/*.ts` | Domain façade — delegates to adapter |
-| **Adapter** | `adapters/*.ts` | UI (Playwright) or API (`page.request`) calls |
-| **PageObject** | `page-objects/*.ts` | Locators and actions for one page |
-| **Component** | `page-objects/components/*.ts` | Reusable UI building blocks |
+| Layer          | Location                       | Responsibility                                   |
+| -------------- | ------------------------------ | ------------------------------------------------ |
+| **Steps**      | `steps/*.ts`                   | BDD glue only — calls SDK, asserts with `expect` |
+| **SDK**        | `sdk/*.ts`                     | Domain façade — delegates to adapter             |
+| **Adapter**    | `adapters/*.ts`                | UI (Playwright) or API (`page.request`) calls    |
+| **PageObject** | `page-objects/*.ts`            | Locators and actions for one page                |
+| **Component**  | `page-objects/components/*.ts` | Reusable UI building blocks                      |
 
 **Rules:**
+
 - Steps must NOT use raw Playwright API (`page.locator`, `page.click`, etc.)
 - Adapters must NOT contain locator strings — delegate to PageObjects
 - PageObjects and Components are the ONLY place where `page.locator()` is used
@@ -138,17 +139,17 @@ npm run report:open
 
 ### Smoke Test Scenarios (13 total)
 
-| Tag | Scenario |
-|---|---|
-| `@cart @smoke @api` | Adding / removing a product to cart |
-| `@cart @smoke @ui` | Add / remove product from cart UI |
-| `@catalog @smoke` | Filter by category, sort by price |
-| `@checkout @smoke @ui` | Successful checkout with payment |
-| `@orders @smoke @ui` | Place an order successfully |
-| `@orders @smoke @api` | View own orders via API |
-| `@payments @smoke @api` | Pay with LiqPay / credit card |
-| `@login @smoke @ui` | Successful login |
-| `@registration @smoke @ui` | Successful registration |
+| Tag                        | Scenario                            |
+| -------------------------- | ----------------------------------- |
+| `@cart @smoke @api`        | Adding / removing a product to cart |
+| `@cart @smoke @ui`         | Add / remove product from cart UI   |
+| `@catalog @smoke`          | Filter by category, sort by price   |
+| `@checkout @smoke @ui`     | Successful checkout with payment    |
+| `@orders @smoke @ui`       | Place an order successfully         |
+| `@orders @smoke @api`      | View own orders via API             |
+| `@payments @smoke @api`    | Pay with LiqPay / credit card       |
+| `@login @smoke @ui`        | Successful login                    |
+| `@registration @smoke @ui` | Successful registration             |
 
 ## Generating API Endpoints
 

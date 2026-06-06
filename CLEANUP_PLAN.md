@@ -7,8 +7,10 @@
 
 ## 🗑️ Items to Remove
 
-### 1. Empty _disabled Feature Folders
+### 1. Empty \_disabled Feature Folders
+
 **Location:** `features/_disabled/`
+
 - `features/_disabled/cart/` (empty)
 - `features/_disabled/catalog/` (empty)
 - `features/_disabled/checkout/` (empty)
@@ -20,11 +22,14 @@
 ---
 
 ### 2. Outdated Planning Documents
+
 **Files:**
+
 - `DEVELOPMENT_PLAN.md` (454 lines)
 - `IMPLEMENTATION_PLAN.md` (2,231 lines)
 
 **Reason:** These were initial planning documents created before implementation. Now outdated and superseded by:
+
 - `COVERAGE_SUMMARY.md` - Current and accurate test coverage
 - Actual implemented code
 - Feature files themselves
@@ -36,18 +41,22 @@
 ---
 
 ### 3. Misplaced launch.json
+
 **Location:** `/launch.json` (root directory)
 
 **Reason:** VS Code launch configurations should be in `.vscode/launch.json`, not in project root.
 
-**Action:** 
+**Action:**
+
 - Move to `.vscode/launch.json` if .vscode folder exists, OR
 - Remove if not used for debugging
 
 ---
 
 ### 4. Test Output Artifacts (Optional)
+
 **Directories:**
+
 - `reports/` (628KB)
 - `test-results/` (4KB)
 
@@ -60,6 +69,7 @@
 ---
 
 ### 5. Unused test-config.spec.ts (Optional Review)
+
 **Location:** `tests/test-config.spec.ts`
 
 **Purpose:** Basic configuration validation tests
@@ -71,17 +81,20 @@
 ## ✅ Items to Keep
 
 ### Essential Configuration
+
 - `.env` and `.env.example` - Environment configuration
 - `playwright.config.ts` - Test runner configuration
 - `tsconfig.json` - TypeScript configuration
 - `package.json` / `package-lock.json` - Dependencies
 
 ### Documentation
+
 - `README.md` - Project overview
 - `COVERAGE_SUMMARY.md` - Current test coverage (KEEP!)
 - `LICENSE` - Project license
 
 ### Source Code
+
 - `steps/` - All step definitions (7 files) ✅
 - `page-objects/` - Page Object Models ✅
 - `features/` - Active feature files (10 files) ✅
@@ -96,6 +109,7 @@
 - `support/` - Test support (world.ts) ✅
 
 ### Generated Files
+
 - `.features-gen/` - Auto-generated test specs (regenerated on build)
 
 ---
@@ -103,6 +117,7 @@
 ## 📋 Cleanup Commands
 
 ### Safe Cleanup (Recommended)
+
 ```bash
 # 1. Remove empty _disabled folders
 rm -rf features/_disabled/
@@ -123,6 +138,7 @@ git status
 ```
 
 ### Verify After Cleanup
+
 ```bash
 # Regenerate tests to ensure nothing broke
 npx bddgen test
@@ -139,6 +155,7 @@ find features -name "*.feature" -type f | wc -l
 ## 🎯 Expected Results
 
 ### File Structure After Cleanup
+
 ```
 aqa-bahave-taf/
 ├── .env
@@ -172,6 +189,7 @@ aqa-bahave-taf/
 ```
 
 ### Benefits
+
 - ✅ Cleaner repository
 - ✅ No outdated documentation
 - ✅ No empty folders
@@ -212,7 +230,8 @@ npx bddgen test
 
 ## Summary
 
-**Total files to remove:** 
+**Total files to remove:**
+
 - 3 empty folders
 - 2 large outdated planning docs (~2,700 lines)
 - 1 misplaced config file
