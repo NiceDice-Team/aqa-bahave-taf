@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { test, expect } from '@playwright/test';
 import { config } from '../config/environment';
 import { getUser } from '../utils/fixture-loader';

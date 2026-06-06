@@ -39,7 +39,7 @@ Then('the system shows message {string}', async ({ world }, message: string) => 
   expect(msg).toContain(message);
 });
 
-Then('no email is sent', async ({ world }) => {
+Then('no email is sent', async ({ world: _world }) => {
   // Security: no error means no reveal of email existence
 });
 

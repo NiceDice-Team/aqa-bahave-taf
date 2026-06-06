@@ -1,4 +1,4 @@
-import { ICheckout, ShippingDetails, OrderStatus, PaymentDetails } from '../interfaces';
+import { ICheckout, ShippingDetails, PaymentDetails } from '../interfaces';
 
 export class CheckoutSDK implements ICheckout {
   constructor(private adapter: ICheckout) {}

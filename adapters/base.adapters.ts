@@ -55,6 +55,7 @@ export abstract class ApiAdapter {
     }
 
     if (config.enableApiLogging) {
+      // eslint-disable-next-line no-console
       console.log(`API ${method.toUpperCase()} ${absoluteUrl}`);
     }
 
@@ -65,6 +66,7 @@ export abstract class ApiAdapter {
     });
 
     if (config.enableApiLogging) {
+      // eslint-disable-next-line no-console
       console.log(`  → ${response.status()} ${response.statusText()}`);
     }
 

@@ -32,6 +32,7 @@ export class CustomWorld {
 
   public readonly config: EnvironmentConfig = config;
   public readonly fixtures = fixtureLoader;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public testData: Record<string, any> = {};
 
   constructor(public readonly page: Page) {}
@@ -102,7 +103,7 @@ export class CustomWorld {
   }
 }
 
-export const customWorldFixture = async ({ page }: { page: Page }, use: any) => {
+export const customWorldFixture = async ({ page }: { page: Page }, use: (world: CustomWorld) => Promise<void>) => {
   const world = new CustomWorld(page);
   await use(world);
 };

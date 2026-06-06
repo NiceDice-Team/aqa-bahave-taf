@@ -44,7 +44,7 @@ export class CatalogPage extends BasePage {
     await this.waitForPageLoad();
   }
 
-  async filterByPriceRange(min: number, max: number): Promise<void> {
+  async filterByPriceRange(_min: number, _max: number): Promise<void> {
     await this.priceFilter.click();
     // Actual slider implementation is app-specific
   }

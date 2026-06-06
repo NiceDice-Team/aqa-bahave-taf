@@ -121,7 +121,7 @@ class ConfigValidator {
       frontendTimeout: this.parseNumber(process.env.FRONTEND_TIMEOUT, 10000),
       headless: this.parseBoolean(process.env.HEADLESS, false),
       slowMo: this.parseNumber(process.env.SLOW_MO, 0),
-      browser: (process.env.BROWSER as any) || 'chromium',
+      browser: (process.env.BROWSER as 'chromium' | 'firefox' | 'webkit') || 'chromium',
       parallelWorkers: this.parseNumber(process.env.PARALLEL_WORKERS, 5),
       testUser: {
         email: process.env.TEST_USER_EMAIL || '',
@@ -153,9 +153,11 @@ export const getFrontendUrl = (path: string): string => {
 };
 
 // Log configuration on load (excluding sensitive data)
+/* eslint-disable no-console */
 console.log('🔧 Environment Configuration Loaded:');
 console.log(`   Environment: ${config.nodeEnv}`);
 console.log(`   API Base URL: ${config.apiBaseUrl}`);
 console.log(`   Frontend Base URL: ${config.frontendBaseUrl}`);
 console.log(`   Browser: ${config.browser} (headless: ${config.headless})`);
 console.log(`   Test User: ${config.testUser.email}`);
+/* eslint-enable no-console */

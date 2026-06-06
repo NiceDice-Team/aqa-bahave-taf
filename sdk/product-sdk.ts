@@ -1,4 +1,4 @@
-import { IProduct, ProductDetails, ProductFilter, ReviewData } from '../interfaces/product.interface';
+import { IProduct, ProductFilter, ReviewData } from '../interfaces/product.interface';
 
 export class ProductSDK implements IProduct {
   constructor(private adapter: IProduct) {}

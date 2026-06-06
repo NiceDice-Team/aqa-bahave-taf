@@ -5,6 +5,7 @@
  * Usage:
  *   npx ts-node scripts/generate-endpoints.ts
  */
+/* eslint-disable no-console */
 import https from 'https';
 import http from 'http';
 import * as fs from 'fs';

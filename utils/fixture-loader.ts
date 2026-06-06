@@ -36,6 +36,7 @@ export interface PromoCodeFixture {
 
 class FixtureLoader {
   private fixturesPath: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private cache: Map<string, any> = new Map();
 
   constructor() {

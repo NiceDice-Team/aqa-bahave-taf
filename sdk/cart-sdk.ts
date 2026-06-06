@@ -1,4 +1,4 @@
-import { ICart, CartItem } from '../interfaces/cart.interface';
+import { ICart } from '../interfaces/cart.interface';
 
 export class CartSDK implements ICart {
   constructor(private adapter: ICart) {}
