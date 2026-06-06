@@ -50,7 +50,13 @@ jobs:
         id: count
         if: always()
         run: |
-          ISSUES=$(node -e "try{const r=require('./hadolint-report.json');process.stdout.write(String(Array.isArray(r)?r.length:0))}catch{process.stdout.write('0')}")
+          ISSUES=$(node -e "
+            try {
+              const raw = process.env.HADOLINT_RESULTS || '[]';
+              const r = JSON.parse(raw);
+              process.stdout.write(String(Array.isArray(r) ? r.length : 0));
+            } catch { process.stdout.write('0'); }
+          ")
           echo "issues=$ISSUES" >> "$GITHUB_OUTPUT"
 
       - name: Upload Hadolint report
@@ -83,7 +89,7 @@ jobs:
 
       # SARIF output → uploads to GitHub Security tab (requires GHAS or public repo)
       - name: Trivy image scan – SARIF
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: 'aqa-image:${{ github.sha }}'
           format: sarif
@@ -101,7 +107,7 @@ jobs:
 
       # JSON output → parsed for counts and stored as artifact
       - name: Trivy image scan – JSON report
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: 'aqa-image:${{ github.sha }}'
           format: json
@@ -159,10 +165,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies (generate lock file snapshot)
@@ -170,7 +176,7 @@ jobs:
 
       # SARIF output → GitHub Security tab
       - name: Trivy filesystem scan – SARIF
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: fs
           scan-ref: .
@@ -189,7 +195,7 @@ jobs:
 
       # JSON output → counts + artifact
       - name: Trivy filesystem scan – JSON report
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: fs
           scan-ref: .
