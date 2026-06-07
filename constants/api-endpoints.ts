@@ -89,8 +89,8 @@ export const API_ENDPOINTS = {
   POST_API_PRODUCTS_PRODUCT_ID_IMAGES: (product_id: string | number) => `/api/products/${product_id}/images/`,
 
   // REVIEWS
-  DELETE_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS_REVIEW_ID: (product_id: string | number) =>
-    `/api/products/products/${product_id}/reviews/{review_id}/`,
+  DELETE_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS_REVIEW_ID: (product_id: string | number, review_id: string | number) =>
+    `/api/products/products/${product_id}/reviews/${review_id}/`, 
   DELETE_API_REVIEWS_ID: (id: string | number) => `/api/reviews/${id}/`,
   GET_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS: (product_id: string | number) =>
     `/api/products/products/${product_id}/reviews/`,
