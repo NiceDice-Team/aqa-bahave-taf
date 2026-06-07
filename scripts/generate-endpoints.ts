@@ -60,13 +60,14 @@ function groupByTag(schema: OpenApiSchema): Record<string, Record<string, string
 
       if (!groups[tag]) groups[tag] = {};
       // Store as function if path has params, else plain string
-      const hasParam = urlPath.includes('{');
-      if (hasParam) {
-        const paramName = urlPath.match(/\{(\w+)\}/)?.[1] ?? 'id';
-        groups[tag][name] =
-          `(${paramName}: string | number) => \`${urlPath.replace(/\{(\w+)\}/, `\${${paramName}}`)}\``;
+      const params = [...urlPath.matchAll(/\{(\w+)\}/g)].map((m) => m[1]);
+      if (params.length) {
+        const signature = params.map((p) => `${p}: string | number`).join(', ');
+        const templatedPath = params.reduce((acc, p) => acc.replaceAll(`{${p}}`, `\${${p}}`), urlPath);
+        groups[tag][name] = `(${signature}) => \`${templatedPath}\``;
       } else {
         groups[tag][name] = `'${urlPath}'`;
+      }
       }
     }
   }
