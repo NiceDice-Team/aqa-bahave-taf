@@ -65,7 +65,6 @@ function groupByTag(schema: OpenApiSchema): Record<string, Record<string, string
       } else {
         groups[tag][name] = `'${urlPath}'`;
       }
-      }
     }
   }
   return groups;
