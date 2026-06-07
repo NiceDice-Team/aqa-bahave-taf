@@ -111,7 +111,8 @@ export const API_ENDPOINTS = {
   // USERS
   DELETE_API_USERS_ID: (id: string | number) => `/api/users/${id}/`,
   GET_API_USERS: '/api/users/',
-  GET_API_USERS_ACTIVATE_UIDB64_TOKEN: (uidb64: string | number) => `/api/users/activate/${uidb64}/{token}/`,
+  GET_API_USERS_ACTIVATE_UIDB64_TOKEN: (uidb64: string | number, token: string | number) =>
+    `/api/users/activate/${uidb64}/${token}/`, 
   GET_API_USERS_AUTH_USER_ID: '/api/users/auth/user-id/',
   GET_API_USERS_ID: (id: string | number) => `/api/users/${id}/`,
   GET_API_USERS_RESET_PASSWORD: '/api/users/reset-password/',
