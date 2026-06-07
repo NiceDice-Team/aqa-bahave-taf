@@ -26,10 +26,11 @@ export class CartWebAdapter extends WebAdapter implements ICart {
   // ── High-level actions ──────────────────────────────────────────────
 
   async addToCart(productId: string, quantity: number): Promise<void> {
-    await this.navigateToProductByName(productId);
+    await this.navigateTo(ENDPOINTS.PRODUCTS.DETAILS(productId));
+    await this.page.waitForLoadState('networkidle');
     const cp = this.getCartPage();
     if (quantity > 1) await cp.setQuantity(quantity.toString());
-    await cp.addToCart(productId);
+    await this.clickAddToCart();
   }
 
   async updateQuantity(productId: string, quantity: number): Promise<void> {

@@ -159,5 +159,5 @@ console.log(`   Environment: ${config.nodeEnv}`);
 console.log(`   API Base URL: ${config.apiBaseUrl}`);
 console.log(`   Frontend Base URL: ${config.frontendBaseUrl}`);
 console.log(`   Browser: ${config.browser} (headless: ${config.headless})`);
-console.log(`   Test User: ${config.testUser.email}`);
+console.log(`   Test User Configured: ${config.testUser.email ? 'yes' : 'no'}`);
 /* eslint-enable no-console */

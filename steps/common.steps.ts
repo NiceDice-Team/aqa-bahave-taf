@@ -27,6 +27,14 @@ Before({ tags: '@contract-check' }, async () => {
   }
 });
 
+Before({ tags: '@api' }, async ({ world }) => {
+  world.useAdapter('api');
+});
+
+Before({ tags: 'not @api' }, async ({ world }) => {
+  world.useAdapter('web');
+});
+
 When('the user clicked the {string} button', async ({ world }, buttonText: string) => {
   await world.sdk.auth.clickButton(buttonText);
 });

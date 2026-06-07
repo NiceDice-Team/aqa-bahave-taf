@@ -17,12 +17,12 @@ import { ProductApiAdapter } from '../adapters/product.api.adapter';
 import { CheckoutWebAdapter } from '../adapters/checkout.web.adapter';
 import { CheckoutApiAdapter } from '../adapters/checkout.api.adapter';
 
-export type AdapterType = 'web' | 'api' | 'both';
+export type AdapterType = 'web' | 'api';
 
 export class CustomWorld {
   private _cartPage: CartPage | undefined;
   private _registrationPage: RegisterPage | undefined;
-  private _adapterType: AdapterType = 'both';
+  private _adapterType: AdapterType = 'web';
   private _ui: BasePage | undefined;
 
   private _auth: AuthSDK | undefined;

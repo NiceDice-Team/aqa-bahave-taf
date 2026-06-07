@@ -43,10 +43,26 @@ export class ProductWebAdapter extends WebAdapter implements IProduct {
   }
 
   async navigateToOutOfStockProduct(): Promise<void> {
-    // No truly out-of-stock products exist in the current dataset.
-    // Navigate to a non-existent product so the page shows an error state.
-    await this.navigateTo(ENDPOINTS.PRODUCTS.DETAILS('out-of-stock-product'));
-    this.lastProductSlug = 'out-of-stock-product';
+    await this.getCatalogPage().navigate();
+    const cards = this.page.locator('[data-testid="product-card"], .product-card, article');
+    const count = await cards.count();
+    let productLink = this.page.locator('a[href*="/product/"]').first();
+
+    for (let i = 0; i < count; i++) {
+      const card = cards.nth(i);
+      const hasOutOfStockText = /out\s*of\s*stock|sold\s*out/i.test((await card.textContent()) ?? '');
+      const hasDisabledButton = (await card.locator('button:disabled, [aria-disabled="true"]').count()) > 0;
+      if (hasOutOfStockText || hasDisabledButton) {
+        productLink = card.locator('a[href*="/product/"]').first();
+        break;
+      }
+    }
+
+    await productLink.waitFor({ state: 'visible', timeout: 15000 });
+    const href = await productLink.getAttribute('href');
+    await productLink.click();
+    await this.page.waitForLoadState('networkidle');
+    this.lastProductSlug = href?.split('/product/')[1]?.replace(/\/$/, '') ?? '';
   }
 
   // ── Catalog interactions ─────────────────────────────────────────────────
