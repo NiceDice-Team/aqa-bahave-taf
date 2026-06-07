@@ -1,7 +1,10 @@
 /**
  * Fetches the OpenAPI schema from the staging API and generates a typed
- * endpoints constant file at constants/endpoints.ts.
+ * endpoints constant file at constants/api-endpoints.ts.
  *
+ * Usage:
+ *   npx ts-node scripts/generate-endpoints.ts
+ */
  * Usage:
  *   npx ts-node scripts/generate-endpoints.ts
  */
