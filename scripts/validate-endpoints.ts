@@ -108,7 +108,7 @@ function parseAdapterEndpoints(filePath: string): { endpoints: string[]; rawRefs
 
   // 3. Match inline endpoint strings (hard-coded paths)
   //    e.g., '/api/auth/guest', '/api/cart/items'
-  const inlinePattern = /'(\/[a-z0-9\/_\-{}${}]*)'|"(\/[a-z0-9\/_\-{}${}]*)"|`(\/[a-z0-9\/_\-${}]*)`/g;
+  const inlinePattern = /'(\/[a-z0-9/_\-${}]*)'|"(\/[a-z0-9/_\-${}]*)"|`(\/[a-z0-9/_\-${}]*)`/g;
 
   while ((match = inlinePattern.exec(content)) !== null) {
     const inlinePath = match[1] || match[2] || match[3];
