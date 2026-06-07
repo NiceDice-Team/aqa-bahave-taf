@@ -138,10 +138,10 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-# GitHub Actions files
-.github/workflows/*.yml
-.github/workflows/*.yaml
-.github/agents/*.md
+# # GitHub Actions files
+# .github/workflows/*.yml
+# .github/workflows/*.yaml
+# .github/agents/*.md
 
 # VSCode settings (all personal)
 .vscode/

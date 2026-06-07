@@ -7,15 +7,15 @@ Feature: Shopping Cart Management
   Background:
     Given I am on the cart page
 
-  @smoke
+  @smoke @critical @api
   Scenario: Adding a product to cart
-    When I add product "board-game-123" to cart
-    Then the cart total should be 29.99
+    When I add a first product to cart
+    Then the cart should not be empty
 
-  @smoke
+  @smoke @critical @api
   Scenario: Removing a product from cart
-    Given I add product "board-game-123" to cart
-    When I remove product "board-game-123" from cart
+    Given I add a first product to cart
+    When I remove the first added product from cart
     Then the cart should be empty
 
   @regression

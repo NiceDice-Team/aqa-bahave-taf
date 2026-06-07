@@ -1,67 +1,62 @@
-import { When, Then } from './bdd';
+import { When, Then, Before } from './bdd';
 import { expect } from '@playwright/test';
+import { contractMonitor } from '../helpers/contract-monitor';
 
-// Generic button click - handles most buttons
-When('the user clicked the {string} button', async ({ world }, buttonText: string) => {
-  // Special mappings for common button texts
-  const buttonMap: Record<string, string> = {
-    'Create Account': 'REGISTER',
-    'Login': 'SIGN IN',
-    'Sign In': 'SIGN IN',
-    'Reset Password': 'RESET PASSWORD',
-    'Confirm': 'CONFIRM',
-    'Place Order': 'PLACE ORDER',
-    'Cancel Order': 'CANCEL ORDER',
-    'Pay': 'PAY',
-    'Apply': 'APPLY',
-  };
-  
-  const targetText = buttonMap[buttonText] || buttonText;
-  
-  const selectors = [
-    `button:has-text("${targetText}")`,
-    `button[type="submit"]:has-text("${targetText}")`,
-    `input[type="submit"][value="${targetText}"]`,
-    `a:has-text("${targetText}")`,
-  ];
-  
-  for (const selector of selectors) {
-    const element = world.page.locator(selector).first();
-    if (await element.count() > 0) {
-      // Wait for button to be enabled before clicking
-      await element.waitFor({ state: 'visible', timeout: 15000 });
-      await element.click({ force: false, timeout: 15000 });
-      return;
+// ── Optional runtime contract validation ──────────────────────────────────────
+// Set VALIDATE_CONTRACT=true in .env or CI environment to enable.
+// Logs warnings on drift but never fails tests — it's informational only.
+Before({ tags: '@contract-check' }, async () => {
+  if (process.env.VALIDATE_CONTRACT !== 'true') return;
+  try {
+    const diff = await contractMonitor.compareSchemas();
+    if (!diff.matches) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `\n⚠️  API CONTRACT DRIFT DETECTED (${diff.checkedAt})\n` +
+          `   Added in live (not yet generated): ${diff.added.length} endpoint(s)\n` +
+          (diff.added.length ? `   ${diff.added.slice(0, 5).join(', ')}\n` : '') +
+          `   Removed from live (stale in generated): ${diff.removed.length} endpoint(s)\n` +
+          (diff.removed.length ? `   ${diff.removed.slice(0, 5).join(', ')}\n` : '') +
+          `   Run: npm run generate:endpoints to sync\n`
+      );
     }
+  } catch (err) {
+    // Don't block tests if monitor is unavailable (e.g., offline, no API access)
+    // eslint-disable-next-line no-console
+    console.warn(`⚠️  Contract monitor unavailable: ${String(err)}`);
   }
-  
-  // Fallback: click any clickable element with the text
-  await world.page.getByRole('button', { name: targetText }).click();
 });
 
-// Generic form inputs
+Before({ tags: '@api' }, async ({ world }) => {
+  world.useAdapter('api');
+});
+
+Before({ tags: 'not @api' }, async ({ world }) => {
+  world.useAdapter('web');
+});
+
+When('the user clicked the {string} button', async ({ world }, buttonText: string) => {
+  await world.sdk.auth.clickButton(buttonText);
+});
+
 When('the user entered Email {string}', async ({ world }, email: string) => {
-  const emailInput = world.page.locator('input[name="email"], input[id="email"]');
-  await emailInput.fill(email);
+  await world.sdk.auth.enterEmail(email);
 });
 
 When('the user entered Password {string}', async ({ world }, password: string) => {
-  const passwordInput = world.page.locator('input[name="password"], input[id="password"]');
-  await passwordInput.fill(password);
+  await world.sdk.auth.enterPassword(password);
 });
 
 When('the user entered First Name {string}', async ({ world }, firstName: string) => {
-  const firstNameInput = world.page.locator('input[name="firstname"], input[id="firstname"]');
-  await firstNameInput.fill(firstName);
+  await world.sdk.auth.enterFirstName(firstName);
 });
 
 When('the user entered Last Name {string}', async ({ world }, lastName: string) => {
-  const lastNameInput = world.page.locator('input[name="lastname"], input[id="lastname"]');
-  await lastNameInput.fill(lastName);
+  await world.sdk.auth.enterLastName(lastName);
 });
 
-// Generic error message check
 Then('the system shows an error {string}', async ({ world }, errorMessage: string) => {
-  const errorElement = world.page.locator('[role="alert"], .error-message, .alert-danger, .error, .invalid-feedback').first();
-  await expect(errorElement).toContainText(errorMessage, { timeout: 10000 });
+  const msg = await world.sdk.auth.getErrorMessage();
+  const shown = msg !== null && msg.toLowerCase().includes(errorMessage.toLowerCase());
+  expect(shown).toBe(true);
 });

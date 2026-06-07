@@ -1,0 +1,398 @@
+name: BDD Tests – Smoke · Critical · Regression
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+  # Allow manual runs with suite selection
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Test suite to run'
+        required: false
+        default: 'all'
+        type: choice
+        options: [smoke, critical, regression, all]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Required secrets   : TEST_USER_EMAIL, TEST_USER_PASSWORD
+# Required variables : API_BASE_URL, FRONTEND_BASE_URL
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Shared env referenced by every test job ──────────────────────────────────
+env:
+  CI: 'true'
+  NODE_ENV: staging
+  HEADLESS: 'true'
+  API_BASE_URL: ${{ vars.API_BASE_URL }}
+  FRONTEND_BASE_URL: ${{ vars.FRONTEND_BASE_URL }}
+  TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+  TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+jobs:
+
+  # ── 1. Smoke suite ───────────────────────────────────────────────────────────
+  smoke:
+    name: 🚬 Smoke Tests
+    runs-on: ubuntu-latest
+    # Skip when manual trigger requests a different suite
+    if: >
+      github.event_name != 'workflow_dispatch' ||
+      inputs.suite == 'smoke' ||
+      inputs.suite == 'all'
+    outputs:
+      status:   ${{ steps.run.outcome }}
+      total:    ${{ steps.stats.outputs.total }}
+      passed:   ${{ steps.stats.outputs.passed }}
+      failed:   ${{ steps.stats.outputs.failed }}
+      skipped:  ${{ steps.stats.outputs.skipped }}
+      duration: ${{ steps.stats.outputs.duration }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers (Chromium)
+        run: npx playwright install --with-deps chromium
+
+      - name: Generate BDD test files
+        run: npm run test:generate
+
+      - name: Run Smoke tests
+        id: run
+        continue-on-error: true
+        run: npx playwright test --grep @smoke
+
+      - name: Parse statistics
+        id: stats
+        if: always()
+        run: |
+          FILE="reports/results.json"
+          if [ -f "$FILE" ]; then
+            node -e "
+              const r = require('./reports/results.json');
+              const total   = r.stats.expected   ?? 0;
+              const failed  = r.stats.unexpected ?? 0;
+              const skipped = r.stats.skipped    ?? 0;
+              const passed  = Math.max(0, total - failed - skipped);
+              const dur = Math.round((r.stats.duration ?? 0) / 1000);
+              const m = Math.floor(dur / 60), s = dur % 60;
+              process.stdout.write('total='    + total   + '\n');
+              process.stdout.write('passed='   + passed  + '\n');
+              process.stdout.write('failed='   + failed  + '\n');
+              process.stdout.write('skipped='  + skipped + '\n');
+              process.stdout.write('duration=' + (m ? m + 'm ' : '') + s + 's\n');
+            " >> "$GITHUB_OUTPUT"
+          else
+            printf 'total=0\npassed=0\nfailed=0\nskipped=0\nduration=N/A\n' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload Smoke report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-smoke
+          path: |
+            reports/html/
+            reports/results.json
+            test-results/
+          retention-days: 30
+
+  # ── 2. Critical suite ────────────────────────────────────────────────────────
+  critical:
+    name: 🔴 Critical Tests
+    runs-on: ubuntu-latest
+    needs: smoke
+    # Only run when smoke passed, and when suite selection allows it
+    if: >
+      needs.smoke.result == 'success' &&
+      (github.event_name != 'workflow_dispatch' ||
+       inputs.suite == 'critical' ||
+       inputs.suite == 'all')
+    outputs:
+      status:   ${{ steps.run.outcome }}
+      total:    ${{ steps.stats.outputs.total }}
+      passed:   ${{ steps.stats.outputs.passed }}
+      failed:   ${{ steps.stats.outputs.failed }}
+      skipped:  ${{ steps.stats.outputs.skipped }}
+      duration: ${{ steps.stats.outputs.duration }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers (Chromium)
+        run: npx playwright install --with-deps chromium
+
+      - name: Generate BDD test files
+        run: npm run test:generate
+
+      - name: Run Critical tests
+        id: run
+        continue-on-error: true
+        run: npx playwright test --grep @critical
+
+      - name: Parse statistics
+        id: stats
+        if: always()
+        run: |
+          FILE="reports/results.json"
+          if [ -f "$FILE" ]; then
+            node -e "
+              const r = require('./reports/results.json');
+              const total   = r.stats.expected   ?? 0;
+              const failed  = r.stats.unexpected ?? 0;
+              const skipped = r.stats.skipped    ?? 0;
+              const passed  = Math.max(0, total - failed - skipped);
+              const dur = Math.round((r.stats.duration ?? 0) / 1000);
+              const m = Math.floor(dur / 60), s = dur % 60;
+              process.stdout.write('total='    + total   + '\n');
+              process.stdout.write('passed='   + passed  + '\n');
+              process.stdout.write('failed='   + failed  + '\n');
+              process.stdout.write('skipped='  + skipped + '\n');
+              process.stdout.write('duration=' + (m ? m + 'm ' : '') + s + 's\n');
+            " >> "$GITHUB_OUTPUT"
+          else
+            printf 'total=0\npassed=0\nfailed=0\nskipped=0\nduration=N/A\n' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload Critical report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-critical
+          path: |
+            reports/html/
+            reports/results.json
+            test-results/
+          retention-days: 30
+
+  # ── 3. Regression suite ──────────────────────────────────────────────────────
+  regression:
+    name: 🔁 Regression Tests
+    runs-on: ubuntu-latest
+    needs: [smoke, critical]
+    # Only run when both smoke and critical passed.
+    # On PRs: only when manually dispatched with regression/all.
+    # On push to main/develop: always (if gates pass).
+    if: >
+      needs.smoke.result == 'success' &&
+      needs.critical.result == 'success' &&
+      ((github.event_name == 'push') ||
+       (github.event_name == 'workflow_dispatch' &&
+        (inputs.suite == 'regression' || inputs.suite == 'all')))
+    outputs:
+      status:   ${{ steps.run.outcome }}
+      total:    ${{ steps.stats.outputs.total }}
+      passed:   ${{ steps.stats.outputs.passed }}
+      failed:   ${{ steps.stats.outputs.failed }}
+      skipped:  ${{ steps.stats.outputs.skipped }}
+      duration: ${{ steps.stats.outputs.duration }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers (Chromium)
+        run: npx playwright install --with-deps chromium
+
+      - name: Generate BDD test files
+        run: npm run test:generate
+
+      - name: Run Regression tests
+        id: run
+        continue-on-error: true
+        run: npx playwright test --grep @regression
+
+      - name: Parse statistics
+        id: stats
+        if: always()
+        run: |
+          FILE="reports/results.json"
+          if [ -f "$FILE" ]; then
+            node -e "
+              const r = require('./reports/results.json');
+              const total   = r.stats.expected   ?? 0;
+              const failed  = r.stats.unexpected ?? 0;
+              const skipped = r.stats.skipped    ?? 0;
+              const passed  = Math.max(0, total - failed - skipped);
+              const dur = Math.round((r.stats.duration ?? 0) / 1000);
+              const m = Math.floor(dur / 60), s = dur % 60;
+              process.stdout.write('total='    + total   + '\n');
+              process.stdout.write('passed='   + passed  + '\n');
+              process.stdout.write('failed='   + failed  + '\n');
+              process.stdout.write('skipped='  + skipped + '\n');
+              process.stdout.write('duration=' + (m ? m + 'm ' : '') + s + 's\n');
+            " >> "$GITHUB_OUTPUT"
+          else
+            printf 'total=0\npassed=0\nfailed=0\nskipped=0\nduration=N/A\n' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload Regression report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-regression
+          path: |
+            reports/html/
+            reports/results.json
+            test-results/
+          retention-days: 30
+
+  # ── 4. PR Summary Comment ────────────────────────────────────────────────────
+  pr-comment:
+    name: PR – BDD Test Summary
+    runs-on: ubuntu-latest
+    needs: [smoke, critical, regression]
+    if: always() && github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Post or update BDD summary comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const sha7   = process.env.GITHUB_SHA.substring(0, 7);
+            const branch = context.payload.pull_request.head.ref;
+
+            const suite = (name, result, outputs) => {
+              if (result === 'skipped') {
+                return {
+                  name,
+                  result,
+                  total:    '0',
+                  passed:   '0',
+                  failed:   '0',
+                  skipped:  '0',
+                  duration: '0s',
+                };
+              }
+              const passed = parseInt(outputs.passed) || 0;
+              const failed = parseInt(outputs.failed) || 0;
+              const skipped = parseInt(outputs.skipped) || 0;
+              const total = passed + failed + skipped;
+              return {
+                name,
+                result,
+                total:    String(total),
+                passed:   String(passed),
+                failed:   String(failed),
+                skipped:  String(skipped),
+                duration: outputs.duration || 'N/A',
+              };
+            };
+
+            const suites = [
+              suite('🚬 Smoke',      '${{ needs.smoke.result }}',      {
+                passed:   '${{ needs.smoke.outputs.passed }}',
+                failed:   '${{ needs.smoke.outputs.failed }}',
+                skipped:  '${{ needs.smoke.outputs.skipped }}',
+                duration: '${{ needs.smoke.outputs.duration }}',
+              }),
+              suite('🔴 Critical',   '${{ needs.critical.result }}',   {
+                passed:   '${{ needs.critical.outputs.passed }}',
+                failed:   '${{ needs.critical.outputs.failed }}',
+                skipped:  '${{ needs.critical.outputs.skipped }}',
+                duration: '${{ needs.critical.outputs.duration }}',
+              }),
+              suite('🔁 Regression', '${{ needs.regression.result }}', {
+                passed:   '${{ needs.regression.outputs.passed }}',
+                failed:   '${{ needs.regression.outputs.failed }}',
+                skipped:  '${{ needs.regression.outputs.skipped }}',
+                duration: '${{ needs.regression.outputs.duration }}',
+              }),
+            ];
+
+            const badge = (r, failed) => {
+              if (r === 'skipped') return '⏭ skipped';
+              if (r === 'success' || failed === '0') return '✅ passed';
+              return `❌ ${failed} failed`;
+            };
+
+            const header = [
+              '<!-- bdd-tests-summary -->',
+              '## 🧪 BDD Tests Report',
+              '',
+              `> **Run:** [#${process.env.GITHUB_RUN_NUMBER}](${runUrl}) · \`${sha7}\` · branch \`${branch}\``,
+              '',
+              '---',
+              '',
+              '| Suite | Status | Total | ✅ Passed | ❌ Failed | ⏭ Skipped | ⏱ Duration |',
+              '|-------|--------|------:|--------:|--------:|---------:|----------:|',
+            ];
+
+            const rows = suites.map(s =>
+              `| ${s.name} | ${badge(s.result, s.failed)} | ${s.total} | ${s.passed} | ${s.failed} | ${s.skipped} | ${s.duration} |`
+            );
+
+            const footer = [
+              '',
+              '---',
+              '',
+              `📦 [All Artifacts & Reports](${runUrl})`,
+              '',
+              `<sub>🤖 Updated by GitHub Actions · ${new Date().toUTCString()}</sub>`,
+            ];
+
+            const body = [...header, ...rows, ...footer].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body?.includes('<!-- bdd-tests-summary -->'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner:      context.repo.owner,
+                repo:       context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }

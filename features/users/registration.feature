@@ -1,3 +1,4 @@
+@registration
 Feature: User Registration
   The registration feature allows new users to create accounts.
   As a visitor
@@ -7,6 +8,7 @@ Feature: User Registration
   Background:
     Given the user opened the registration page "/register"
 
+  @smoke @critical @ui
   Scenario: Successful registration
     When the user entered First Name "John"
     And the user entered Last Name "Doe"

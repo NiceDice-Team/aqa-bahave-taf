@@ -1,44 +1,85 @@
-import { AuthApiAdapter, AuthWebAdapter } from '../adapters';
 import { IAuth, RegisterParams, LoginParams, OAuthProvider, PasswordResetParams } from '../interfaces/auth.interface';
-import { th } from '@faker-js/faker/.';
-
 
 export class AuthSDK implements IAuth {
-  private adapter: AuthApiAdapter | AuthWebAdapter;
+  constructor(private adapter: IAuth) {}
 
-  constructor(adapter: AuthApiAdapter | AuthWebAdapter) {
-    this.adapter = adapter;
+  // Navigation
+  openLoginPage(url: string) {
+    return this.adapter.openLoginPage(url);
+  }
+  openRegistrationPage(path: string) {
+    return this.adapter.openRegistrationPage(path);
+  }
+  openPasswordRecoveryPage(url: string) {
+    return this.adapter.openPasswordRecoveryPage(url);
+  }
+  openResetPasswordPage(p: string, u?: string, t?: string) {
+    return this.adapter.openResetPasswordPage(p, u, t);
   }
 
-  async register(params: RegisterParams): Promise<void> {
-    await this.adapter.register(params);
+  // Field inputs
+  enterEmail(email: string) {
+    return this.adapter.enterEmail(email);
+  }
+  enterPassword(password: string) {
+    return this.adapter.enterPassword(password);
+  }
+  enterFirstName(firstName: string) {
+    return this.adapter.enterFirstName(firstName);
+  }
+  enterLastName(lastName: string) {
+    return this.adapter.enterLastName(lastName);
+  }
+  enterNewPassword(password: string) {
+    return this.adapter.enterNewPassword(password);
+  }
+  enterConfirmPassword(password: string) {
+    return this.adapter.enterConfirmPassword(password);
+  }
+  clickButton(buttonText: string) {
+    return this.adapter.clickButton(buttonText);
   }
 
-  async login(params: LoginParams): Promise<void> {
-    await this.adapter.login(params);
+  // High-level composite actions
+  register(params: RegisterParams) {
+    return this.adapter.register(params);
+  }
+  fillRegistrationForm(p: Partial<RegisterParams>) {
+    return this.adapter.fillRegistrationForm(p);
+  }
+  login(params: LoginParams) {
+    return this.adapter.login(params);
+  }
+  loginWithOAuth(provider: OAuthProvider) {
+    return this.adapter.loginWithOAuth(provider);
+  }
+  continueAsGuest() {
+    return this.adapter.continueAsGuest();
+  }
+  requestPasswordReset(email: string) {
+    return this.adapter.requestPasswordReset(email);
+  }
+  resetPassword(params: PasswordResetParams) {
+    return this.adapter.resetPassword(params);
+  }
+  logout() {
+    return this.adapter.logout();
   }
 
-  async loginWithOAuth(provider: OAuthProvider): Promise<void> {
-    await this.adapter.loginWithOAuth(provider);
+  // State queries
+  isAuthenticated() {
+    return this.adapter.isAuthenticated();
   }
-
-  async continueAsGuest(): Promise<void> {
-    await this.adapter.continueAsGuest();
+  getErrorMessage() {
+    return this.adapter.getErrorMessage();
   }
-
-  async requestPasswordReset(email: string): Promise<void> {
-    await this.adapter.requestPasswordReset(email);
+  getStatusMessage() {
+    return this.adapter.getStatusMessage();
   }
-
-  async resetPassword(params: PasswordResetParams): Promise<void> {
-    await this.adapter.resetPassword(params);
+  getValidationErrors() {
+    return this.adapter.getValidationErrors();
   }
-
-  async isLoggedIn(): Promise<boolean> {
-    return await this.adapter.isLoggedIn();
-  }
-
-  async logout(): Promise<void> {
-    await this.adapter.logout();
+  navigateToAccountPage() {
+    return this.adapter.navigateToAccountPage();
   }
 }

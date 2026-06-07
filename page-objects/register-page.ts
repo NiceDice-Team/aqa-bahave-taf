@@ -10,11 +10,11 @@ export class RegisterPage extends BasePage {
   readonly nameInput: Locator;
   readonly lastNameInput: Locator;
   readonly privacyPolicyCheckbox: Locator;
-  
+
   // Buttons
   readonly registerButton: Locator;
   readonly resendButton: Locator;
-  
+
   // Messages and status
   readonly errorMessage: Locator;
   readonly activationMessage: Locator;
@@ -22,13 +22,13 @@ export class RegisterPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-  this.emailInput = page.locator('#email');
-  this.passwordInput = page.locator('#password');
-  this.confirmPasswordInput = page.locator('#confirmPassword');
-  this.nameInput = page.locator('[data-testid="firstname-input"], #firstname');
-  this.lastNameInput = page.locator('#lastname');
-  this.privacyPolicyCheckbox = page.locator('#privacy');
-  this.registerButton = page.getByRole('button', { name: /register|create account/i });
+    this.emailInput = page.locator('#email');
+    this.passwordInput = page.locator('#password');
+    this.confirmPasswordInput = page.locator('#confirmPassword');
+    this.nameInput = page.locator('[data-testid="firstname-input"], #firstname');
+    this.lastNameInput = page.locator('#lastname');
+    this.privacyPolicyCheckbox = page.locator('#privacy');
+    this.registerButton = page.getByRole('button', { name: /register|create account/i });
     this.resendButton = page.locator('[data-testid="resend-verification-email"]');
     this.errorMessage = page.locator('[data-testid="error-message"]');
     this.activationMessage = page.locator('[data-testid="activation-message"]');
@@ -88,13 +88,13 @@ export class RegisterPage extends BasePage {
   }
 
   async getRegistrationStatus(): Promise<RegistrationStatus> {
-    const status = await this.statusMessage.textContent() || '';
+    const status = (await this.statusMessage.textContent()) || '';
     const error = await this.getErrorMessage();
-    
+
     return {
       isRegistered: !error && status.toLowerCase().includes('successful'),
       isActive: status.toLowerCase().includes('active'),
-      statusMessage: error || status
+      statusMessage: error || status,
     };
   }
 

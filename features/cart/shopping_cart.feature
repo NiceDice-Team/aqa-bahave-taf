@@ -1,3 +1,4 @@
+@cart
 Feature: Shopping Cart
   The shopping cart allows customers to manage selected products before checkout.
   As a customer
@@ -7,6 +8,7 @@ Feature: Shopping Cart
   Background:
     Given the user is logged in
 
+  @smoke @critical @ui
   Scenario: Add product to cart successfully
     Given the product "Catan" exists with stock = 10
     When the user opened the product page
@@ -27,6 +29,7 @@ Feature: Shopping Cart
     Then the cart updates product "Catan" quantity to "1"
     And the subtotal is recalculated
 
+  @smoke @critical @ui
   Scenario: Remove product from cart
     Given the cart contains product "Catan" with quantity = 2
     When the user clicked "Remove"

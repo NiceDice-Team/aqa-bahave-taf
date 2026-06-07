@@ -1,42 +1,75 @@
-import { ICheckout, ShippingDetails, OrderStatus, PaymentDetails} from '../interfaces';
-import {CheckoutApiAdapter, CheckoutWebAdapter} from '../adapters'
+import { ICheckout, ShippingDetails, PaymentDetails } from '../interfaces';
 
 export class CheckoutSDK implements ICheckout {
-  private adapter: CheckoutApiAdapter | CheckoutWebAdapter;
+  constructor(private adapter: ICheckout) {}
 
-  constructor(adapter: CheckoutApiAdapter | CheckoutWebAdapter) {
-    this.adapter = adapter;
+  // Navigation
+  navigateToCheckoutPage(url: string) {
+    return this.adapter.navigateToCheckoutPage(url);
   }
 
-  async startCheckout(): Promise<void> {
-    await this.adapter.startCheckout();
+  // High-level form filling
+  startCheckout() {
+    return this.adapter.startCheckout();
   }
-
-  async fillShippingDetails(details: ShippingDetails): Promise<void> {
-    await this.adapter.fillShippingDetails(details);
+  fillShippingDetails(d: ShippingDetails) {
+    return this.adapter.fillShippingDetails(d);
   }
-
-  async useShippingAsBilling(): Promise<void> {
-    await this.adapter.useShippingAsBilling();
+  useShippingAsBilling() {
+    return this.adapter.useShippingAsBilling();
   }
-
-  async fillPaymentDetails(details: PaymentDetails): Promise<void> {
-    await this.adapter.fillPaymentDetails(details);
+  fillPaymentDetails(d: PaymentDetails) {
+    return this.adapter.fillPaymentDetails(d);
   }
-
-  async placeOrder(): Promise<string> {
+  placeOrder() {
     return this.adapter.placeOrder();
   }
 
-  async getOrderStatus(orderId: string): Promise<OrderStatus> {
-    return this.adapter.getOrderStatus(orderId);
+  // Fine-grained interactions
+  selectPaymentMethod(method: string) {
+    return this.adapter.selectPaymentMethod(method);
+  }
+  enterField(field: string, value: string) {
+    return this.adapter.enterField(field, value);
+  }
+  leaveFieldEmpty(field: string) {
+    return this.adapter.leaveFieldEmpty(field);
+  }
+  leaveCardNumberEmpty() {
+    return this.adapter.leaveCardNumberEmpty();
+  }
+  enterCardNumber(n: string) {
+    return this.adapter.enterCardNumber(n);
+  }
+  enterExpiryDate(d: string) {
+    return this.adapter.enterExpiryDate(d);
+  }
+  enterCVV(cvv: string) {
+    return this.adapter.enterCVV(cvv);
+  }
+  completeLiqPayTransaction() {
+    return this.adapter.completeLiqPayTransaction();
+  }
+  enterPromoCode(code: string) {
+    return this.adapter.enterPromoCode(code);
   }
 
-  async cancelOrder(orderId: string): Promise<void> {
-    await this.adapter.cancelOrder(orderId);
+  // Order management
+  cancelOrder(id: string) {
+    return this.adapter.cancelOrder(id);
   }
 
-  async getOrders(): Promise<OrderStatus[]> {
+  // Result queries
+  getOrderStatus(id: string) {
+    return this.adapter.getOrderStatus(id);
+  }
+  getOrders() {
     return this.adapter.getOrders();
+  }
+  isOrderConfirmationVisible() {
+    return this.adapter.isOrderConfirmationVisible();
+  }
+  getOrderTotalText() {
+    return this.adapter.getOrderTotalText();
   }
 }

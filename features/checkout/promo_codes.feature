@@ -1,3 +1,4 @@
+@checkout @promo_codes
 Feature: Promo Codes
   The promo code feature allows customers to apply discount codes to their orders.
   As a customer

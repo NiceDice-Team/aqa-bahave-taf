@@ -7,38 +7,38 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 export interface EnvironmentConfig {
   // Environment
   nodeEnv: 'local' | 'staging' | 'production';
-  
+
   // URLs
   apiBaseUrl: string;
   frontendBaseUrl: string;
-  
+
   // Hosts and Ports (for Docker/local)
   apiHost: string;
   apiPort: number;
   frontendHost: string;
   frontendPort: number;
-  
+
   // Timeouts
   apiTimeout: number;
   frontendTimeout: number;
-  
+
   // Browser Settings
   headless: boolean;
   slowMo: number;
   browser: 'chromium' | 'firefox' | 'webkit';
   parallelWorkers: number;
-  
+
   // Test User
   testUser: {
     email: string;
     password: string;
   };
-  
+
   // Reporting
   reportDir: string;
   screenshotOnFailure: boolean;
   videoOnFailure: boolean;
-  
+
   // Feature Flags
   enableApiLogging: boolean;
   enableNetworkLogs: boolean;
@@ -83,17 +83,17 @@ class ConfigValidator {
 
   static validate(): EnvironmentConfig {
     const nodeEnv = (process.env.NODE_ENV || 'staging') as 'local' | 'staging' | 'production';
-    
+
     // Parse API configuration
     const apiHost = process.env.API_HOST || 'localhost';
     const apiPort = this.parseNumber(process.env.API_PORT, 3000);
     const apiProtocol = process.env.API_PROTOCOL || 'http';
-    
+
     // Parse Frontend configuration
     const frontendHost = process.env.FRONTEND_HOST || 'localhost';
     const frontendPort = this.parseNumber(process.env.FRONTEND_PORT, 3001);
     const frontendProtocol = process.env.FRONTEND_PROTOCOL || 'http';
-    
+
     // Support both full URL (API_BASE_URL) and host+port (API_HOST+API_PORT)
     let apiBaseUrl: string;
     if (process.env.API_BASE_URL) {
@@ -101,7 +101,7 @@ class ConfigValidator {
     } else {
       apiBaseUrl = this.buildUrl(apiHost, apiPort, apiProtocol);
     }
-    
+
     let frontendBaseUrl: string;
     if (process.env.FRONTEND_BASE_URL) {
       frontendBaseUrl = this.validateUrl(process.env.FRONTEND_BASE_URL, 'FRONTEND_BASE_URL');
@@ -117,15 +117,15 @@ class ConfigValidator {
       apiPort,
       frontendHost,
       frontendPort,
-      apiTimeout: this.parseNumber(process.env.API_TIMEOUT, 30000),
-      frontendTimeout: this.parseNumber(process.env.FRONTEND_TIMEOUT, 30000),
+      apiTimeout: this.parseNumber(process.env.API_TIMEOUT, 10000),
+      frontendTimeout: this.parseNumber(process.env.FRONTEND_TIMEOUT, 10000),
       headless: this.parseBoolean(process.env.HEADLESS, false),
       slowMo: this.parseNumber(process.env.SLOW_MO, 0),
-      browser: (process.env.BROWSER as any) || 'chromium',
-      parallelWorkers: this.parseNumber(process.env.PARALLEL_WORKERS, 1),
+      browser: (process.env.BROWSER as 'chromium' | 'firefox' | 'webkit') || 'chromium',
+      parallelWorkers: this.parseNumber(process.env.PARALLEL_WORKERS, 5),
       testUser: {
-        email: this.validateRequired(process.env.TEST_USER_EMAIL, 'TEST_USER_EMAIL'),
-        password: this.validateRequired(process.env.TEST_USER_PASSWORD, 'TEST_USER_PASSWORD'),
+        email: process.env.TEST_USER_EMAIL || '',
+        password: process.env.TEST_USER_PASSWORD || '',
       },
       reportDir: process.env.REPORT_DIR || './reports',
       screenshotOnFailure: this.parseBoolean(process.env.SCREENSHOT_ON_FAILURE, true),
@@ -153,9 +153,11 @@ export const getFrontendUrl = (path: string): string => {
 };
 
 // Log configuration on load (excluding sensitive data)
+/* eslint-disable no-console */
 console.log('🔧 Environment Configuration Loaded:');
 console.log(`   Environment: ${config.nodeEnv}`);
 console.log(`   API Base URL: ${config.apiBaseUrl}`);
 console.log(`   Frontend Base URL: ${config.frontendBaseUrl}`);
 console.log(`   Browser: ${config.browser} (headless: ${config.headless})`);
-console.log(`   Test User: ${config.testUser.email}`);
+console.log(`   Test User Configured: ${config.testUser.email ? 'yes' : 'no'}`);
+/* eslint-enable no-console */

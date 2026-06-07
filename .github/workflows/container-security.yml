@@ -1,0 +1,336 @@
+name: Container Security – Trivy · Hadolint
+
+on:
+  push:
+    branches: [main, master, develop]
+    paths:
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - 'package*.json'
+  pull_request:
+    branches: [main, master, develop]
+  schedule:
+    # Run every Monday at 06:00 UTC for a standing freshness check
+    - cron: '0 6 * * 1'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+jobs:
+
+  # ── 1. Dockerfile Lint ───────────────────────────────────────────────────────
+  dockerfile-lint:
+    name: Dockerfile Lint – Hadolint
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.hadolint.outcome }}
+      issues: ${{ steps.count.outputs.issues }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Hadolint
+        id: hadolint
+        continue-on-error: true
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          format: json
+          output-file: hadolint-report.json
+          no-fail: true
+
+      - name: Count Hadolint issues
+        id: count
+        if: always()
+        run: |
+          ISSUES=$(node -e "
+            try {
+              const raw = process.env.HADOLINT_RESULTS || '[]';
+              const r = JSON.parse(raw);
+              process.stdout.write(String(Array.isArray(r) ? r.length : 0));
+            } catch { process.stdout.write('0'); }
+          ")
+          echo "issues=$ISSUES" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Hadolint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hadolint-report
+          path: hadolint-report.json
+          retention-days: 30
+
+  # ── 2. Docker Image CVE Scan ─────────────────────────────────────────────────
+  image-scan:
+    name: Image Scan – Trivy CVE
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+    outputs:
+      critical: ${{ steps.parse.outputs.critical }}
+      high:     ${{ steps.parse.outputs.high }}
+      medium:   ${{ steps.parse.outputs.medium }}
+      total:    ${{ steps.parse.outputs.total }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t aqa-image:${{ github.sha }} .
+
+      # SARIF output → uploads to GitHub Security tab (requires GHAS or public repo)
+      - name: Trivy image scan – SARIF
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: 'aqa-image:${{ github.sha }}'
+          format: sarif
+          output: trivy-image.sarif
+          exit-code: '0'
+          severity: CRITICAL,HIGH,MEDIUM
+
+      - name: Upload image SARIF to Security tab
+        if: always()
+        continue-on-error: true   # requires GitHub Advanced Security on private repos
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-image.sarif
+          category: container-image-scan
+
+      # JSON output → parsed for counts and stored as artifact
+      - name: Trivy image scan – JSON report
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: 'aqa-image:${{ github.sha }}'
+          format: json
+          output: trivy-image.json
+          exit-code: '0'
+          severity: CRITICAL,HIGH,MEDIUM,LOW
+          ignore-unfixed: false
+
+      - name: Parse vulnerability counts
+        id: parse
+        run: |
+          node -e "
+            try {
+              const r = require('./trivy-image.json');
+              let critical = 0, high = 0, medium = 0;
+              for (const result of r.Results || []) {
+                for (const v of result.Vulnerabilities || []) {
+                  if      (v.Severity === 'CRITICAL') critical++;
+                  else if (v.Severity === 'HIGH')     high++;
+                  else if (v.Severity === 'MEDIUM')   medium++;
+                }
+              }
+              const total = critical + high + medium;
+              process.stdout.write('critical=' + critical + '\n');
+              process.stdout.write('high='     + high     + '\n');
+              process.stdout.write('medium='   + medium   + '\n');
+              process.stdout.write('total='    + total    + '\n');
+            } catch (e) {
+              process.stdout.write('critical=0\nhigh=0\nmedium=0\ntotal=0\n');
+            }
+          " >> "$GITHUB_OUTPUT"
+
+      - name: Upload Trivy image report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-image-report
+          path: |
+            trivy-image.sarif
+            trivy-image.json
+          retention-days: 30
+
+  # ── 3. Filesystem / Dependency Scan ──────────────────────────────────────────
+  fs-scan:
+    name: Dependency Scan – Trivy filesystem
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+    outputs:
+      critical: ${{ steps.parse.outputs.critical }}
+      high:     ${{ steps.parse.outputs.high }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies (generate lock file snapshot)
+        run: npm ci
+
+      # SARIF output → GitHub Security tab
+      - name: Trivy filesystem scan – SARIF
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-fs.sarif
+          exit-code: '0'
+          severity: CRITICAL,HIGH,MEDIUM
+
+      - name: Upload filesystem SARIF to Security tab
+        if: always()
+        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-fs.sarif
+          category: filesystem-dependency-scan
+
+      # JSON output → counts + artifact
+      - name: Trivy filesystem scan – JSON report
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: json
+          output: trivy-fs.json
+          exit-code: '0'
+          severity: CRITICAL,HIGH,MEDIUM
+
+      - name: Parse vulnerability counts
+        id: parse
+        run: |
+          node -e "
+            try {
+              const r = require('./trivy-fs.json');
+              let critical = 0, high = 0;
+              for (const result of r.Results || []) {
+                for (const v of result.Vulnerabilities || []) {
+                  if      (v.Severity === 'CRITICAL') critical++;
+                  else if (v.Severity === 'HIGH')     high++;
+                }
+              }
+              process.stdout.write('critical=' + critical + '\n');
+              process.stdout.write('high='     + high     + '\n');
+            } catch {
+              process.stdout.write('critical=0\nhigh=0\n');
+            }
+          " >> "$GITHUB_OUTPUT"
+
+      - name: Upload filesystem Trivy report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-fs-report
+          path: |
+            trivy-fs.sarif
+            trivy-fs.json
+          retention-days: 30
+
+  # ── 4. PR Summary Comment ────────────────────────────────────────────────────
+  pr-comment:
+    name: PR – Container Security Summary
+    runs-on: ubuntu-latest
+    needs: [dockerfile-lint, image-scan, fs-scan]
+    if: always() && github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Post or update container security comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const secUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/security/code-scanning`;
+            const sha7   = process.env.GITHUB_SHA.substring(0, 7);
+            const branch = context.payload.pull_request.head.ref;
+
+            const lint = {
+              status : '${{ needs.dockerfile-lint.outputs.status }}',
+              issues : parseInt('${{ needs.dockerfile-lint.outputs.issues }}' || '0') || 0,
+            };
+            const img = {
+              critical : parseInt('${{ needs.image-scan.outputs.critical }}' || '0') || 0,
+              high     : parseInt('${{ needs.image-scan.outputs.high }}'     || '0') || 0,
+              medium   : parseInt('${{ needs.image-scan.outputs.medium }}'   || '0') || 0,
+              total    : parseInt('${{ needs.image-scan.outputs.total }}'    || '0') || 0,
+            };
+            const fs = {
+              critical : parseInt('${{ needs.fs-scan.outputs.critical }}' || '0') || 0,
+              high     : parseInt('${{ needs.fs-scan.outputs.high }}'     || '0') || 0,
+            };
+
+            const riskBadge = (crit, high) =>
+              crit > 0 ? '🔴 Critical risk' : high > 0 ? '🟡 High risk' : '✅ No high/critical';
+
+            const lines = [
+              '<!-- container-security-summary -->',
+              '## 🐳 Container Security Report',
+              '',
+              `> **Run:** [#${process.env.GITHUB_RUN_NUMBER}](${runUrl}) · \`${sha7}\` · branch \`${branch}\``,
+              '',
+              '---',
+              '',
+              '### 📋 Dockerfile Lint (Hadolint)',
+              '',
+              '| Result | Rule violations |',
+              '|--------|-----------------|',
+              `| ${lint.status === 'success' ? '✅ Passed' : '⚠️ Issues found'} | ${lint.issues} → [Report](${runUrl}) |`,
+              '',
+              '### 🔍 Docker Image CVE Scan (Trivy)',
+              '',
+              '| Severity | Count |',
+              '|----------|-------|',
+              `| 🔴 Critical | ${img.critical} |`,
+              `| 🟡 High     | ${img.high}     |`,
+              `| 🟠 Medium   | ${img.medium}   |`,
+              `| **Total**   | **${img.total}** |`,
+              `| **Risk**    | ${riskBadge(img.critical, img.high)} → [SARIF / Security Tab](${secUrl}) |`,
+              '',
+              '### 📦 Dependency Filesystem Scan (Trivy)',
+              '',
+              '| Severity | Count |',
+              '|----------|-------|',
+              `| 🔴 Critical | ${fs.critical} |`,
+              `| 🟡 High     | ${fs.high}     |`,
+              `| **Risk**    | ${riskBadge(fs.critical, fs.high)} → [SARIF / Security Tab](${secUrl}) |`,
+              '',
+              '---',
+              '',
+              `📦 [All Artifacts & Reports](${runUrl}) · 🔍 [Security Tab](${secUrl})`,
+              '',
+              `<sub>🤖 Updated by GitHub Actions · ${new Date().toUTCString()}</sub>`,
+            ];
+
+            const body = lines.join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body?.includes('<!-- container-security-summary -->'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner:      context.repo.owner,
+                repo:       context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }

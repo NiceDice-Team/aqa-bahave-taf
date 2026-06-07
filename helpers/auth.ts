@@ -15,7 +15,7 @@ export function applyMockAuth(page: Page, opts?: { email?: string; name?: string
       contentType: 'application/json',
       body: JSON.stringify({
         user,
-        expires: '2099-12-31T23:59:59.000Z'
+        expires: '2099-12-31T23:59:59.000Z',
       }),
     });
   });

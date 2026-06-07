@@ -7,7 +7,7 @@ export const ENDPOINTS = {
   },
   PRODUCTS: {
     CATALOG: '/catalog',
-    DETAILS: (id: string) => `/products/${id}`,
+    DETAILS: (id: string) => `/product/${id}`,
   },
   CART: {
     MAIN: '/cart',
@@ -15,7 +15,7 @@ export const ENDPOINTS = {
     REMOVE: '/api/cart/remove',
     UPDATE: '/api/cart/update',
     SUBTOTAL: '/api/cart/subtotal',
-    ITEMS: '/api/cart/items'
+    ITEMS: '/api/cart/items',
   },
   CHECKOUT: {
     MAIN: '/checkout',

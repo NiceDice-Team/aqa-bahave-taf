@@ -1,24 +1,38 @@
 import { ApiAdapter } from './base.adapters';
-import { ENDPOINTS } from '../constants/endpoints';
-import { 
-  IAuth, 
-  RegisterParams, 
-  LoginParams, 
-  PasswordResetParams,
-  OAuthProvider
-} from '../interfaces/auth.interface';
+import { API_ENDPOINTS } from '../constants/api-endpoints';
+import { IAuth, RegisterParams, LoginParams, PasswordResetParams, OAuthProvider } from '../interfaces/auth.interface';
 
 export class AuthApiAdapter extends ApiAdapter implements IAuth {
+  // ── Navigation (no-op for API adapter) ───────────────────────────────
+  async openLoginPage(_url: string): Promise<void> {}
+  async openRegistrationPage(_path: string): Promise<void> {}
+  async openPasswordRecoveryPage(_url: string): Promise<void> {}
+  async openResetPasswordPage(_path: string, _uid?: string, _token?: string): Promise<void> {}
+
+  // ── Field inputs (no-op for API adapter) ─────────────────────────────
+  async enterEmail(_email: string): Promise<void> {}
+  async enterPassword(_password: string): Promise<void> {}
+  async enterFirstName(_firstName: string): Promise<void> {}
+  async enterLastName(_lastName: string): Promise<void> {}
+  async enterNewPassword(_password: string): Promise<void> {}
+  async enterConfirmPassword(_password: string): Promise<void> {}
+  async clickButton(_buttonText: string): Promise<void> {}
+
+  // ── High-level actions ──────────────────────────────────────────────
   async register(params: RegisterParams): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.AUTH.REGISTER, undefined, params);
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_USERS_REGISTER, params);
   }
 
+  async fillRegistrationForm(_params: Partial<RegisterParams>): Promise<void> {}
+
   async login(params: LoginParams): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.AUTH.LOGIN, undefined, params);
+    const body = await this.sendRequest<Record<string, unknown>>('POST', API_ENDPOINTS.POST_API_USERS_TOKEN, params);
+    const token = body?.access ?? body?.token ?? body?.key;
+    if (token) this.setAuthToken(String(token));
   }
 
   async loginWithOAuth(provider: OAuthProvider): Promise<void> {
-    await this.sendRequest('POST', `/api/auth/${provider}`);
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_USERS_OAUTH, { provider });
   }
 
   async continueAsGuest(): Promise<void> {
@@ -26,23 +40,34 @@ export class AuthApiAdapter extends ApiAdapter implements IAuth {
   }
 
   async requestPasswordReset(email: string): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.AUTH.FORGOT_PASSWORD, { email });
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_USERS_FORGOT_PASSWORD, { email });
   }
 
   async resetPassword(params: PasswordResetParams): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.AUTH.RESET_PASSWORD, undefined, params);
-  }
-
-  async isLoggedIn(): Promise<boolean> {
-    const response = await this.sendRequest('GET', '/api/auth/status');
-    // Narrow the type of response to access isLoggedIn property
-    if (typeof response === 'object' && response !== null && 'isLoggedIn' in response) {
-      return Boolean((response as { isLoggedIn: unknown }).isLoggedIn);
-    }
-    return false;
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_USERS_RESET_PASSWORD, params);
   }
 
   async logout(): Promise<void> {
-    await this.sendRequest('POST', '/api/auth/logout');
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_USERS_LOGOUT);
+    this.authToken = undefined;
   }
+
+  // ── State queries ──────────────────────────────────────────────────
+  async isAuthenticated(): Promise<boolean> {
+    return !!this.authToken;
+  }
+
+  async getErrorMessage(): Promise<string | null> {
+    return null;
+  }
+
+  async getStatusMessage(): Promise<string | null> {
+    return null;
+  }
+
+  async getValidationErrors(): Promise<string[]> {
+    return [];
+  }
+
+  async navigateToAccountPage(): Promise<void> {}
 }

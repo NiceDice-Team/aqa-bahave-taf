@@ -1,3 +1,4 @@
+@password_recovery
 Feature: Password Recovery
   The password recovery feature allows users to reset their password if forgotten.
   As a registered user

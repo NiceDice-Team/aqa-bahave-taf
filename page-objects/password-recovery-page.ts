@@ -15,7 +15,9 @@ export class PasswordRecoveryPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.emailInput = page.locator('input[name="email"], input[id="email"]');
-    this.confirmPasswordInput = page.locator('input[name="confirmPassword"], input[name="confirm_password"], input[id="confirmPassword"]');
+    this.confirmPasswordInput = page.locator(
+      'input[name="confirmPassword"], input[name="confirm_password"], input[id="confirmPassword"]'
+    );
     this.submitButton = page.getByRole('button', { name: /submit/i });
     this.resetPasswordButton = page.getByRole('button', { name: /reset password/i });
     this.newPasswordInput = page.locator('input[name="newPassword"], input[name="new_password"]');
@@ -78,6 +80,16 @@ export class PasswordRecoveryPage extends BasePage {
 
   async getFieldValidationErrors(fieldName: string): Promise<string[]> {
     const field = this.getPasswordRecoveryFieldLocator(fieldName);
-    return this.collectFieldErrorTexts(field, fieldName);
+    const errorSelector = `${await field.evaluate((el) => {
+      const id = el.getAttribute('id') ?? el.getAttribute('name') ?? '';
+      return `[data-error-for="${id}"], #${id}-error, [id*="${id}"][class*="error"]`;
+    })}, .invalid-feedback, [class*="field-error"]`;
+    const errors = this.page.locator(errorSelector);
+    try {
+      await errors.first().waitFor({ state: 'visible', timeout: 3000 });
+    } catch {
+      return [];
+    }
+    return this.toCleanTexts(await errors.allTextContents());
   }
 }

@@ -1,3 +1,4 @@
+@login
 Feature: User Login
   The login feature allows registered users to access their accounts.
   As a registered user
@@ -7,6 +8,7 @@ Feature: User Login
   Background:
     Given the user opened the login page "/login"
 
+  @smoke @critical @ui
   Scenario: Successful login
     When the user entered Email "tchallengevasyalex+1@gmail.com"
     And the user entered Password "secret123"
@@ -45,13 +47,13 @@ Feature: User Login
     When the user clicked "Sign in with Google"
     And the OAuth provider authenticated the user
     Then the system authenticates the user
-    And the user can go to the account page "/account
+    And the user can go to the account page "/account"
 
   Scenario: Login with Facebook OAuth successfully
     When the user clicked "Sign in with Facebook"
     And the OAuth provider authenticated the user
     Then the system authenticates the user
-    And the user can go to the account page "/account
+    And the user can go to the account page "/account"
 
   Scenario: Continue as guest
     When the user clicked "Continue as Guest"

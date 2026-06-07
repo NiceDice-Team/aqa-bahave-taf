@@ -9,8 +9,8 @@ export class AuthComponent {
 
   constructor(page: Page) {
     this.page = page;
-  this.emailInput = page.getByPlaceholder('Enter email address');
-  this.passwordInput = page.getByPlaceholder('Enter password');
+    this.emailInput = page.getByPlaceholder('Enter email address');
+    this.passwordInput = page.getByPlaceholder('Enter password');
     // Prefer test ids for OAuth buttons (stable across text changes)
     this.googleLoginButton = page.locator('[data-testid="google-auth-button"]');
     this.facebookLoginButton = page.locator('[data-testid="facebook-auth-button"]');

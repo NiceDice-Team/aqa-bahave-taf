@@ -1,0 +1,292 @@
+name: CI – Quality · SAST · DAST
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least-privilege defaults; jobs that need more declare their own permissions.
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+  actions: read
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Node.js runtime    : 22 LTS (active)
+# Required secrets   : TEST_USER_EMAIL, TEST_USER_PASSWORD
+# Required variables : API_BASE_URL, FRONTEND_BASE_URL,
+#                      DAST_TARGET_URL  (optional – enables DAST job when set)
+# BDD test suites live in bdd-tests.yml
+# ─────────────────────────────────────────────────────────────────────────────
+
+jobs:
+
+  # ── 1. Code Quality ──────────────────────────────────────────────────────────
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    outputs:
+      typecheck:       ${{ steps.typecheck.outcome }}
+      lint:            ${{ steps.lint.outcome }}
+      format:          ${{ steps.format.outcome }}
+      contract:        ${{ steps.contract.outcome }}
+      audit-high:      ${{ steps.audit.outputs.high }}
+      audit-critical:  ${{ steps.audit.outputs.critical }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check (tsc)
+        id: typecheck
+        run: npm run typecheck
+
+      - name: ESLint
+        id: lint
+        run: npm run lint
+
+      - name: Prettier format check
+        id: format
+        run: npm run format:check
+
+      - name: Validate API Contract
+        id: contract
+        run: npm run validate:endpoints
+
+      - name: npm dependency audit
+        id: audit
+        continue-on-error: true
+        run: |
+          mkdir -p reports
+          npm audit --json > reports/npm-audit.json 2>&1 || true
+          HIGH=$(node -e "try{const r=require('./reports/npm-audit.json');process.stdout.write(String(r.metadata?.vulnerabilities?.high??0))}catch{process.stdout.write('0')}")
+          CRITICAL=$(node -e "try{const r=require('./reports/npm-audit.json');process.stdout.write(String(r.metadata?.vulnerabilities?.critical??0))}catch{process.stdout.write('0')}")
+          echo "high=$HIGH"         >> "$GITHUB_OUTPUT"
+          echo "critical=$CRITICAL" >> "$GITHUB_OUTPUT"
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-report
+          path: reports/npm-audit.json
+          retention-days: 30
+
+  # ── 2. SAST ──────────────────────────────────────────────────────────────────
+  sast:
+    name: SAST – CodeQL & Secret Scan
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    outputs:
+      codeql:   ${{ steps.analyze.outcome }}
+      secrets:  ${{ steps.trufflehog.outcome }}
+
+    steps:
+      - name: Checkout (full history for secret scanning)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: typescript
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: CodeQL Analysis
+        id: analyze
+        continue-on-error: true
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:typescript
+          upload: true
+          output: sarif-results
+
+      - name: Upload CodeQL SARIF artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-sarif
+          path: sarif-results/
+          retention-days: 30
+
+      - name: TruffleHog secret scan
+        id: trufflehog
+        continue-on-error: true
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
+
+  # ── 3. DAST ──────────────────────────────────────────────────────────────────
+  dast:
+    name: DAST – OWASP ZAP Baseline
+    runs-on: ubuntu-latest
+    # Only runs when DAST_TARGET_URL repository variable is set
+    if: ${{ vars.DAST_TARGET_URL != '' }}
+    continue-on-error: true
+    outputs:
+      alerts:  ${{ steps.parse.outputs.alerts }}
+      high:    ${{ steps.parse.outputs.high }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.14.0
+        with:
+          target: ${{ vars.DAST_TARGET_URL }}
+          rules_file_name: '.zap/rules.tsv'
+          artifact_name: zap-baseline-report
+          fail_action: false
+          allow_issue_writing: false
+
+      - name: Parse ZAP JSON report
+        id: parse
+        if: always()
+        run: |
+          if [ -f "report_json.json" ]; then
+            node -e "
+              const r = require('./report_json.json');
+              let total = 0, high = 0;
+              for (const site of r.site || []) {
+                for (const alert of site.alerts || []) {
+                  total++;
+                  if (Number(alert.riskcode) >= 3) high++;
+                }
+              }
+              process.stdout.write('alerts=' + total + '\n');
+              process.stdout.write('high='   + high  + '\n');
+            " >> "$GITHUB_OUTPUT"
+          else
+            printf 'alerts=N/A\nhigh=N/A\n' >> "$GITHUB_OUTPUT"
+          fi
+
+  # ── 4. PR Summary Comment ────────────────────────────────────────────────────
+  pr-comment:
+    name: PR – Security & Quality Summary
+    runs-on: ubuntu-latest
+    needs: [quality, sast, dast]
+    if: always() && github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Post or update CI summary comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const secUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/security/code-scanning`;
+            const sha7   = process.env.GITHUB_SHA.substring(0, 7);
+            const branch = context.payload.pull_request.head.ref;
+
+            const q = {
+              typecheck : '${{ needs.quality.outputs.typecheck }}',
+              lint      : '${{ needs.quality.outputs.lint }}',
+              format    : '${{ needs.quality.outputs.format }}',
+              audHigh   : parseInt('${{ needs.quality.outputs.audit-high }}'   || '0') || 0,
+              audCrit   : parseInt('${{ needs.quality.outputs.audit-critical }}' || '0') || 0,
+            };
+            const s = {
+              codeql  : '${{ needs.sast.outputs.codeql }}',
+              secrets : '${{ needs.sast.outputs.secrets }}',
+            };
+            const d = {
+              result : '${{ needs.dast.result }}',
+              alerts : '${{ needs.dast.outputs.alerts }}',
+              high   : '${{ needs.dast.outputs.high }}',
+            };
+
+            const icon = (v) => v === 'success' ? '✅' : (v === 'skipped' ? '⏭' : '❌');
+
+            const auditRow = (q.audCrit + q.audHigh) === 0
+              ? '✅ No high/critical vulnerabilities'
+              : `⚠️ High: **${q.audHigh}** · Critical: **${q.audCrit}** → [Report](${runUrl})`;
+
+            const dastRow = d.result === 'skipped'
+              ? '⏭ Not configured — set `DAST_TARGET_URL` repository variable to enable'
+              : `${d.high === '0' ? '✅' : '⚠️'} ${d.alerts} total alerts (${d.high} high) → [Report](${runUrl})`;
+
+            const lines = [
+              '<!-- ci-security-summary -->',
+              '## 🔒 CI — Security & Quality Report',
+              '',
+              `> **Run:** [#${process.env.GITHUB_RUN_NUMBER}](${runUrl}) · \`${sha7}\` · branch \`${branch}\``,
+              '',
+              '---',
+              '',
+              '### 🧹 Code Quality',
+              '',
+              '| Check | Status |',
+              '|-------|--------|',
+              `| Type Check (\`tsc\`)  | ${icon(q.typecheck)} \`${q.typecheck}\` |`,
+              `| Lint (ESLint)        | ${icon(q.lint)} \`${q.lint}\` |`,
+              `| Format (Prettier)    | ${icon(q.format)} \`${q.format}\` |`,
+              `| Dependency Audit     | ${auditRow} |`,
+              '',
+              '### 🛡️ Security Scans',
+              '',
+              '| Check | Status |',
+              '|-------|--------|',
+              `| SAST – CodeQL (TypeScript)   | ${icon(s.codeql)} \`${s.codeql}\` → [Security Tab](${secUrl}) |`,
+              `| Secret Scan – TruffleHog     | ${s.secrets === 'success' ? '✅ No verified secrets found' : '⚠️ Review required'} |`,
+              `| DAST – OWASP ZAP Baseline    | ${dastRow} |`,
+              '',
+              '> 🧪 BDD test results are reported separately by the **BDD Tests** workflow.',
+              '',
+              '---',
+              '',
+              `📦 [All Artifacts & Full Report](${runUrl}) · 🔍 [Code Scanning Alerts](${secUrl})`,
+              '',
+              `<sub>🤖 Updated by GitHub Actions · ${new Date().toUTCString()}</sub>`,
+            ];
+
+            const body = lines.join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body?.includes('<!-- ci-security-summary -->'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner:      context.repo.owner,
+                repo:       context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }

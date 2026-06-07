@@ -1,3 +1,5 @@
+
+@checkout @payments
 Feature: Payment
   The payment feature allows customers to securely pay for their orders.
   As a customer
@@ -8,12 +10,14 @@ Feature: Payment
     Given the user is logged in
     And the user has an existing order with status "new"
 
+  @smoke @critical @api
   Scenario: Pay with LiqPay successfully
     Given the user selected "LiqPay" as payment method
     When the user completed a successful LiqPay transaction
     Then the order status is updated to "paid"
     And a payment record is stored in the database
 
+  @smoke @critical @api
   Scenario: Pay with credit card successfully
     Given the user selected "Credit Card" as payment method
     When the user entered card number "4242424242424242"
