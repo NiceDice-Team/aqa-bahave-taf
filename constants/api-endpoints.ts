@@ -98,8 +98,8 @@ export const API_ENDPOINTS = {
     `/api/products/products/${product_id}/reviews/{review_id}/`,
   GET_API_REVIEWS: '/api/reviews/',
   GET_API_REVIEWS_ID: (id: string | number) => `/api/reviews/${id}/`,
-  PATCH_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS_REVIEW_ID: (product_id: string | number) =>
-    `/api/products/products/${product_id}/reviews/{review_id}/`,
+  PATCH_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS_REVIEW_ID: (product_id: string | number, review_id: string | number) =>
+    `/api/products/products/${product_id}/reviews/${review_id}/`, 
   PATCH_API_REVIEWS_ID: (id: string | number) => `/api/reviews/${id}/`,
   POST_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS: (product_id: string | number) =>
     `/api/products/products/${product_id}/reviews/`,
