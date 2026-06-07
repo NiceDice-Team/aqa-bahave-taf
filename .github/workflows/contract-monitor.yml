@@ -127,7 +127,7 @@ jobs:
           API_BASE_URL: ${{ vars.API_BASE_URL }}
 
       - name: Slack notification (drift detected)
-        if: failure() && steps.diff.outputs.changed == 'true' && secrets.SLACK_WEBHOOK
+        if: steps.diff.outputs.changed == 'true' && secrets.SLACK_WEBHOOK != ''
         uses: slackapi/slack-github-action@v1.24.0
         with:
           payload: |
