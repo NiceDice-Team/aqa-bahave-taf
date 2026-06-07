@@ -92,7 +92,7 @@ jobs:
               const total   = r.stats.expected   ?? 0;
               const failed  = r.stats.unexpected ?? 0;
               const skipped = r.stats.skipped    ?? 0;
-              const passed  = total - failed - skipped;
+              const passed  = Math.max(0, total - failed - skipped);
               const dur = Math.round((r.stats.duration ?? 0) / 1000);
               const m = Math.floor(dur / 60), s = dur % 60;
               process.stdout.write('total='    + total   + '\n');
@@ -170,7 +170,7 @@ jobs:
               const total   = r.stats.expected   ?? 0;
               const failed  = r.stats.unexpected ?? 0;
               const skipped = r.stats.skipped    ?? 0;
-              const passed  = total - failed - skipped;
+              const passed  = Math.max(0, total - failed - skipped);
               const dur = Math.round((r.stats.duration ?? 0) / 1000);
               const m = Math.floor(dur / 60), s = dur % 60;
               process.stdout.write('total='    + total   + '\n');
@@ -251,7 +251,7 @@ jobs:
               const total   = r.stats.expected   ?? 0;
               const failed  = r.stats.unexpected ?? 0;
               const skipped = r.stats.skipped    ?? 0;
-              const passed  = total - failed - skipped;
+              const passed  = Math.max(0, total - failed - skipped);
               const dur = Math.round((r.stats.duration ?? 0) / 1000);
               const m = Math.floor(dur / 60), s = dur % 60;
               process.stdout.write('total='    + total   + '\n');
@@ -293,33 +293,47 @@ jobs:
             const sha7   = process.env.GITHUB_SHA.substring(0, 7);
             const branch = context.payload.pull_request.head.ref;
 
-            const suite = (name, result, outputs) => ({
-              name,
-              result,
-              total:    outputs.total    || '0',
-              passed:   outputs.passed   || '0',
-              failed:   outputs.failed   || '0',
-              skipped:  outputs.skipped  || '0',
-              duration: outputs.duration || 'N/A',
-            });
+            const suite = (name, result, outputs) => {
+              if (result === 'skipped') {
+                return {
+                  name,
+                  result,
+                  total:    '0',
+                  passed:   '0',
+                  failed:   '0',
+                  skipped:  '0',
+                  duration: '0s',
+                };
+              }
+              const passed = parseInt(outputs.passed) || 0;
+              const failed = parseInt(outputs.failed) || 0;
+              const skipped = parseInt(outputs.skipped) || 0;
+              const total = passed + failed + skipped;
+              return {
+                name,
+                result,
+                total:    String(total),
+                passed:   String(passed),
+                failed:   String(failed),
+                skipped:  String(skipped),
+                duration: outputs.duration || 'N/A',
+              };
+            };
 
             const suites = [
               suite('🚬 Smoke',      '${{ needs.smoke.result }}',      {
-                total:    '${{ needs.smoke.outputs.total }}',
                 passed:   '${{ needs.smoke.outputs.passed }}',
                 failed:   '${{ needs.smoke.outputs.failed }}',
                 skipped:  '${{ needs.smoke.outputs.skipped }}',
                 duration: '${{ needs.smoke.outputs.duration }}',
               }),
               suite('🔴 Critical',   '${{ needs.critical.result }}',   {
-                total:    '${{ needs.critical.outputs.total }}',
                 passed:   '${{ needs.critical.outputs.passed }}',
                 failed:   '${{ needs.critical.outputs.failed }}',
                 skipped:  '${{ needs.critical.outputs.skipped }}',
                 duration: '${{ needs.critical.outputs.duration }}',
               }),
               suite('🔁 Regression', '${{ needs.regression.result }}', {
-                total:    '${{ needs.regression.outputs.total }}',
                 passed:   '${{ needs.regression.outputs.passed }}',
                 failed:   '${{ needs.regression.outputs.failed }}',
                 skipped:  '${{ needs.regression.outputs.skipped }}',
