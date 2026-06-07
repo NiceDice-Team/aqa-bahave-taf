@@ -1,5 +1,5 @@
 import { ApiAdapter } from './base.adapters';
-import { ENDPOINTS } from '../constants/endpoints';
+import { API_ENDPOINTS } from '../constants/api-endpoints';
 import { ICart, CartItem } from '../interfaces/cart.interface';
 
 export class CartApiAdapter extends ApiAdapter implements ICart {
@@ -9,32 +9,33 @@ export class CartApiAdapter extends ApiAdapter implements ICart {
 
   // ── High-level actions ────────────────────────────────────────────
   async addToCart(productId: string, quantity: number): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.CART.ADD, { productId, quantity });
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_CART_ITEM, { productId, quantity });
   }
 
   async updateQuantity(productId: string, quantity: number): Promise<void> {
-    await this.sendRequest('PUT', ENDPOINTS.CART.UPDATE, { productId, quantity });
+    await this.sendRequest('PATCH', API_ENDPOINTS.PATCH_API_CART_ITEM, { productId, quantity });
   }
 
   async removeFromCart(productId: string): Promise<void> {
-    await this.sendRequest('DELETE', `${ENDPOINTS.CART.REMOVE}/${productId}`);
+    await this.sendRequest('DELETE', API_ENDPOINTS.DELETE_API_CART_ITEM, { productId });
   }
 
   async viewCart(): Promise<void> {
-    await this.sendRequest('GET', ENDPOINTS.CART.MAIN);
+    await this.sendRequest('GET', API_ENDPOINTS.GET_API_CART);
   }
 
   async applyPromoCode(code: string): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.PROMO.APPLY, { code });
+    // No promo endpoint in OpenAPI schema; kept as inline until schema is updated
+    await this.sendRequest('POST', '/api/promo/apply', { code });
   }
 
   async proceedToCheckout(): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.CHECKOUT.MAIN);
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_ORDERS_START);
   }
 
   // ── Fine-grained UI actions (no-op for API) ──────────────────────
   async addFirstProductToCart(): Promise<string> {
-    const resp = await this.sendRequest<{ items: Array<{ id: string }> }>('GET', ENDPOINTS.CART.ITEMS);
+    const resp = await this.sendRequest<{ items: Array<{ id: string }> }>('GET', API_ENDPOINTS.GET_API_CART);
     const firstId = resp.items?.[0]?.id ?? 'product-1';
     await this.addToCart(firstId, 1);
     return firstId;
@@ -46,7 +47,7 @@ export class CartApiAdapter extends ApiAdapter implements ICart {
 
   // ── Queries ──────────────────────────────────────────────────────
   async getSubtotal(): Promise<string> {
-    const resp = await this.sendRequest<{ subtotal: string }>('GET', ENDPOINTS.CART.SUBTOTAL);
+    const resp = await this.sendRequest<{ subtotal: string }>('GET', API_ENDPOINTS.GET_API_CART);
     return resp.subtotal;
   }
 
@@ -74,7 +75,7 @@ export class CartApiAdapter extends ApiAdapter implements ICart {
   }
 
   async getCartItems(): Promise<CartItem[]> {
-    const resp = await this.sendRequest<{ items: CartItem[] }>('GET', ENDPOINTS.CART.ITEMS);
+    const resp = await this.sendRequest<{ items: CartItem[] }>('GET', API_ENDPOINTS.GET_API_CART);
     return resp.items ?? [];
   }
 }

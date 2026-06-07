@@ -1,5 +1,4 @@
 import { ApiAdapter } from './base.adapters';
-import { ENDPOINTS } from '../constants/endpoints';
 import { API_ENDPOINTS } from '../constants/api-endpoints';
 import { IProduct, ProductDetails, ProductFilter, ReviewData } from '../interfaces/product.interface';
 
@@ -27,7 +26,7 @@ export class ProductApiAdapter extends ApiAdapter implements IProduct {
 
   // Product actions
   async viewProduct(productId: string): Promise<void> {
-    await this.sendRequest('GET', ENDPOINTS.PRODUCTS.DETAILS(productId));
+    await this.sendRequest('GET', API_ENDPOINTS.GET_API_PRODUCTS_ID(productId));
   }
 
   async getProductDetails(productId: string): Promise<ProductDetails> {
@@ -35,7 +34,7 @@ export class ProductApiAdapter extends ApiAdapter implements IProduct {
   }
 
   async getProducts(filter?: ProductFilter): Promise<ProductDetails[]> {
-    const resp = await this.sendRequest<{ products: ProductDetails[] }>('GET', ENDPOINTS.PRODUCTS.CATALOG, filter);
+    const resp = await this.sendRequest<{ products: ProductDetails[] }>('GET', API_ENDPOINTS.GET_API_PRODUCTS, filter);
     return resp.products ?? [];
   }
 

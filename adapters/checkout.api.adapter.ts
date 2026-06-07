@@ -1,5 +1,5 @@
 import { ApiAdapter } from './base.adapters';
-import { ENDPOINTS } from '../constants/endpoints';
+import { API_ENDPOINTS } from '../constants/api-endpoints';
 import { ICheckout, ShippingDetails, PaymentDetails, OrderStatus } from '../interfaces/checkout.interface';
 
 export class CheckoutApiAdapter extends ApiAdapter implements ICheckout {
@@ -8,23 +8,25 @@ export class CheckoutApiAdapter extends ApiAdapter implements ICheckout {
 
   // ── High-level form filling ─────────────────────────────────────────
   async startCheckout(): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.CHECKOUT.MAIN);
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_ORDERS_START);
   }
 
   async fillShippingDetails(details: ShippingDetails): Promise<void> {
+    // No dedicated shipping endpoint in OpenAPI schema; kept inline until schema is updated
     await this.sendRequest('POST', '/api/checkout/shipping', details);
   }
 
   async useShippingAsBilling(): Promise<void> {
+    // No dedicated billing endpoint in OpenAPI schema; kept inline until schema is updated
     await this.sendRequest('POST', '/api/checkout/use-shipping-as-billing');
   }
 
   async fillPaymentDetails(details: PaymentDetails): Promise<void> {
-    await this.sendRequest('POST', '/api/checkout/payment', details);
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_ORDERS_CREATE_PAYMENT_INTENT, details);
   }
 
   async placeOrder(): Promise<string> {
-    const resp = await this.sendRequest<{ orderId: string }>('POST', ENDPOINTS.CHECKOUT.PLACE_ORDER);
+    const resp = await this.sendRequest<{ orderId: string }>('POST', API_ENDPOINTS.POST_API_ORDERS);
     return resp.orderId;
   }
 
@@ -38,21 +40,24 @@ export class CheckoutApiAdapter extends ApiAdapter implements ICheckout {
   async enterCVV(_cvv: string): Promise<void> {}
   async completeLiqPayTransaction(): Promise<void> {}
   async enterPromoCode(code: string): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.PROMO.APPLY, { code });
+    // No promo endpoint in OpenAPI schema; kept inline until schema is updated
+    await this.sendRequest('POST', '/api/promo/apply', { code });
   }
 
   // ── Order management ───────────────────────────────────────────────
   async cancelOrder(orderId: string): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.ORDERS.CANCEL(orderId));
+    // No cancel order endpoint in OpenAPI schema; kept inline until schema is updated
+    await this.sendRequest('POST', `/api/orders/${orderId}/cancel/`);
   }
 
   // ── Result queries ──────────────────────────────────────────────────
   async getOrderStatus(orderId: string): Promise<OrderStatus> {
-    return this.sendRequest<OrderStatus>('GET', ENDPOINTS.ORDERS.DETAILS(orderId));
+    // No GET order-by-id endpoint in OpenAPI schema; kept inline until schema is updated
+    return this.sendRequest<OrderStatus>('GET', `/api/orders/${orderId}/`);
   }
 
   async getOrders(): Promise<OrderStatus[]> {
-    const resp = await this.sendRequest<{ orders: OrderStatus[] }>('GET', ENDPOINTS.ORDERS.LIST);
+    const resp = await this.sendRequest<{ orders: OrderStatus[] }>('GET', API_ENDPOINTS.GET_API_ORDERS);
     return resp.orders ?? [];
   }
 

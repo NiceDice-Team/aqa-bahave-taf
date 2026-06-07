@@ -35,6 +35,7 @@ jobs:
       typecheck:       ${{ steps.typecheck.outcome }}
       lint:            ${{ steps.lint.outcome }}
       format:          ${{ steps.format.outcome }}
+      contract:        ${{ steps.contract.outcome }}
       audit-high:      ${{ steps.audit.outputs.high }}
       audit-critical:  ${{ steps.audit.outputs.critical }}
 
@@ -62,6 +63,10 @@ jobs:
       - name: Prettier format check
         id: format
         run: npm run format:check
+
+      - name: Validate API Contract
+        id: contract
+        run: npm run validate:endpoints
 
       - name: npm dependency audit
         id: audit

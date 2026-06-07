@@ -1,5 +1,5 @@
 import { ApiAdapter } from './base.adapters';
-import { ENDPOINTS } from '../constants/endpoints';
+import { API_ENDPOINTS } from '../constants/api-endpoints';
 import { IAuth, RegisterParams, LoginParams, PasswordResetParams, OAuthProvider } from '../interfaces/auth.interface';
 
 export class AuthApiAdapter extends ApiAdapter implements IAuth {
@@ -20,19 +20,19 @@ export class AuthApiAdapter extends ApiAdapter implements IAuth {
 
   // ── High-level actions ──────────────────────────────────────────────
   async register(params: RegisterParams): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.AUTH.REGISTER, params);
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_USERS_REGISTER, params);
   }
 
   async fillRegistrationForm(_params: Partial<RegisterParams>): Promise<void> {}
 
   async login(params: LoginParams): Promise<void> {
-    const body = await this.sendRequest<Record<string, unknown>>('POST', ENDPOINTS.AUTH.LOGIN, params);
+    const body = await this.sendRequest<Record<string, unknown>>('POST', API_ENDPOINTS.POST_API_USERS_TOKEN, params);
     const token = body?.access ?? body?.token ?? body?.key;
     if (token) this.setAuthToken(String(token));
   }
 
   async loginWithOAuth(provider: OAuthProvider): Promise<void> {
-    await this.sendRequest('POST', `/api/auth/${provider}`);
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_USERS_OAUTH, { provider });
   }
 
   async continueAsGuest(): Promise<void> {
@@ -40,15 +40,15 @@ export class AuthApiAdapter extends ApiAdapter implements IAuth {
   }
 
   async requestPasswordReset(email: string): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.AUTH.FORGOT_PASSWORD, { email });
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_USERS_FORGOT_PASSWORD, { email });
   }
 
   async resetPassword(params: PasswordResetParams): Promise<void> {
-    await this.sendRequest('POST', ENDPOINTS.AUTH.RESET_PASSWORD, params);
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_USERS_RESET_PASSWORD, params);
   }
 
   async logout(): Promise<void> {
-    await this.sendRequest('POST', '/api/auth/logout');
+    await this.sendRequest('POST', API_ENDPOINTS.POST_API_USERS_LOGOUT);
     this.authToken = undefined;
   }
 

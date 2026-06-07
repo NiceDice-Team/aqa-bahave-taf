@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "generate:endpoints": "cross-env TS_NODE_COMPILER_OPTIONS={\"module\":\"CommonJS\"} ts-node --skip-project scripts/generate-endpoints.ts",
+    "validate:endpoints": "npx ts-node scripts/validate-endpoints.ts",
+    "validate:endpoints:verbose": "npx ts-node scripts/validate-endpoints.ts --verbose",
+    "mcp:contract": "npx ts-node scripts/contract-mcp-server.ts",
     "test:generate": "node -e \"require('fs').rmSync('.features-gen', { recursive: true, force: true })\" && npx bddgen",
     "test:run": "npx playwright test",
     "test:headed": "cross-env HEADLESS=false npx playwright test",
@@ -40,6 +43,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^10.1.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@playwright/mcp": "^0.0.75",
     "@playwright/test": "^1.56.1",
     "@types/node": "22.15.17",
