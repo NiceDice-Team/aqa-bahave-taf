@@ -6,6 +6,7 @@ export interface CartItem {
 export interface ICart {
   // ── Navigation ─────────────────────────────────────────────────────────────
   navigateToCart(): Promise<void>;
+  navigateToCatalog(): Promise<void>;
   navigateToProductByName(productName: string): Promise<void>;
 
   // ── High-level actions (coarse steps + API adapter) ────────────────────────

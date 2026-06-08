@@ -169,11 +169,25 @@ export class AuthWebAdapter extends WebAdapter implements IAuth {
   // ── Result / state queries ───────────────────────────────────────────────────
 
   async isAuthenticated(): Promise<boolean> {
+    // If we just submitted a login form, wait for redirect away from /login
+    if (this.page.url().includes('/login')) {
+      try {
+        await this.page.waitForURL((url) => !url.pathname.includes('/login'), { timeout: 7000 });
+      } catch {
+        // Still on /login after timeout → not authenticated
+        return false;
+      }
+    }
     const url = this.page.url();
     if (url.includes('/login')) return false;
     // Check for account/profile link in header as authentication indicator
     const profileLink = this.page.locator('a[href*="/account"], a[href*="/profile"], [data-testid="user-menu"]');
-    return profileLink.first().isVisible();
+    try {
+      await profileLink.first().waitFor({ state: 'visible', timeout: 5000 });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   async getErrorMessage(): Promise<string | null> {
@@ -207,8 +221,21 @@ export class AuthWebAdapter extends WebAdapter implements IAuth {
   }
 
   async navigateToAccountPage(): Promise<void> {
-    await this.page.locator('a[href*="/account"], a:has-text("Account"), a:has-text("My Account")').first().click();
+    // Try to find account link with explicit wait
+    const accountLink = this.page
+      .locator('a[href*="/account"], a[href*="/profile"], button:has-text("Account"), [data-testid="user-menu"]')
+      .first();
+    try {
+      await accountLink.waitFor({ state: 'visible', timeout: 10000 });
+      await accountLink.click();
+    } catch {
+      // If link not found, try navigating directly
+      await this.page.goto('/account');
+    }
     await this.page.waitForLoadState('networkidle');
+
+    // Handle potential redirects (e.g., /account → /profile)
+    await this.page.waitForURL(/\/(account|profile)/, { timeout: 5000 }).catch(() => {});
   }
 
   // ── Extra registration helpers ───────────────────────────────────────────────

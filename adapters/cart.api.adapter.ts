@@ -5,6 +5,7 @@ import { ICart, CartItem } from '../interfaces/cart.interface';
 export class CartApiAdapter extends ApiAdapter implements ICart {
   // ── Navigation (no-op for API) ────────────────────────────────────
   async navigateToCart(): Promise<void> {}
+  async navigateToCatalog(): Promise<void> {}
   async navigateToProductByName(_name: string): Promise<void> {}
 
   // ── High-level actions ────────────────────────────────────────────

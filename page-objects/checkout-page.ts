@@ -23,7 +23,7 @@ export class CheckoutPage {
 
   async navigate(url: string): Promise<void> {
     await this.page.goto(url);
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('load');
   }
 
   async proceedToCheckout(): Promise<void> {
@@ -79,12 +79,86 @@ export class CheckoutPage {
   }
 
   async selectPaymentMethod(method: string): Promise<void> {
-    const select = this.page.locator('select[name="paymentMethod"], [name="payment_method"]').first();
-    if ((await select.count()) > 0) {
-      await select.selectOption(method);
-    } else {
-      await this.page.locator(`input[value="${method}"], label:has-text("${method}")`).first().click();
+    // Wait for the checkout page to be fully loaded before probing for payment elements
+    await this.page.waitForLoadState('load', { timeout: 15000 }).catch(() => {});
+
+    // 1. Native <select>
+    try {
+      const select = this.page
+        .locator('select[name="paymentMethod"], [name="payment_method"], select[id*="payment"]')
+        .first();
+      if ((await select.count()) > 0) {
+        await select.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+        if (await select.isVisible()) {
+          await select.selectOption(method);
+          return;
+        }
+      }
+    } catch {
+      // Continue to next strategy
     }
+
+    // 2. Radio input by value/id/name
+    const slug = method.toLowerCase().replace(/\s+/g, '_');
+    try {
+      const radio = this.page
+        .locator(
+          `input[type="radio"][value="${method}"],` +
+            `input[type="radio"][value="${slug}"],` +
+            `input[type="radio"][id*="${slug}"],` +
+            `input[type="radio"][name*="${slug}"]`
+        )
+        .first();
+      if ((await radio.count()) > 0) {
+        await radio.waitFor({ state: 'attached', timeout: 5000 }).catch(() => {});
+        const isVisible = await radio.isVisible().catch(() => false);
+        if (isVisible || (await radio.count()) > 0) {
+          await radio.click();
+          return;
+        }
+      }
+    } catch {
+      // Continue to next strategy
+    }
+
+    // 3. Label containing the method name (may wrap hidden radio or be button)
+    try {
+      const label = this.page
+        .locator(
+          `label:has-text("${method}"), ` +
+            `button:has-text("${method}"), ` +
+            `[role="radio"]:has-text("${method}"), ` +
+            `[class*="payment"]:has-text("${method}")`
+        )
+        .first();
+      await label.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+      const isVisible = await label.isVisible().catch(() => false);
+      if (isVisible || (await label.count()) > 0) {
+        await label.click();
+        return;
+      }
+    } catch {
+      // Continue to fallback
+    }
+
+    // 4. Fallback: Try any button/label with partial match
+    try {
+      const anyPaymentBtn = this.page
+        .locator(`button:has-text("${method.split(' ')[0]}"), label:has-text("${method.split(' ')[0]}")`)
+        .first();
+      await anyPaymentBtn.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+      if (await anyPaymentBtn.isVisible()) {
+        await anyPaymentBtn.click();
+        return;
+      }
+    } catch {
+      // Last resort failed
+    }
+
+    // 5. If all fails, log and throw with context
+    throw new Error(
+      `Payment method "${method}" not found. Tried: select, radio inputs, labels, buttons, and partial matches.`
+    );
   }
 
   async fillCardDetails(details: { cardNumber?: string; expiry?: string; cvv?: string; name?: string }): Promise<void> {

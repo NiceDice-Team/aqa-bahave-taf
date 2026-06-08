@@ -19,6 +19,10 @@ export class CartWebAdapter extends WebAdapter implements ICart {
     await this.getCartPage().navigate();
   }
 
+  async navigateToCatalog(): Promise<void> {
+    await this.getCatalogPage().navigate();
+  }
+
   async navigateToProductByName(productName: string): Promise<void> {
     await this.getCatalogPage().navigateToProductByName(productName);
   }
@@ -63,12 +67,20 @@ export class CartWebAdapter extends WebAdapter implements ICart {
 
   async addFirstProductToCart(): Promise<string> {
     const name = await this.getCatalogPage().clickFirstProduct();
-    await this.page.getByRole('button', { name: /add to cart/i }).click();
+    // Multiple "ADD TO CART" buttons may exist on the product page (hidden + visible);
+    // .last() targets the visible one, matching ProductPage.addToCartButton behaviour.
+    await this.page
+      .getByRole('button', { name: /add to cart/i })
+      .last()
+      .click();
     return name;
   }
 
   async clickAddToCart(): Promise<void> {
-    await this.page.getByRole('button', { name: /add to cart/i }).click();
+    await this.page
+      .getByRole('button', { name: /add to cart/i })
+      .last()
+      .click();
   }
 
   async setQuantity(quantity: string): Promise<void> {
