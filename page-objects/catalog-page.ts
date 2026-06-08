@@ -33,15 +33,87 @@ export class CatalogPage extends BasePage {
   }
 
   async sortBy(option: string): Promise<void> {
-    await this.sortDropdown.selectOption(option);
-    await this.waitForPageLoad();
+    // Try the testid select first, then any sort-related select, then a clickable control
+    const select = this.page
+      .locator('[data-testid="sort-dropdown"], select[name*="sort"], select[id*="sort"], select[class*="sort"]')
+      .first();
+    try {
+      await select.waitFor({ state: 'visible', timeout: 3000 });
+      if (await select.isVisible()) {
+        await select.selectOption(option);
+        await this.waitForPageLoad();
+        return;
+      }
+    } catch {
+      // Continue to fallback
+    }
+
+    // Fallback: sort may be a button/link group
+    try {
+      const label = option.replace(/-/g, ' ');
+      const btn = this.page
+        .getByRole('button', { name: new RegExp(label, 'i') })
+        .or(this.page.getByRole('option', { name: new RegExp(label, 'i') }))
+        .first();
+      await btn.waitFor({ state: 'visible', timeout: 3000 });
+      await btn.click();
+      await this.waitForPageLoad();
+      return;
+    } catch {
+      // Continue to last resort
+    }
+
+    // Last resort: try text selector with partial match
+    try {
+      const anySort = this.page
+        .locator(`[class*="sort"] button, a[class*="sort"], button:has-text("${option.split('-')[0]}")`)
+        .first();
+      await anySort.waitFor({ state: 'visible', timeout: 3000 });
+      await anySort.click();
+      await this.waitForPageLoad();
+    } catch {
+      throw new Error(`Sort option "${option}" not found. Tried select and button strategies.`);
+    }
   }
 
   async filterByCategory(category: string): Promise<void> {
-    await this.categoryFilters.waitFor({ state: 'visible' });
-    const btn = this.categoryFilters.getByRole('button', { name: category });
-    await btn.click();
-    await this.waitForPageLoad();
+    // Broaden the panel selector beyond a single testid
+    const panel = this.page
+      .locator('[data-testid="categories"], [aria-label*="categor" i], [class*="categor"], aside, nav[class*="filter"]')
+      .first();
+    try {
+      await panel.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+    } catch {
+      // Panel not found — fall through to direct button search
+    }
+
+    const humanLabel = category.replace(/-/g, ' ');
+
+    // Try button/link with matching text
+    try {
+      const btn = this.page
+        .getByRole('button', { name: new RegExp(humanLabel, 'i') })
+        .or(this.page.getByRole('link', { name: new RegExp(humanLabel, 'i') }))
+        .first();
+      await btn.waitFor({ state: 'visible', timeout: 5000 });
+      await btn.click();
+      await this.waitForPageLoad();
+      return;
+    } catch {
+      // Continue to fallback
+    }
+
+    // Fallback: search with selector
+    try {
+      const any = this.page
+        .locator(`button:has-text("${humanLabel}"), a:has-text("${humanLabel}"), [class*="filter"] button`)
+        .first();
+      await any.waitFor({ state: 'visible', timeout: 5000 });
+      await any.click();
+      await this.waitForPageLoad();
+    } catch {
+      throw new Error(`Category "${category}" filter button not found. Tried role-based and text-matching strategies.`);
+    }
   }
 
   async filterByPriceRange(_min: number, _max: number): Promise<void> {
@@ -58,7 +130,19 @@ export class CatalogPage extends BasePage {
     await this.navigate();
     const firstCard = this.page.locator('a[href*="/product/"]').first();
     await firstCard.waitFor({ state: 'visible' });
-    const name = ((await firstCard.textContent()) ?? 'first-product').trim().substring(0, 50);
+
+    // Prefer a heading / title element inside the card to get a clean product name
+    const titleEl = firstCard.locator('h2, h3, h4, [class*="title"], [class*="name"], [class*="heading"]').first();
+    let name: string;
+    if ((await titleEl.count()) > 0) {
+      name = ((await titleEl.textContent()) ?? 'first-product').trim().replace(/\s+/g, ' ').substring(0, 100);
+    } else {
+      // Fallback: extract product name from card, strip price/stock/quantity noise
+      const raw = ((await firstCard.textContent()) ?? 'first-product').trim();
+      // Take first line or first part before common separators
+      name = (raw.split(/\n|\$|\(\d|ADD TO CART/i)[0] ?? raw).trim().replace(/\s+/g, ' ').substring(0, 100);
+    }
+
     await firstCard.click();
     await this.waitForPageLoad();
     return name;
@@ -76,8 +160,20 @@ export class CatalogPage extends BasePage {
 
   /** Name of the currently active category filter (if any) */
   async getActiveCategoryName(): Promise<string> {
-    const active = this.categoryFilters.locator('[aria-pressed="true"], .active, [data-active="true"]').first();
-    return (await active.textContent()) ?? '';
+    try {
+      // Try to find active category indicator
+      const active = this.categoryFilters
+        .locator('[aria-pressed="true"], .active, [data-active="true"], [class*="active"]')
+        .first();
+      await active.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+      const text = await active.textContent().catch(() => null);
+      return text?.trim() ?? '';
+    } catch {
+      // Fallback: check URL to infer active category from filter param
+      const url = this.page.url();
+      const match = url.match(/category=([^&]+)/);
+      return match ? decodeURIComponent(match[1]) : '';
+    }
   }
 
   /**

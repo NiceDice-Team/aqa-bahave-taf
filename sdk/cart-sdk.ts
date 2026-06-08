@@ -7,6 +7,9 @@ export class CartSDK implements ICart {
   navigateToCart() {
     return this.adapter.navigateToCart();
   }
+  navigateToCatalog() {
+    return this.adapter.navigateToCatalog();
+  }
   navigateToProductByName(name: string) {
     return this.adapter.navigateToProductByName(name);
   }
