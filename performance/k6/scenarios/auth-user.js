@@ -18,7 +18,7 @@ import { check, group, sleep } from 'k6';
 import { Trend, Rate } from 'k6/metrics';
 import { SharedArray } from 'k6/data';
 import { COMMON_THRESHOLDS } from '../thresholds.js';
-import { getAuthTokens, authHeaders } from '../helpers/auth.js';
+import { authHeaders } from '../helpers/auth.js';
 
 // ── Custom metrics ────────────────────────────────────────────────────────────
 const loginDuration = new Trend('auth_login_duration', true);
