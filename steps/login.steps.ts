@@ -12,59 +12,37 @@ Given('I navigate to the login page', async ({ world }) => {
 
 Then('the login form should be visible', async ({ world }) => {
   const form = world.page?.locator('form, [class*="login-form"], [class*="login"]').first();
-  await expect(form)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(form).toBeVisible({ timeout: 5000 });
 });
 
 Then('the email input field should be visible and interactable', async ({ world }) => {
   const email = world.page?.locator('input[type="email"], input[name*="email"], input[placeholder*="email"]').first();
-  await expect(email)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(email).toBeVisible({ timeout: 5000 });
 });
 
 Then('the password input field should be visible and interactable', async ({ world }) => {
   const password = world.page?.locator('input[type="password"], input[name*="password"]').first();
-  await expect(password)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(password).toBeVisible({ timeout: 5000 });
 });
 
 Then('the "Sign In" button should be visible and clickable', async ({ world }) => {
   const btn = world.page?.locator('button:has-text("Sign In"), button:has-text("Login")').first();
-  await expect(btn)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(btn).toBeVisible({ timeout: 5000 });
 });
 
 When('I fill the email field with {string}', async ({ world }, email: string) => {
   const emailInput = world.page?.locator('input[type="email"], input[name*="email"]').first();
-  await emailInput?.fill(email, { timeout: 3000 }).catch(() => {
-    expect(true).toBe(true);
-  });
+  await emailInput?.fill(email, { timeout: 3000 });
 });
 
 When('I fill the password field with {string}', async ({ world }, password: string) => {
   const passwordInput = world.page?.locator('input[type="password"]').first();
-  await passwordInput?.fill(password, { timeout: 3000 }).catch(() => {
-    expect(true).toBe(true);
-  });
+  await passwordInput?.fill(password, { timeout: 3000 });
 });
 
 When('I click the "Sign In" button', async ({ world }) => {
   const btn = world.page?.locator('button:has-text("Sign In"), button:has-text("Login")').first();
-  await btn?.click({ timeout: 3000 }).catch(() => {
-    expect(true).toBe(true);
-  });
+  await btn?.click({ timeout: 3000 });
 });
 
 Then('the login should process (page navigates away from login page)', async ({ world }) => {

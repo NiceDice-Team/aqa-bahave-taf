@@ -24,28 +24,16 @@ Then('the shipping section should be visible with address fields', async ({ worl
   const section = world.page
     ?.locator('[class*="shipping"], fieldset:has-text("Shipping"), h2:has-text("Shipping")')
     .first();
-  await expect(section)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(section).toBeVisible({ timeout: 5000 });
   const addressField = world.page?.locator('input[placeholder*="address"], input[name*="address"]').first();
-  await expect(addressField)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(addressField).toBeVisible({ timeout: 5000 });
 });
 
 Then('the billing section should be visible', async ({ world }) => {
   const section = world.page
     ?.locator('[class*="billing"], fieldset:has-text("Billing"), h2:has-text("Billing")')
     .first();
-  await expect(section)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(section).toBeVisible({ timeout: 5000 });
 });
 
 Then('the billing section should be clickable', async ({ world }) => {
@@ -53,56 +41,32 @@ Then('the billing section should be clickable', async ({ world }) => {
   const billingFields = world.page?.locator('input[placeholder*="address"], input[name*="address"]').first();
 
   try {
-    await checkbox?.isVisible({ timeout: 2000 }).catch(() => {
-      expect(true).toBe(true);
-    });
-  } catch {
-    expect(true).toBe(true);
-  }
+    await checkbox?.isVisible({ timeout: 2000 });
+  } catch {}
 
   try {
-    await billingFields?.isVisible({ timeout: 2000 }).catch(() => {
-      expect(true).toBe(true);
-    });
-  } catch {
-    expect(true).toBe(true);
-  }
+    await billingFields?.isVisible({ timeout: 2000 });
+  } catch {}
 });
 
 Then('the payment method section should be visible', async ({ world }) => {
   const section = world.page
     ?.locator('[class*="payment"], fieldset:has-text("Payment"), h2:has-text("Payment"), select')
     .first();
-  await expect(section)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(section).toBeVisible({ timeout: 5000 });
 });
 
 Then('the order summary should be visible', async ({ world }) => {
   const summary = world.page?.locator('[class*="summary"], [class*="order"], aside').first();
-  await expect(summary)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(summary).toBeVisible({ timeout: 5000 });
 });
 
 Then('the shipping address fields should be interactable', async ({ world }) => {
   const firstNameField = world.page?.locator('input[placeholder*="first"], input[name*="firstName"]').first();
   const addressField = world.page?.locator('input[placeholder*="address"], input[name*="address"]').first();
 
-  await expect(firstNameField)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
-  await expect(addressField)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(firstNameField).toBeVisible({ timeout: 5000 });
+  await expect(addressField).toBeVisible({ timeout: 5000 });
 });
 
 Then('the billing address checkbox (or fields) should be clickable', async ({ world }) => {
@@ -110,29 +74,17 @@ Then('the billing address checkbox (or fields) should be clickable', async ({ wo
   const billingFields = world.page?.locator('input[placeholder*="address"]').nth(1);
 
   try {
-    await checkbox?.isVisible({ timeout: 2000 }).catch(() => {
-      expect(true).toBe(true);
-    });
-  } catch {
-    expect(true).toBe(true);
-  }
+    await checkbox?.isVisible({ timeout: 2000 });
+  } catch {}
 
   try {
-    await billingFields?.isVisible({ timeout: 2000 }).catch(() => {
-      expect(true).toBe(true);
-    });
-  } catch {
-    expect(true).toBe(true);
-  }
+    await billingFields?.isVisible({ timeout: 2000 });
+  } catch {}
 });
 
 Then('the payment method selector should be visible and clickable', async ({ world }) => {
   const paymentSelector = world.page
     ?.locator('select, button:has-text("Select Payment"), [class*="payment-method"]')
     .first();
-  await expect(paymentSelector)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(paymentSelector).toBeVisible({ timeout: 5000 });
 });

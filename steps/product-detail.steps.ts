@@ -29,65 +29,37 @@ Given('I navigate to the first available product detail page', async ({ world })
 Then('the product page should load completely', async ({ world }) => {
   await world.page?.waitForLoadState('load');
   const title = world.page?.locator('h1, h2, [class*="title"]').first();
-  await expect(title)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(title).toBeVisible({ timeout: 5000 });
 });
 
 Then('the product title should be visible', async ({ world }) => {
   const title = world.page?.locator('h1, h2, [class*="title"]').first();
-  await expect(title)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(title).toBeVisible({ timeout: 5000 });
 });
 
 Then('the product main image should be visible', async ({ world }) => {
   const image = world.page?.locator('img[alt*="product"], img[class*="product"], img').first();
-  await expect(image)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(image).toBeVisible({ timeout: 5000 });
 });
 
 Then('the product price should be visible', async ({ world }) => {
   const price = world.page?.locator('[class*="price"], span:has-text("$")').first();
-  await expect(price)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(price).toBeVisible({ timeout: 5000 });
 });
 
 Then('the product description section should be visible', async ({ world }) => {
   const desc = world.page?.locator('[class*="description"], [class*="details"], p').first();
-  await expect(desc)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(desc).toBeVisible({ timeout: 5000 });
 });
 
 Then('the "Add to Cart" button should be visible and clickable', async ({ world }) => {
   const btn = world.page?.locator('button:has-text("Add to Cart"), a:has-text("Add to Cart")').first();
-  await expect(btn)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(btn).toBeVisible({ timeout: 5000 });
 });
 
 Then('the quantity control should be visible and clickable', async ({ world }) => {
   const qtyControl = world.page?.locator('input[type="number"], [class*="quantity"], button:has-text("+")').first();
-  await expect(qtyControl)
-    .toBeVisible({ timeout: 5000 })
-    .catch(() => {
-      expect(true).toBe(true);
-    });
+  await expect(qtyControl).toBeVisible({ timeout: 5000 });
 });
 
 Then('any review-related buttons should be clickable if visible', async ({ world }) => {
@@ -95,12 +67,8 @@ Then('any review-related buttons should be clickable if visible', async ({ world
     ?.locator('button:has-text("Review"), button:has-text("Write Review"), [class*="review"]')
     .first();
   try {
-    await reviewBtn?.isVisible({ timeout: 2000 }).catch(() => {
-      expect(true).toBe(true);
-    });
-  } catch {
-    expect(true).toBe(true);
-  }
+    await reviewBtn?.isVisible({ timeout: 2000 });
+  } catch {}
 });
 
 // ─── 2. Image Gallery ────────────────────────────────────────────────────────
