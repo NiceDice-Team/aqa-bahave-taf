@@ -72,7 +72,9 @@ Then('the system authenticates the user', async ({ world }) => {
 Then('the user can go to the account page {string}', async ({ world }, url: string) => {
   await world.sdk.auth.navigateToAccountPage();
   // Accept /account or /profile as valid account pages (app may redirect)
-  const urlPattern = url.includes('/account') ? /\/(account|profile)/ : new RegExp(url.replace(/\//g, '\\/'));
+  const urlPattern = url.includes('/account')
+    ? /\/(account|profile)/
+    : new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   await expect(world.page).toHaveURL(urlPattern, { timeout: 10000 });
 });
 
