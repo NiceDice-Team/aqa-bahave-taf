@@ -1,0 +1,458 @@
+name: ⚡ k6 Performance Tests
+
+# ─── Triggers ─────────────────────────────────────────────────────────────────
+#
+#  1. Manual dispatch from the Actions tab (workflow_dispatch)
+#  2. PR / issue comment containing exactly: /k6
+#
+# Required secrets   : TEST_USER_EMAIL, TEST_USER_PASSWORD
+#                      TELEGRAM_BOT_TOKEN
+#                      TELEGRAM_CHAT_ID (numeric ID of the private group, e.g. -1002345678901)
+# Required variables : API_BASE_URL
+# Telegram group     : TeamChallange (private group – get ID via getUpdates)
+#   → Add your bot to the group, send a message, then call:
+#     https://api.telegram.org/bot<TOKEN>/getUpdates  → copy "chat"."id"
+# Optional variables : PRODUCT_ID, K6_VUS, K6_DURATION
+#
+# PR / issue comment commands:
+#   /k6           – run performance tests (all scenarios)
+#   /send-report  – send the latest k6 report to Telegram
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: 'Scenario to run'
+        required: false
+        default: 'all'
+        type: choice
+        options: [guest, auth, all]
+      vus:
+        description: 'Virtual users per scenario'
+        required: false
+        default: '10'
+      duration:
+        description: 'Ramp-up duration (e.g. 30s, 1m)'
+        required: false
+        default: '30s'
+      product_id:
+        description: 'Product ID used in tests'
+        required: false
+        default: '1'
+
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+# ── Defaults when triggered by PR comment (no workflow_dispatch inputs) ───────
+env:
+  DEFAULT_SCENARIO: all
+  DEFAULT_VUS: ${{ vars.K6_VUS || '10' }}
+  DEFAULT_DURATION: ${{ vars.K6_DURATION || '30s' }}
+  DEFAULT_PRODUCT_ID: ${{ vars.PRODUCT_ID || '1' }}
+
+jobs:
+
+  # ── Guard: only run on /k6 PR comments ──────────────────────────────────────
+  check-trigger:
+    name: Validate trigger
+    runs-on: ubuntu-latest
+    outputs:
+      should_run:      ${{ steps.gate.outputs.should_run }}
+      scenario:        ${{ steps.gate.outputs.scenario }}
+      vus:             ${{ steps.gate.outputs.vus }}
+      duration:        ${{ steps.gate.outputs.duration }}
+      product_id:      ${{ steps.gate.outputs.product_id }}
+      pr_number:       ${{ steps.gate.outputs.pr_number }}
+      send_telegram:   ${{ steps.gate.outputs.send_telegram }}
+
+    steps:
+      - name: Determine whether to run and resolve inputs
+        id: gate
+        env:
+          EVENT_NAME:    ${{ github.event_name }}
+          COMMENT_BODY:  ${{ github.event.comment.body }}
+          IS_PR_COMMENT: ${{ github.event.issue.pull_request != '' }}
+          WD_SCENARIO:   ${{ inputs.scenario }}
+          WD_VUS:        ${{ inputs.vus }}
+          WD_DURATION:   ${{ inputs.duration }}
+          WD_PRODUCT_ID: ${{ inputs.product_id }}
+          PR_NUMBER:     ${{ github.event.issue.number }}
+        run: |
+          TRIMMED_COMMENT="$(echo "$COMMENT_BODY" | tr -d '[:space:]')"
+
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "should_run=true"                                  >> "$GITHUB_OUTPUT"
+            echo "scenario=${WD_SCENARIO:-all}"                     >> "$GITHUB_OUTPUT"
+            echo "vus=${WD_VUS:-10}"                                >> "$GITHUB_OUTPUT"
+            echo "duration=${WD_DURATION:-30s}"                     >> "$GITHUB_OUTPUT"
+            echo "product_id=${WD_PRODUCT_ID:-1}"                   >> "$GITHUB_OUTPUT"
+            echo "pr_number="                                        >> "$GITHUB_OUTPUT"
+            echo "send_telegram=true"                               >> "$GITHUB_OUTPUT"
+          elif [[ "$EVENT_NAME" == "issue_comment" ]] && \
+               [[ "$IS_PR_COMMENT" == "true" ]] && \
+               [[ "$TRIMMED_COMMENT" == "/k6" ]]; then
+            echo "should_run=true"                                  >> "$GITHUB_OUTPUT"
+            echo "scenario=${DEFAULT_SCENARIO}"                     >> "$GITHUB_OUTPUT"
+            echo "vus=${DEFAULT_VUS}"                               >> "$GITHUB_OUTPUT"
+            echo "duration=${DEFAULT_DURATION}"                     >> "$GITHUB_OUTPUT"
+            echo "product_id=${DEFAULT_PRODUCT_ID}"                 >> "$GITHUB_OUTPUT"
+            echo "pr_number=${PR_NUMBER}"                           >> "$GITHUB_OUTPUT"
+            echo "send_telegram=true"                               >> "$GITHUB_OUTPUT"
+          elif [[ "$EVENT_NAME" == "issue_comment" ]] && \
+               [[ "$IS_PR_COMMENT" == "true" ]] && \
+               [[ "$TRIMMED_COMMENT" == "/send-report" ]]; then
+            # Re-send the latest stored report to Telegram without re-running tests
+            echo "should_run=false"                                 >> "$GITHUB_OUTPUT"
+            echo "scenario="                                         >> "$GITHUB_OUTPUT"
+            echo "vus="                                              >> "$GITHUB_OUTPUT"
+            echo "duration="                                         >> "$GITHUB_OUTPUT"
+            echo "product_id="                                       >> "$GITHUB_OUTPUT"
+            echo "pr_number=${PR_NUMBER}"                           >> "$GITHUB_OUTPUT"
+            echo "send_telegram=true"                               >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=false"                                 >> "$GITHUB_OUTPUT"
+            echo "send_telegram=false"                              >> "$GITHUB_OUTPUT"
+          fi
+
+  # ── React to the PR comment immediately ─────────────────────────────────────
+  ack-comment:
+    name: Acknowledge /k6 comment
+    needs: check-trigger
+    if: needs.check-trigger.outputs.should_run == 'true' && needs.check-trigger.outputs.pr_number != ''
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Post acknowledgement
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: Number('${{ needs.check-trigger.outputs.pr_number }}'),
+              body: [
+                '⚡ **k6 performance tests started!**',
+                '',
+                '| Input | Value |',
+                '|-------|-------|',
+                '| Scenario | `${{ needs.check-trigger.outputs.scenario }}` |',
+                '| VUs | `${{ needs.check-trigger.outputs.vus }}` |',
+                '| Duration | `${{ needs.check-trigger.outputs.duration }}` |',
+                '| Product ID | `${{ needs.check-trigger.outputs.product_id }}` |',
+                '',
+                `[View run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+              ].join('\n'),
+            });
+
+  # ── Guest scenario ───────────────────────────────────────────────────────────
+  k6-guest:
+    name: 👤 Guest user
+    needs: check-trigger
+    if: |
+      needs.check-trigger.outputs.should_run == 'true' &&
+      (needs.check-trigger.outputs.scenario == 'guest' ||
+       needs.check-trigger.outputs.scenario == 'all')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring \
+            --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
+            --keyserver hkp://keyserver.ubuntu.com:80 \
+            --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
+            | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update -qq
+          sudo apt-get install -y k6
+
+      - name: Run guest scenario
+        id: run_guest
+        continue-on-error: true
+        env:
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
+          VUS:          ${{ needs.check-trigger.outputs.vus }}
+          DURATION:     ${{ needs.check-trigger.outputs.duration }}
+          PRODUCT_ID:   ${{ needs.check-trigger.outputs.product_id }}
+        run: |
+          mkdir -p reports
+          k6 run \
+            --env API_BASE_URL="$API_BASE_URL" \
+            --env VUS="$VUS" \
+            --env DURATION="$DURATION" \
+            --env PRODUCT_ID="$PRODUCT_ID" \
+            --out json=reports/k6-guest-results.json \
+            performance/k6/scenarios/guest-user.js 2>&1 | tee reports/k6-guest-summary.txt
+          exit ${PIPESTATUS[0]}
+
+      - name: Upload guest results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-guest-results
+          path: |
+            reports/k6-guest-results.json
+            reports/k6-guest-summary.txt
+          retention-days: 30
+
+  # ── Auth scenario ────────────────────────────────────────────────────────────
+  k6-auth:
+    name: 🔐 Authenticated user
+    needs: check-trigger
+    if: |
+      needs.check-trigger.outputs.should_run == 'true' &&
+      (needs.check-trigger.outputs.scenario == 'auth' ||
+       needs.check-trigger.outputs.scenario == 'all')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring \
+            --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
+            --keyserver hkp://keyserver.ubuntu.com:80 \
+            --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
+            | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update -qq
+          sudo apt-get install -y k6
+
+      - name: Run auth scenario
+        id: run_auth
+        continue-on-error: true
+        env:
+          API_BASE_URL:       ${{ vars.API_BASE_URL }}
+          TEST_USER_EMAIL:    ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+          VUS:                ${{ needs.check-trigger.outputs.vus }}
+          DURATION:           ${{ needs.check-trigger.outputs.duration }}
+          PRODUCT_ID:         ${{ needs.check-trigger.outputs.product_id }}
+        run: |
+          mkdir -p reports
+          k6 run \
+            --env API_BASE_URL="$API_BASE_URL" \
+            --env TEST_USER_EMAIL="$TEST_USER_EMAIL" \
+            --env TEST_USER_PASSWORD="$TEST_USER_PASSWORD" \
+            --env VUS="$VUS" \
+            --env DURATION="$DURATION" \
+            --env PRODUCT_ID="$PRODUCT_ID" \
+            --out json=reports/k6-auth-results.json \
+            performance/k6/scenarios/auth-user.js 2>&1 | tee reports/k6-auth-summary.txt
+          exit ${PIPESTATUS[0]}
+
+      - name: Upload auth results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-auth-results
+          path: |
+            reports/k6-auth-results.json
+            reports/k6-auth-summary.txt
+          retention-days: 30
+
+  # ── Summary comment on PR ────────────────────────────────────────────────────
+  post-summary:
+    name: Post results summary
+    needs: [check-trigger, k6-guest, k6-auth]
+    # Run even if individual jobs are skipped, but not when check-trigger said no
+    if: |
+      always() &&
+      needs.check-trigger.outputs.should_run == 'true' &&
+      needs.check-trigger.outputs.pr_number != ''
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Download guest results
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: k6-guest-results
+          path: reports/
+
+      - name: Download auth results
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: k6-auth-results
+          path: reports/
+
+      - name: Post results to PR
+        uses: actions/github-script@v7
+        env:
+          GUEST_STATUS: ${{ needs.k6-guest.result }}
+          AUTH_STATUS:  ${{ needs.k6-auth.result }}
+        with:
+          script: |
+            const fs = require('fs');
+            const statusEmoji = (s) =>
+              s === 'success' ? '✅' : s === 'skipped' ? '⏭️' : '❌';
+
+            // Extract THRESHOLDS + key TOTAL RESULTS lines from captured stdout
+            function extractSummary(filePath) {
+              try {
+                const text = fs.readFileSync(filePath, 'utf8');
+                const thresholds = text.match(/█ THRESHOLDS([ \S\s]*?)(?=█ TOTAL RESULTS)/);
+                const totals     = text.match(/█ TOTAL RESULTS([\s\S]*?)(?=\n\n\n|running \()/);
+                let out = '';
+                if (thresholds) out += '```\n' + thresholds[1].trim() + '\n```\n';
+                if (totals) {
+                  const lines = totals[1].split('\n')
+                    .filter(l => /checks_|http_req_|iterations/.test(l));
+                  if (lines.length) out += '```\n' + lines.join('\n').trim() + '\n```';
+                }
+                return out || '_No metrics captured_';
+              } catch {
+                return '_Results file not found_';
+              }
+            }
+
+            const guestMetrics = extractSummary('reports/k6-guest-summary.txt');
+            const authMetrics  = extractSummary('reports/k6-auth-summary.txt');
+
+            const body = [
+              '## ⚡ k6 Performance Results',
+              '',
+              '| Scenario | Status |',
+              '|----------|--------|',
+              `| 👤 Guest user | ${statusEmoji(process.env.GUEST_STATUS)} \`${process.env.GUEST_STATUS}\` |`,
+              `| 🔐 Auth user  | ${statusEmoji(process.env.AUTH_STATUS)} \`${process.env.AUTH_STATUS}\` |`,
+              '',
+              '### 👤 Guest scenario',
+              guestMetrics,
+              '',
+              '### 🔐 Auth scenario',
+              authMetrics,
+              '',
+              '> Raw JSON results and full logs are available as [workflow artifacts]' +
+                `(${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).`,
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: Number('${{ needs.check-trigger.outputs.pr_number }}'),
+              body,
+            });
+
+  # ── Telegram notification ────────────────────────────────────────────────────
+  telegram-notify:
+    name: 📨 Send report to Telegram
+    needs: [check-trigger, k6-guest, k6-auth]
+    # Runs after tests complete OR when /send-report comment is posted
+    if: |
+      always() &&
+      needs.check-trigger.outputs.send_telegram == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download guest results
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: k6-guest-results
+          path: reports/
+
+      - name: Download auth results
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: k6-auth-results
+          path: reports/
+
+      - name: Build and send Telegram message
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          GUEST_STATUS:       ${{ needs.k6-guest.result }}
+          AUTH_STATUS:        ${{ needs.k6-auth.result }}
+          RUN_URL:            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          PR_NUMBER:          ${{ needs.check-trigger.outputs.pr_number }}
+          SCENARIO:           ${{ needs.check-trigger.outputs.scenario }}
+          VUS:                ${{ needs.check-trigger.outputs.vus }}
+          DURATION:           ${{ needs.check-trigger.outputs.duration }}
+        run: |
+          status_icon() {
+            case "$1" in
+              success) echo "✅" ;;
+              skipped) echo "⏭" ;;
+              *)        echo "❌" ;;
+            esac
+          }
+
+          # Extract key lines from a k6 summary text file
+          extract_metrics() {
+            local file="$1"
+            if [[ ! -f "$file" ]]; then
+              echo "  _no data_"
+              return
+            fi
+            # Threshold results
+            awk '/█ THRESHOLDS/{found=1; next} /█ TOTAL RESULTS/{found=0} found && NF' "$file" \
+              | grep -E "✓|✗" | sed 's/^/  /' | head -10
+            # Key totals
+            echo ""
+            grep -E "checks_total|http_req_failed|http_req_duration|iterations" "$file" \
+              | sed 's/^/  /' | head -6
+          }
+
+          GUEST_METRICS="$(extract_metrics reports/k6-guest-summary.txt)"
+          AUTH_METRICS="$(extract_metrics reports/k6-auth-summary.txt)"
+
+          # Telegram markdown uses *bold*, _italic_, `code` (MarkdownV2 needs escaping)
+          # Use plain HTML parse_mode to avoid escaping hell
+          PR_LINE=""
+          if [[ -n "$PR_NUMBER" ]]; then
+            PR_LINE="\n<b>PR:</b> #${PR_NUMBER}"
+          fi
+
+          PARAMS_LINE=""
+          if [[ -n "$SCENARIO" ]]; then
+            PARAMS_LINE="\n<b>Params:</b> scenario=<code>${SCENARIO}</code>  vus=<code>${VUS}</code>  duration=<code>${DURATION}</code>"
+          fi
+
+          MESSAGE="<b>⚡ k6 Performance Report</b>"
+          MESSAGE+="\n<b>Repo:</b> ${{ github.repository }}"
+          MESSAGE+="${PR_LINE}${PARAMS_LINE}"
+          MESSAGE+="\n"
+          MESSAGE+="\n$(status_icon "$GUEST_STATUS") <b>Guest user</b>  —  <code>${GUEST_STATUS:-skipped}</code>"
+          if [[ -n "$GUEST_METRICS" ]]; then
+            MESSAGE+="\n<pre>${GUEST_METRICS}</pre>"
+          fi
+          MESSAGE+="\n$(status_icon "$AUTH_STATUS") <b>Auth user</b>  —  <code>${AUTH_STATUS:-skipped}</code>"
+          if [[ -n "$AUTH_METRICS" ]]; then
+            MESSAGE+="\n<pre>${AUTH_METRICS}</pre>"
+          fi
+          MESSAGE+="\n"
+          MESSAGE+="\n<a href=\"${RUN_URL}\">🔗 Full run &amp; artifacts</a>"
+
+          curl -sSf -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "$(jq -nc \
+              --arg chat_id   "$TELEGRAM_CHAT_ID" \
+              --arg text       "$MESSAGE" \
+              '{chat_id: $chat_id, text: $text, parse_mode: "HTML", disable_web_page_preview: true}'\
+            )"
