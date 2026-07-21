@@ -48,8 +48,13 @@ Then('the product detail page should load', async ({ world }) => {
   await expect(productTitle).toBeVisible({ timeout: 5000 });
 });
 
-Then('the {string} button should be visible', async ({ world }, buttonText: string) => {
-  const btn = world.page?.locator(`button:has-text("${buttonText}"), a:has-text("${buttonText}")`).first();
+Then('the "Add to Cart" button should be visible', async ({ world }) => {
+  const btn = world.page?.locator('button:has-text("Add to Cart"), a:has-text("Add to Cart")').first();
+  await expect(btn).toBeVisible({ timeout: 5000 });
+});
+
+Then('the "Proceed to Checkout" button should be visible', async ({ world }) => {
+  const btn = world.page?.locator('button:has-text("Proceed to Checkout"), a:has-text("Proceed to Checkout")').first();
   await expect(btn).toBeVisible({ timeout: 5000 });
 });
 
