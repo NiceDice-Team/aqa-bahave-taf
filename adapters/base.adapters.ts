@@ -90,6 +90,16 @@ export abstract class ApiAdapter {
       console.log(`  → ${response.status()} ${response.statusText()}`);
     }
 
+    if (!response.ok()) {
+      const errorBody = response.headers()['content-type']?.includes('application/json')
+        ? await response.json()
+        : { message: response.statusText() };
+      const error = new Error(`API Error ${response.status()}: ${JSON.stringify(errorBody)}`);
+      (error as unknown as { status: number; body: unknown }).status = response.status();
+      (error as unknown as { status: number; body: unknown }).body = errorBody;
+      throw error;
+    }
+
     if (response.headers()['content-type']?.includes('application/json')) {
       return response.json() as Promise<T>;
     }
