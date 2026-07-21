@@ -46,6 +46,7 @@ export class CartApiAdapter extends ApiAdapter implements ICart {
     }
 
     // Log error but don't throw to allow tests to pass
+    // eslint-disable-next-line no-console
     console.error(`❌ API Error (${statusCode}): ${message}`);
   }
 
@@ -105,7 +106,8 @@ export class CartApiAdapter extends ApiAdapter implements ICart {
     }
   }
 
-  async applyPromoCode(code: string): Promise<void> {
+  async applyPromoCode(_code: string): Promise<void> {
+    // eslint-disable-next-line no-console
     console.warn('Promo code functionality not yet implemented in API');
   }
 
