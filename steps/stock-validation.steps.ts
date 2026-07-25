@@ -14,28 +14,25 @@ When('I check the available product stock', async ({ world }) => {
   world.testData.currentQuantity = parseInt(currentQty, 10);
 });
 
-When(
-  'I increment the quantity multiple times to exceed the stock',
-  async ({ world }) => {
-    // Get the initial quantity
-    const initialQty = await world.sdk.product.getProductQuantity();
-    const initialNumber = parseInt(initialQty, 10);
+When('I increment the quantity multiple times to exceed the stock', async ({ world }) => {
+  // Get the initial quantity
+  const initialQty = await world.sdk.product.getProductQuantity();
+  const initialNumber = parseInt(initialQty, 10);
 
-    // Try to increment beyond reasonable limits (e.g., 10 times)
-    for (let i = 0; i < 10; i++) {
-      const currentQty = parseInt(await world.sdk.product.getProductQuantity(), 10);
-      await world.sdk.product.incrementProductQuantity();
-      const newQty = parseInt(await world.sdk.product.getProductQuantity(), 10);
+  // Try to increment beyond reasonable limits (e.g., 10 times)
+  for (let i = 0; i < 10; i++) {
+    const currentQty = parseInt(await world.sdk.product.getProductQuantity(), 10);
+    await world.sdk.product.incrementProductQuantity();
+    const newQty = parseInt(await world.sdk.product.getProductQuantity(), 10);
 
-      // If quantity doesn't increase, we've hit the limit
-      if (newQty === currentQty) {
-        world.testData.maxQuantity = newQty;
-        break;
-      }
+    // If quantity doesn't increase, we've hit the limit
+    if (newQty === currentQty) {
       world.testData.maxQuantity = newQty;
+      break;
     }
+    world.testData.maxQuantity = newQty;
   }
-);
+});
 
 Then('the quantity should not exceed the available stock', async ({ world }) => {
   const currentQty = parseInt(await world.sdk.product.getProductQuantity(), 10);
@@ -73,9 +70,7 @@ Then('the add-to-cart button should be disabled or show error message', async ({
 
 Then('an out-of-stock message should be visible', async ({ world }) => {
   const messageVisible = await world.page
-    ?.locator(
-      ':text("out of stock"), :text("out-of-stock"), :text("unavailable"), :text("sold out")'
-    )
+    ?.locator(':text("out of stock"), :text("out-of-stock"), :text("unavailable"), :text("sold out")')
     .first()
     .isVisible()
     .catch(() => false);
@@ -138,15 +133,8 @@ Then('an insufficient stock error message should appear', async ({ world }) => {
     .catch(() => null);
 
   expect(
-    errorMessage
-      ?.toLowerCase()
-      .includes(
-        'insufficient stock' ||
-          'not enough stock' ||
-          'out of stock' ||
-          'exceeds available'
-      )
-  ).toBeTruthy();
+    /insufficient stock|not enough stock|out of stock|exceeds available/.test(errorMessage?.toLowerCase() ?? '')
+  ).toBe(true);
 });
 
 Then('the product should not be added to the cart', async ({ world }) => {
@@ -177,16 +165,13 @@ Then('I should still be able to navigate', async ({ world }) => {
   expect(navigationWorked).toBe(true);
 });
 
-Then(
-  'I should still be able to interact with other page elements',
-  async ({ world }) => {
-    // Check that we can see and interact with main page elements
-    const isTitleVisible = await world.sdk.product.isProductTitleVisible();
-    const isDescriptionVisible = await world.sdk.product.isProductDescriptionVisible();
+Then('I should still be able to interact with other page elements', async ({ world }) => {
+  // Check that we can see and interact with main page elements
+  const isTitleVisible = await world.sdk.product.isProductTitleVisible();
+  const isDescriptionVisible = await world.sdk.product.isProductDescriptionVisible();
 
-    expect(isTitleVisible || isDescriptionVisible).toBe(true);
-  }
-);
+  expect(isTitleVisible || isDescriptionVisible).toBe(true);
+});
 
 Then('the page should not break or reload unexpectedly', async ({ world }) => {
   // Verify page didn't crash or reload
