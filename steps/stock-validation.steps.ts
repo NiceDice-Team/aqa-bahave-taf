@@ -15,10 +15,6 @@ When('I check the available product stock', async ({ world }) => {
 });
 
 When('I increment the quantity multiple times to exceed the stock', async ({ world }) => {
-  // Get the initial quantity
-  const initialQty = await world.sdk.product.getProductQuantity();
-  const initialNumber = parseInt(initialQty, 10);
-
   // Try to increment beyond reasonable limits (e.g., 10 times)
   for (let i = 0; i < 10; i++) {
     const currentQty = parseInt(await world.sdk.product.getProductQuantity(), 10);
