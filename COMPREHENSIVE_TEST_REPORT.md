@@ -2,7 +2,7 @@
 
 **Дата**: 2026-07-21  
 **Статус**: ✅ ТЕСТИ ГОТОВІ ДО ЗАПУСКУ  
-**Покриття**: 100% Acceptance Criteria  
+**Покриття**: 100% Acceptance Criteria
 
 ---
 
@@ -11,6 +11,7 @@
 Було створено повний набір BDD тестів для перевірки функціональності валідації stock перед додаванням товарів до кошика. Тести покривають всі критерії прийняття та охоплюють як сторінку товару, так і кошик.
 
 ### ✅ Основні досягнення:
+
 - ✅ 7 комплексних BDD сценаріїв
 - ✅ 100% покриття Acceptance Criteria
 - ✅ 5 critical/regression тестів
@@ -27,12 +28,14 @@
 **Покрито тестами**: #1, #3, #4, #6
 
 **Деталі реалізації**:
+
 - Сценарій #1: Перевірка, що кнопка increment не дозволяє перевищити stock на product page
 - Сценарій #3: Користувач може додати товар з точною кількістю = stock
 - Сценарій #4: У кошику неможливо оновити quantity > stock
 - Сценарій #6: При спробі перевищити stock, операція блокується
 
 **Тестові дії**:
+
 ```gherkin
 When I increment the quantity multiple times to exceed the stock
 Then the quantity should not exceed the available stock
@@ -45,11 +48,13 @@ Then the quantity should not exceed the available stock
 **Покрито тестами**: #2, #6, #7
 
 **Деталі реалізації**:
+
 - Сценарій #2: Out-of-stock повідомлення видно на product page
 - Сценарій #6: Error message про insufficient stock при додаванні
 - Сценарій #7: UI залишається функціональним, повідомлення залишається видимим
 
 **Тестові дії**:
+
 ```gherkin
 Then an out-of-stock message should be visible
 Then an insufficient stock error message should appear
@@ -63,11 +68,13 @@ Then an error message appears
 **Покрито тестами**: #7
 
 **Деталі реалізації**:
+
 - Сторінка залишається функціональною після помилки валідації
 - Можна навігувати по сторінці
 - Всі елементи залишаються інтерактивними
 
 **Тестові дії**:
+
 ```gherkin
 Then I should still be able to navigate
 And I should still be able to interact with other page elements
@@ -81,10 +88,12 @@ And the page should not break or reload unexpectedly
 **Покрито тестами**: #4, #5
 
 **Деталі реалізації**:
+
 - Сценарій #4: Валідація при спробі обновити quantity > stock
 - Сценарій #5: Успішне обновлення quantity до максимуму
 
 **Тестові дії**:
+
 ```gherkin
 When the user tries to increase the quantity beyond available stock
 Then the quantity should not exceed the available stock
@@ -100,11 +109,13 @@ Then the quantity should be updated successfully
 **Покрито тестами**: #1, #2, #3
 
 **Деталі реалізації**:
+
 - Сценарій #1: Increment обмежена disponible stock
 - Сценарій #2: Button disabled для out-of-stock товарів
 - Сценарій #3: Можна додати з точною кількістю
 
 **Тестові дії**:
+
 ```gherkin
 When I increment the quantity multiple times to exceed the stock
 Then the add-to-cart button should be disabled or show error message
@@ -118,6 +129,7 @@ Then the product should be added to the cart successfully
 ## 📊 Детальний опис тестів
 
 ### 🔴 Сценарій 1: Cannot increment quantity beyond available stock on product page
+
 - **Теги**: `@critical` `@stock` `@product-detail`
 - **Тип**: Critical path
 - **Описання**: Користувач не может збільшити quantity понад доступний stock на сторінці товару
@@ -131,6 +143,7 @@ Then the product should be added to the cart successfully
 ---
 
 ### 🔴 Сценарій 2: Add to cart button is disabled when out of stock
+
 - **Теги**: `@critical` `@stock` `@product-detail`
 - **Тип**: Critical path
 - **Описання**: Кнопка "Add to Cart" вимкнена для товарів без stock
@@ -143,6 +156,7 @@ Then the product should be added to the cart successfully
 ---
 
 ### 🔴 Сценарій 3: Can add product with exact stock quantity on product page
+
 - **Теги**: `@critical` `@stock` `@product-detail`
 - **Тип**: Happy path
 - **Описання**: Користувач може додати товар з максимальною допустимою кількістю
@@ -156,6 +170,7 @@ Then the product should be added to the cart successfully
 ---
 
 ### 🟠 Сценарій 4: Cannot update cart quantity beyond available stock
+
 - **Теги**: `@stock` `@cart` `@product-detail`
 - **Тип**: Cart validation
 - **Описання**: Неможливо оновити quantity > stock у кошику
@@ -170,6 +185,7 @@ Then the product should be added to the cart successfully
 ---
 
 ### 🟠 Сценарій 5: Update cart to maximum available quantity succeeds
+
 - **Теги**: `@stock` `@cart` `@product-detail`
 - **Тип**: Happy path
 - **Описання**: Можна оновити quantity до максимуму у кошику
@@ -184,6 +200,7 @@ Then the product should be added to the cart successfully
 ---
 
 ### 🟣 Сценарій 6: Error message is displayed when exceeding stock
+
 - **Теги**: `@regression` `@stock` `@product-detail`
 - **Тип**: Regression
 - **Описання**: Отримується error message при спробі перевищити stock
@@ -197,6 +214,7 @@ Then the product should be added to the cart successfully
 ---
 
 ### 🟣 Сценарій 7: UI remains functional after stock validation error
+
 - **Теги**: `@regression` `@stock` `@product-detail`
 - **Тип**: Regression / Resilience
 - **Описання**: UI залишається функціональним після помилки валідації stock
@@ -228,6 +246,7 @@ PageObject Layer (ProductPage, CartPage)
 ### Перевірені компоненти
 
 #### ✅ ProductPage (`page-objects/product-page.ts`)
+
 ```typescript
 // Locators
 quantityInput: Locator;           // input type="number" для кількості
@@ -245,6 +264,7 @@ async isLowStockVisible(): Promise<boolean>;
 ```
 
 #### ✅ CartPage (`page-objects/cart-page.ts`)
+
 ```typescript
 // Методи обновлення quantity з валідацією
 async setQuantity(quantity: string): Promise<void>;
@@ -253,6 +273,7 @@ async isProductInCart(productName: string): Promise<boolean>;
 ```
 
 #### ✅ ProductWebAdapter (`adapters/product.web.adapter.ts`)
+
 ```typescript
 async incrementProductQuantity(): Promise<void>;
 async decrementProductQuantity(): Promise<void>;
@@ -262,6 +283,7 @@ async isLowStockVisible(): Promise<boolean>;
 ```
 
 #### ✅ CartWebAdapter (`adapters/cart.web.adapter.ts`)
+
 ```typescript
 async updateQuantity(productId: string, quantity: number): Promise<void>;
 async setQuantity(quantity: string): Promise<void>;
@@ -272,22 +294,23 @@ async addToCart(productId: string, quantity: number): Promise<void>;
 
 ## 📈 Метрики тестування
 
-| Метрика | Значення |
-|---------|----------|
-| **Всього тестів** | 7 |
-| **Critical тести** | 3 |
-| **Regression тести** | 2 |
-| **Cart тести** | 2 |
-| **Product page тести** | 5 |
+| Метрика                         | Значення   |
+| ------------------------------- | ---------- |
+| **Всього тестів**               | 7          |
+| **Critical тести**              | 3          |
+| **Regression тести**            | 2          |
+| **Cart тести**                  | 2          |
+| **Product page тести**          | 5          |
 | **Acceptance Criteria покрито** | 5/5 (100%) |
-| **Готовність до запуску** | ✅ 100% |
-| **Тестові файли створено** | 3 |
+| **Готовність до запуску**       | ✅ 100%    |
+| **Тестові файли створено**      | 3          |
 
 ---
 
 ## 🔍 Тестові сценарії - Деталі та Очікування
 
 ### Тест #1: Cannot increment quantity beyond available stock
+
 ```
 📍 Локація: Product Page
 🎯 Мета: Перевірити обмеження quantity при increment
@@ -301,6 +324,7 @@ async addToCart(productId: string, quantity: number): Promise<void>;
 ```
 
 ### Тест #2: Add to cart button disabled when out of stock
+
 ```
 📍 Локація: Product Page (Out of Stock)
 🎯 Мета: Перевірити disabled state для out-of-stock товарів
@@ -313,6 +337,7 @@ async addToCart(productId: string, quantity: number): Promise<void>;
 ```
 
 ### Тест #3: Add with exact stock quantity
+
 ```
 📍 Локація: Product Page
 🎯 Мета: Користувач може додати max quantity
@@ -325,6 +350,7 @@ async addToCart(productId: string, quantity: number): Promise<void>;
 ```
 
 ### Тест #4: Cannot update cart quantity beyond stock
+
 ```
 📍 Локація: Cart Page (Logged in)
 🎯 Мета: Валідація quantity у кошику
@@ -338,6 +364,7 @@ async addToCart(productId: string, quantity: number): Promise<void>;
 ```
 
 ### Тест #5: Update to maximum available quantity
+
 ```
 📍 Локація: Cart Page (Logged in)
 🎯 Мета: Успішне оновлення до max
@@ -351,6 +378,7 @@ async addToCart(productId: string, quantity: number): Promise<void>;
 ```
 
 ### Тест #6: Error message when exceeding stock
+
 ```
 📍 Локація: Product Page
 🎯 Мета: Error message при перевищенні stock
@@ -364,6 +392,7 @@ async addToCart(productId: string, quantity: number): Promise<void>;
 ```
 
 ### Тест #7: UI remains functional after error
+
 ```
 📍 Локація: Product Page
 🎯 Мета: Resilience after validation error
@@ -382,6 +411,7 @@ async addToCart(productId: string, quantity: number): Promise<void>;
 ## 🚀 Інструкції запуску
 
 ### Попередні умови
+
 ```bash
 # 1. Встановити залежності
 npm install
@@ -418,6 +448,7 @@ npm run test:run -- --grep "@stock-validation" --reporter=html
 ```
 
 ### Перегляд результатів
+
 ```bash
 # Відкрити HTML звіт
 npm run report:html
@@ -454,14 +485,14 @@ npm run report:html
 
 ### ✅ Кінцеве резюме
 
-| Компонент | Статус |
-|-----------|--------|
-| Feature файл | ✅ Створен (7 сценаріїв) |
-| Step definitions | ✅ Реалізовані |
-| Компіляція | ✅ Успішна |
-| Архітектура | ✅ Відповідає стандартам |
-| Acceptance Criteria | ✅ 100% покрито |
-| Готовність | ✅ Готово до запуску |
+| Компонент           | Статус                   |
+| ------------------- | ------------------------ |
+| Feature файл        | ✅ Створен (7 сценаріїв) |
+| Step definitions    | ✅ Реалізовані           |
+| Компіляція          | ✅ Успішна               |
+| Архітектура         | ✅ Відповідає стандартам |
+| Acceptance Criteria | ✅ 100% покрито          |
+| Готовність          | ✅ Готово до запуску     |
 
 ### 🎯 Наступні кроки
 
@@ -476,13 +507,15 @@ npm run report:html
 ## 📝 Зміни та поліпшення
 
 ### Що було реалізовано в цій сесії:
+
 ✅ Створено комплексний набір BDD тестів  
 ✅ Покрито всі Acceptance Criteria  
 ✅ Інтегровано з Playwright BDD фреймворком  
 ✅ Підготовлено до запуску  
-✅ Документовано всі сценарії  
+✅ Документовано всі сценарії
 
 ### Рекомендації для розробників:
+
 1. Впровадити server-side валідацію stock при додаванні в cart
 2. Додати unit тести для stock validation logic
 3. Реалізувати real-time stock updates з WebSocket
@@ -495,4 +528,3 @@ npm run report:html
 **Дата завершення**: 2026-07-21 03:32  
 **Автор**: Copilot AI  
 **Версія**: 1.0
-

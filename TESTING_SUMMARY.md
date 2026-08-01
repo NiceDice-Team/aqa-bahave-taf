@@ -5,25 +5,27 @@
 ---
 
 ## 🎯 Мета
+
 Протестувати функціональність валідації stock перед додаванням товарів до кошика, щоб запобігти ситуаціям, коли користувач може додати більше товарів, ніж є в наявності.
 
 ---
 
 ## ✅ Acceptance Criteria - Результат Тестування
 
-| Критерій | Статус | Тести | Деталі |
-|----------|--------|-------|--------|
-| ✅ **Не можна додати більше ніж stock** | ✅ Покрито | #1, #3, #4, #6 | Quantity не перевищує доступну кількість |
-| ✅ **Показується повідомлення** | ✅ Покрито | #2, #6, #7 | Error/warning повідомлення при перевищенні |
-| ✅ **UI не ламається** | ✅ Покрито | #7 | Сторінка залишається функціональною |
-| ✅ **Працює в cart** | ✅ Покрито | #4, #5 | Валідація в кошику при оновленні quantity |
-| ✅ **Працює на product page** | ✅ Покрито | #1, #2, #3 | Валідація на сторінці товару |
+| Критерій                                | Статус     | Тести          | Деталі                                     |
+| --------------------------------------- | ---------- | -------------- | ------------------------------------------ |
+| ✅ **Не можна додати більше ніж stock** | ✅ Покрито | #1, #3, #4, #6 | Quantity не перевищує доступну кількість   |
+| ✅ **Показується повідомлення**         | ✅ Покрито | #2, #6, #7     | Error/warning повідомлення при перевищенні |
+| ✅ **UI не ламається**                  | ✅ Покрито | #7             | Сторінка залишається функціональною        |
+| ✅ **Працює в cart**                    | ✅ Покрито | #4, #5         | Валідація в кошику при оновленні quantity  |
+| ✅ **Працює на product page**           | ✅ Покрито | #1, #2, #3     | Валідація на сторінці товару               |
 
 ---
 
 ## 📊 Тестові Сценарії
 
 ### Сценарій 1: Cannot increment quantity beyond available stock on product page
+
 - **Теги**: `@critical` `@stock` `@product-detail`
 - **Статус**: ✅ Скомпільований
 - **Опис**: Користувач не може збільшити кількість понад доступний stock
@@ -36,6 +38,7 @@
 ---
 
 ### Сценарій 2: Add to cart button is disabled when out of stock
+
 - **Теги**: `@critical` `@stock` `@product-detail`
 - **Статус**: ✅ Скомпільований
 - **Опис**: Кнопка "Add to Cart" вимкнена коли товар недоступний
@@ -47,6 +50,7 @@
 ---
 
 ### Сценарій 3: Can add product with exact stock quantity on product page
+
 - **Теги**: `@critical` `@stock` `@product-detail`
 - **Статус**: ✅ Скомпільований
 - **Опис**: Користувач може додати товар з максимальною кількістю
@@ -59,6 +63,7 @@
 ---
 
 ### Сценарій 4: Cannot update cart quantity beyond available stock
+
 - **Теги**: `@stock` `@cart` `@product-detail`
 - **Статус**: ✅ Скомпільований
 - **Опис**: Неможливо оновити quantity > stock в кошику
@@ -71,6 +76,7 @@
 ---
 
 ### Сценарій 5: Update cart to maximum available quantity succeeds
+
 - **Теги**: `@stock` `@cart` `@product-detail`
 - **Статус**: ✅ Скомпільований
 - **Опис**: Можна оновити quantity до максимуму
@@ -83,6 +89,7 @@
 ---
 
 ### Сценарій 6: Error message is displayed when exceeding stock
+
 - **Теги**: `@regression` `@stock` `@product-detail`
 - **Статус**: ✅ Скомпільований
 - **Опис**: Помилка показується при перевищенні stock
@@ -94,6 +101,7 @@
 ---
 
 ### Сценарій 7: UI remains functional after stock validation error
+
 - **Теги**: `@regression` `@stock` `@product-detail`
 - **Статус**: ✅ Скомпільований
 - **Опис**: UI залишається функціональним після помилки
@@ -107,6 +115,7 @@
 ## 🔍 Перевірені Компоненти
 
 ### ✅ Тестова Архітектура
+
 - **ProductPage** (`page-objects/product-page.ts`)
   - `quantityInput` - input для введення quantity
   - `addToCartButton` - кнопка додавання
@@ -128,6 +137,7 @@
   - `setQuantity(quantity)` - встановити quantity
 
 ### ❓ Потрібно Перевірити (Backend/API)
+
 - Stock інформація з API (`GET /api/products/{id}/`)
 - Валідація на бекенді при додаванні в кошик
 - Error responses коли quantity > stock
@@ -152,17 +162,20 @@
 ## 🚀 Як Запустити Тести
 
 ### 1️⃣ Встановити залежності
+
 ```bash
 npm install
 ```
 
 ### 2️⃣ Запустити тестовий сервер
+
 ```bash
 npm run docker:up
 # або запустити локально на http://localhost:3001
 ```
 
 ### 3️⃣ Запустити тести
+
 ```bash
 # Всі stock validation тести
 npm run test:run -- --grep "@stock-validation"
@@ -175,6 +188,7 @@ npm run test:ui
 ```
 
 ### 4️⃣ Переглянути звіт
+
 ```bash
 npm run report:html
 ```
@@ -183,15 +197,15 @@ npm run report:html
 
 ## 📈 Метрики Тестування
 
-| Метрика | Значення |
-|---------|----------|
-| Всього тестів | 7 |
-| Critical тести | 3 |
-| Regression тести | 2 |
-| Cart тести | 2 |
-| Product page тести | 5 |
+| Метрика                     | Значення   |
+| --------------------------- | ---------- |
+| Всього тестів               | 7          |
+| Critical тести              | 3          |
+| Regression тести            | 2          |
+| Cart тести                  | 2          |
+| Product page тести          | 5          |
 | Acceptance criteria покрито | 5/5 (100%) |
-| Готовність до запуску | ✅ 100% |
+| Готовність до запуску       | ✅ 100%    |
 
 ---
 
@@ -212,7 +226,7 @@ test-stock-validation:
     paths:
       - test-results/
       - playwright-report/
-  report: 
+  report:
     junit: test-results/junit.xml
 ```
 
@@ -221,6 +235,7 @@ test-stock-validation:
 ## ✨ Результат
 
 ### ✅ Зроблено:
+
 1. Створено 7 комплексних BDD тестів
 2. Покрито 100% Acceptance Criteria
 3. Тести включають critical, regression, та cart scenarios
@@ -228,6 +243,7 @@ test-stock-validation:
 5. Готово до запуску при готовності сервера
 
 ### 🎯 Наступні кроки:
+
 1. Запустити тестовий сервер (docker або локально)
 2. Виконати `npm run test:run -- --grep "@stock-validation"`
 3. Аналізувати результати та знаходити баги
@@ -242,4 +258,3 @@ test-stock-validation:
 - [Step definitions](./steps/stock-validation.steps.ts)
 - [Product page](./page-objects/product-page.ts)
 - [Cart page](./page-objects/cart-page.ts)
-
