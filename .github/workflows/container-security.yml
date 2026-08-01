@@ -61,7 +61,7 @@ jobs:
 
       - name: Upload Hadolint report
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: hadolint-report
           path: hadolint-report.json
@@ -142,7 +142,7 @@ jobs:
 
       - name: Upload Trivy image report
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: trivy-image-report
           path: |
@@ -226,7 +226,7 @@ jobs:
 
       - name: Upload filesystem Trivy report
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: trivy-fs-report
           path: |

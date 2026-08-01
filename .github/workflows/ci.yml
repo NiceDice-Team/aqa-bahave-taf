@@ -81,10 +81,11 @@ jobs:
 
       - name: Upload audit report
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: npm-audit-report
           path: reports/npm-audit.json
+          if-no-files-found: ignore
           retention-days: 30
 
   # ── 2. SAST ──────────────────────────────────────────────────────────────────
@@ -125,7 +126,7 @@ jobs:
 
       - name: Upload CodeQL SARIF artifact
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: codeql-sarif
           path: sarif-results/
