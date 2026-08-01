@@ -18,7 +18,7 @@ permissions:
   actions: read
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Node.js runtime    : 22 LTS (active)
+# Node.js runtime    : 20 LTS (active)
 # Required secrets   : TEST_USER_EMAIL, TEST_USER_PASSWORD
 # Required variables : API_BASE_URL, FRONTEND_BASE_URL,
 #                      DAST_TARGET_URL  (optional – enables DAST job when set)
@@ -43,10 +43,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
