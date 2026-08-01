@@ -88,3 +88,13 @@ Then('the payment method selector should be visible and clickable', async ({ wor
     .first();
   await expect(paymentSelector).toBeVisible({ timeout: 5000 });
 });
+
+Then('the "Place Order" button should be visible', async ({ world }) => {
+  const placeOrderBtn = world.page?.locator('button:has-text("Place Order"), a:has-text("Place Order")').first();
+  await expect(placeOrderBtn).toBeVisible({ timeout: 5000 });
+});
+
+Then('the "Pay" button should be visible', async ({ world }) => {
+  const payBtn = world.page?.locator('button:has-text("Pay"), a:has-text("Pay")').first();
+  await expect(payBtn).toBeVisible({ timeout: 5000 });
+});
