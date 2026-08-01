@@ -158,21 +158,14 @@ export class CartPage {
   }
 
   private itemRowByName(productName: string): Locator {
-    // Escape quotes for proper selector syntax
-    const escaped = productName.replace(/"/g, '\\"');
+    // Use locator filtering instead of manual string interpolation/escaping.
+    // This avoids selector parsing issues with quotes/backslashes in productName.
+    const byTestId = this.page.locator('[data-testid="cart-item"]').filter({ hasText: productName });
+    const byCartClass = this.page.locator('.cart-item').filter({ hasText: productName });
+    const byRow = this.page.locator('tr').filter({ hasText: productName });
+    const byItemClass = this.page.locator('[class*="item"]').filter({ hasText: productName });
+    const byListItem = this.page.locator('li').filter({ hasText: productName });
 
-    // Try multiple selector strategies to find cart item by product name:
-    // 1. data-testid attribute with product name
-    // 2. Generic cart-item class
-    // 3. Table row
-    // 4. Fallback: any element containing the product name
-    const selector =
-      `[data-testid="cart-item"]:has-text("${escaped}"),` +
-      `.cart-item:has-text("${escaped}"),` +
-      `tr:has-text("${escaped}"),` +
-      `[class*="item"]:has-text("${escaped}"),` +
-      `li:has-text("${escaped}")`;
-
-    return this.page.locator(selector).first();
+    return byTestId.or(byCartClass).or(byRow).or(byItemClass).or(byListItem).first();
   }
 }
