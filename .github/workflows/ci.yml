@@ -18,7 +18,7 @@ permissions:
   actions: read
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Node.js runtime    : 22 LTS (active)
+# Node.js runtime    : 24 LTS (active on GitHub Actions ubuntu-latest)
 # Required secrets   : TEST_USER_EMAIL, TEST_USER_PASSWORD
 # Required variables : API_BASE_URL, FRONTEND_BASE_URL,
 #                      DAST_TARGET_URL  (optional – enables DAST job when set)
@@ -41,12 +41,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
         with:
-          node-version: '22'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
@@ -81,10 +81,11 @@ jobs:
 
       - name: Upload audit report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: npm-audit-report
           path: reports/npm-audit.json
+          if-no-files-found: ignore
           retention-days: 30
 
   # ── 2. SAST ──────────────────────────────────────────────────────────────────
@@ -101,7 +102,7 @@ jobs:
 
     steps:
       - name: Checkout (full history for secret scanning)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -125,7 +126,7 @@ jobs:
 
       - name: Upload CodeQL SARIF artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: codeql-sarif
           path: sarif-results/
@@ -154,7 +155,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.14.0

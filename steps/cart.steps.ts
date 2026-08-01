@@ -44,12 +44,20 @@ When('the user set quantity to {string}', async ({ world }, quantity: string) =>
 Then('the product detail page should load', async ({ world }) => {
   // Wait for page to load and check for typical product detail elements
   await world.page?.waitForLoadState('load');
-  const productTitle = world.page?.locator('h1, h2, [class*="title"]').first();
-  await expect(productTitle).toBeVisible({ timeout: 5000 });
+  // Check for Add to Cart button or quantity input instead of title
+  const addToCartBtn = world.page
+    ?.locator('button:has-text("Add"), button:has-text("Cart"), [class*="add-cart"]')
+    .first();
+  await expect(addToCartBtn).toBeVisible({ timeout: 5000 });
 });
 
-Then('the {string} button should be visible', async ({ world }, buttonText: string) => {
-  const btn = world.page?.locator(`button:has-text("${buttonText}"), a:has-text("${buttonText}")`).first();
+Then('the "Add to Cart" button should be visible', async ({ world }) => {
+  const btn = world.page?.locator('button:has-text("Add to Cart"), a:has-text("Add to Cart")').first();
+  await expect(btn).toBeVisible({ timeout: 5000 });
+});
+
+Then('the "Proceed to Checkout" button should be visible', async ({ world }) => {
+  const btn = world.page?.locator('button:has-text("Proceed to Checkout"), a:has-text("Proceed to Checkout")').first();
   await expect(btn).toBeVisible({ timeout: 5000 });
 });
 

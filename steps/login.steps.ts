@@ -30,6 +30,11 @@ Then('the "Sign In" button should be visible and clickable', async ({ world }) =
   await expect(btn).toBeVisible({ timeout: 5000 });
 });
 
+Then('the "Sign In" button should be visible', async ({ world }) => {
+  const btn = world.page?.locator('button:has-text("Sign In"), button:has-text("Login")').first();
+  await expect(btn).toBeVisible({ timeout: 5000 });
+});
+
 When('I fill the email field with {string}', async ({ world }, email: string) => {
   const emailInput = world.page?.locator('input[type="email"], input[name*="email"]').first();
   await emailInput?.fill(email, { timeout: 3000 });

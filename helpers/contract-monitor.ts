@@ -5,7 +5,9 @@
  * api-endpoints.ts to detect contract drift during test runs.
  *
  * Usage (in test setup):
- *   import { contractMonitor } from '../helpers/contract-monitor';\n *   const report = await contractMonitor.compareSchemas();\n *   if (!report.matches) console.warn('Schema drift detected', report);
+ *   import { contractMonitor } from '../helpers/contract-monitor';
+ *   const report = await contractMonitor.compareSchemas();
+ *   if (!report.matches) console.warn('Schema drift detected', report);
  */
 import https from 'https';
 import http from 'http';

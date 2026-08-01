@@ -82,36 +82,39 @@ export const API_ENDPOINTS = {
   PUT_API_PRODUCTS_ID: (id: string | number) => `/api/products/${id}/`,
 
   // PRODUCTS_IMAGES
-  DELETE_API_PRODUCTS_PRODUCT_ID_IMAGES_IMAGE_ID: (product_id: string | number) =>
-    `/api/products/${product_id}/images/{image_id}/`,
+  DELETE_API_PRODUCTS_PRODUCT_ID_IMAGES_IMAGE_ID: (product_id: string | number, image_id: string | number) =>
+    `/api/products/${product_id}/images/${image_id}/`,
   PATCH_API_PRODUCTS_PRODUCT_ID_IMAGES_ORDER: (product_id: string | number) =>
     `/api/products/${product_id}/images/order/`,
   POST_API_PRODUCTS_PRODUCT_ID_IMAGES: (product_id: string | number) => `/api/products/${product_id}/images/`,
 
   // REVIEWS
-  DELETE_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS_REVIEW_ID: (product_id: string | number) =>
-    `/api/products/products/${product_id}/reviews/{review_id}/`,
+  DELETE_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS_REVIEW_ID: (
+    product_id: string | number,
+    review_id: string | number
+  ) => `/api/products/products/${product_id}/reviews/${review_id}/`,
   DELETE_API_REVIEWS_ID: (id: string | number) => `/api/reviews/${id}/`,
   GET_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS: (product_id: string | number) =>
     `/api/products/products/${product_id}/reviews/`,
-  GET_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS_REVIEW_ID: (product_id: string | number) =>
-    `/api/products/products/${product_id}/reviews/{review_id}/`,
+  GET_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS_REVIEW_ID: (product_id: string | number, review_id: string | number) =>
+    `/api/products/products/${product_id}/reviews/${review_id}/`,
   GET_API_REVIEWS: '/api/reviews/',
   GET_API_REVIEWS_ID: (id: string | number) => `/api/reviews/${id}/`,
-  PATCH_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS_REVIEW_ID: (product_id: string | number) =>
-    `/api/products/products/${product_id}/reviews/{review_id}/`,
+  PATCH_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS_REVIEW_ID: (product_id: string | number, review_id: string | number) =>
+    `/api/products/products/${product_id}/reviews/${review_id}/`,
   PATCH_API_REVIEWS_ID: (id: string | number) => `/api/reviews/${id}/`,
   POST_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS: (product_id: string | number) =>
     `/api/products/products/${product_id}/reviews/`,
   POST_API_REVIEWS: '/api/reviews/',
-  PUT_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS_REVIEW_ID: (product_id: string | number) =>
-    `/api/products/products/${product_id}/reviews/{review_id}/`,
+  PUT_API_PRODUCTS_PRODUCTS_PRODUCT_ID_REVIEWS_REVIEW_ID: (product_id: string | number, review_id: string | number) =>
+    `/api/products/products/${product_id}/reviews/${review_id}/`,
   PUT_API_REVIEWS_ID: (id: string | number) => `/api/reviews/${id}/`,
 
   // USERS
   DELETE_API_USERS_ID: (id: string | number) => `/api/users/${id}/`,
   GET_API_USERS: '/api/users/',
-  GET_API_USERS_ACTIVATE_UIDB64_TOKEN: (uidb64: string | number) => `/api/users/activate/${uidb64}/{token}/`,
+  GET_API_USERS_ACTIVATE_UIDB64_TOKEN: (uidb64: string | number, token: string | number) =>
+    `/api/users/activate/${uidb64}/${token}/`,
   GET_API_USERS_AUTH_USER_ID: '/api/users/auth/user-id/',
   GET_API_USERS_ID: (id: string | number) => `/api/users/${id}/`,
   GET_API_USERS_RESET_PASSWORD: '/api/users/reset-password/',

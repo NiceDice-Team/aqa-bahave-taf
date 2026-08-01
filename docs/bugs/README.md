@@ -16,6 +16,7 @@ docs/bugs/
 ## How to Report a Bug
 
 1. **Copy the template:**
+
    ```bash
    cp docs/bugs/BUG_TEMPLATE.md docs/bugs/BUG-YYMMDD-NNN.md
    ```
@@ -38,17 +39,20 @@ docs/bugs/
 ## Tag System
 
 ### By Type
+
 - `#api` - Backend/API issues
 - `#fe` - Frontend issues
 - `#bug` - Always include on bug reports
 
 ### By Severity
+
 - `#critical` - System broken, complete feature failure
 - `#major` - Feature partially broken, impacts core functionality
 - `#minor` - Feature works but with glitches
 - `#trivial` - Cosmetic or non-functional issue
 
 ### By Feature
+
 - `#auth` - Authentication/Login/Registration
 - `#cart` - Shopping cart functionality
 - `#checkout` - Checkout flow
@@ -59,6 +63,7 @@ docs/bugs/
 ## Bug ID Format
 
 `BUG-YYMMDD-NNN`
+
 - `YY` - Year (26 = 2026)
 - `MM` - Month (01-12)
 - `DD` - Day (01-31)
@@ -73,6 +78,7 @@ open → in-progress → resolved (or wontfix)
 ```
 
 ### Status Definitions
+
 - **open** - Bug confirmed, not yet assigned or started
 - **in-progress** - Developer actively working on the fix
 - **resolved** - Bug fixed and verified in testing
@@ -88,6 +94,7 @@ When a bug is discovered through automated testing:
 4. Link to the corresponding feature file
 
 **Example:**
+
 ```
 Test File: .features-gen/features/cart/shopping_cart.feature.spec.js
 Scenario: Logged-in user can add product to cart and view cart
@@ -98,16 +105,19 @@ Evidence: test-results/features-cart-shopping_cart.f-*/video.webm
 ## Querying Bugs
 
 ### Open critical bugs:
+
 ```bash
 grep -r "#critical" docs/bugs/ | grep "Status.*open"
 ```
 
 ### All API bugs:
+
 ```bash
 grep -r "#api" docs/bugs/*.md
 ```
 
 ### Bugs from a specific date:
+
 ```bash
 ls docs/bugs/BUG-260608-*.md
 ```
