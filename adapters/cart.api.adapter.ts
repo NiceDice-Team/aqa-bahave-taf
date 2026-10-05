@@ -138,6 +138,8 @@ export class CartApiAdapter extends ApiAdapter implements ICart {
   async clickAddToCart(): Promise<void> {}
   async setQuantity(_quantity: string): Promise<void> {}
   async clickRemove(_productName: string): Promise<void> {}
+  async increaseItemQuantity(_productName: string): Promise<void> {}
+  async clearCart(): Promise<void> {}
 
   // ── Queries ──────────────────────────────────────────────────────
   async getSubtotal(): Promise<string> {
@@ -209,5 +211,9 @@ export class CartApiAdapter extends ApiAdapter implements ICart {
       await this.handleApiError(error, 'getCartItems');
       return [];
     }
+  }
+
+  async isCheckoutAvailable(): Promise<boolean> {
+    return !(await this.isCartEmpty());
   }
 }

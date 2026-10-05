@@ -18,7 +18,8 @@ export const ENDPOINTS = {
     ITEMS: '/api/cart/items',
   },
   CHECKOUT: {
-    MAIN: '/checkout',
+    MAIN: '/checkout-order',
+    REVIEW: '/checkout-order/order-review',
     PLACE_ORDER: '/api/orders/create',
     PAYMENT: '/api/payments/process',
   },

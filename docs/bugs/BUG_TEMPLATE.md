@@ -19,11 +19,15 @@ Clear and concise description of the bug.
 
 ## Environment
 
-- **Frontend URL:** https://team-challange-front-lhrg.vercel.app
-- **API URL:** https://bgshop.work.gd/api
-- **Browser:** Chromium
-- **OS:** Windows
-- **Test User:** tchallengevasyalex+1@gmail.com
+- **Environment:** local / staging / production
+- **Frontend URL:** `http://localhost:3000`
+- **API URL:** `http://localhost:8000/api/`
+- **Mailcatcher URL:** `http://localhost:1080` (when email is involved)
+- **Browser:** Chromium / Firefox / WebKit
+- **OS:** [name and version]
+- **Pinned backend commit:** [submodule SHA]
+- **Pinned frontend commit:** [submodule SHA]
+- **Test data:** [seed command or non-sensitive fixture reference]
 
 ## Steps to Reproduce
 
@@ -61,6 +65,16 @@ What actually happens
 
 - Test File: `.features-gen/features/[feature]/[scenario].feature.spec.js`
 - Scenario: [Name]
+- Source Feature: `features/[feature]/[scenario].feature`
+- Tags: [for example `@critical-journey @login @broken`]
+- Command: [for example `npm run test:critical:all`]
+
+## Local Service Evidence
+
+- Frontend status/log excerpt:
+- Backend status/log excerpt:
+- Mailcatcher message ID and recipient (never paste activation tokens):
+- Last backend request observed:
 
 ## Notes
 

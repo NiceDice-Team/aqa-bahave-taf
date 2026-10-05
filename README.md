@@ -10,6 +10,7 @@ BDD test automation framework for the **Board Game Shop** application built with
 - [Project Structure](#project-structure)
 - [Architecture](#architecture)
 - [Running Tests](#running-tests)
+- [Local Critical User Journeys](#local-critical-user-journeys)
 - [Generating API Endpoints](#generating-api-endpoints)
 - [Playwright MCP (AI Agent)](#playwright-mcp-ai-agent)
 - [Docker Setup](#docker-setup)
@@ -28,6 +29,7 @@ BDD test automation framework for the **Board Game Shop** application built with
 ```bash
 git clone <repository-url>
 cd aqa-bahave-taf
+git submodule update --init --recursive
 npm install
 npx playwright install chromium
 ```
@@ -40,14 +42,15 @@ Copy `.env.example` to `.env` and fill in the values:
 cp .env.example .env
 ```
 
-| Variable             | Description            | Example                                   |
-| -------------------- | ---------------------- | ----------------------------------------- |
-| `API_BASE_URL`       | Backend API base URL   | `https://bgshop.work.gd`                  |
-| `FRONTEND_BASE_URL`  | Frontend base URL      | `https://team-challange-front.vercel.app` |
-| `TEST_USER_EMAIL`    | Test account email     | `user@example.com`                        |
-| `TEST_USER_PASSWORD` | Test account password  | `secret123`                               |
-| `HEADLESS`           | Run browser headless   | `true` / `false`                          |
-| `SLOW_MO`            | Slow down actions (ms) | `0`                                       |
+| Variable               | Description            | Example                 |
+| ---------------------- | ---------------------- | ----------------------- |
+| `API_BASE_URL`         | Backend API base URL   | `http://localhost:8000` |
+| `FRONTEND_BASE_URL`    | Frontend base URL      | `http://localhost:3000` |
+| `MAILCATCHER_BASE_URL` | Mailcatcher UI/API URL | `http://localhost:1080` |
+| `TEST_USER_EMAIL`      | Test account email     | `user@example.com`      |
+| `TEST_USER_PASSWORD`   | Test account password  | `secret123`             |
+| `HEADLESS`             | Run browser headless   | `true` / `false`        |
+| `SLOW_MO`              | Slow down actions (ms) | `0`                     |
 
 ## Project Structure
 
@@ -57,6 +60,7 @@ aqa-bahave-taf/
 │   ├── cart/
 │   ├── catalog/
 │   ├── checkout/
+│   ├── journeys/          # Local critical customer journeys
 │   └── users/
 ├── steps/                 # BDD step definitions
 ├── support/               # World, fixtures, hooks
@@ -72,6 +76,9 @@ aqa-bahave-taf/
 ├── scripts/
 │   └── generate-endpoints.ts  # OpenAPI → TypeScript generator
 ├── helpers/               # Email, auth helpers
+├── services/
+│   ├── backend/           # Pinned backend Git submodule
+│   └── frontend/          # Pinned frontend Git submodule
 ├── fixtures/              # Static test data (users.json)
 ├── utils/                 # Utility functions
 ├── .vscode/
@@ -115,6 +122,12 @@ npm run test:run
 # Run smoke suite only (@smoke tag)
 npm run test:smoke
 
+# Run the localhost-only critical customer journeys
+npm run test:critical
+
+# Include scenarios quarantined with @broken
+npm run test:critical:all
+
 # Run regression suite only (@regression tag)
 npm run test:regression
 
@@ -136,6 +149,36 @@ npm run test:ui
 # Open HTML report
 npm run report:open
 ```
+
+## Local Critical User Journeys
+
+`npm run test:critical` covers registration plus Mailcatcher activation, password
+recovery, login, catalog-to-product discovery, cart quantity management, and the
+checkout funnel through order review. With `NODE_ENV=local`, the runner rejects
+non-loopback frontend, backend, and Mailcatcher URLs before launching a browser.
+
+The suite expects the application stack at:
+
+- frontend: `http://localhost:3000`
+- backend: `http://localhost:8000`
+- Mailcatcher: `http://localhost:1080` (override with `MAILCATCHER_BASE_URL`)
+
+Start and seed the backend, then launch the frontend with its backend URL pinned
+to localhost before running the suite. The order journey deliberately stops at
+the enabled **Place order** action, so no external payment provider is contacted.
+
+Registration uses the real local Mailcatcher flow: the test finds the unique
+recipient, extracts the activation link and token, activates the account, and
+verifies login. The frontend and backend are pinned Git submodules so local and
+CI Docker runs use the same application commits.
+
+See [docs/CRITICAL_USER_JOURNEYS.md](docs/CRITICAL_USER_JOURNEYS.md) for the
+complete service topology, coverage, CI behavior, and current blockers.
+
+`test:critical` is the fast MR gate and excludes scenarios tagged `@broken`.
+`test:critical:all` preserves full visibility by running the quarantined
+journeys as well. A scenario may be quarantined only with a documented,
+reproducible application blocker.
 
 ### Smoke Test Scenarios (13 total)
 
@@ -204,12 +247,23 @@ To use it: open VS Code Chat (`Ctrl+Alt+I`), switch to **Agent mode**, and ask C
 ## Docker Setup
 
 ```bash
-# Build and run tests in Docker
+# Initialize the pinned application repositories once
+git submodule update --init --recursive
+
+# Build the real local stack and run the critical gate
 npm run docker:test
 
-# Or with docker-compose directly
-docker-compose run --rm playwright-tests npm run test:smoke
+# Keep the local stack running for investigation
+npm run docker:up
+
+# Stop it and remove the disposable test database
+npm run docker:down
 ```
+
+The root Compose stack contains PostgreSQL, Mailcatcher, backend, a deterministic
+seed job, frontend, and Playwright. Browser requests use Docker service DNS names
+and never leave the Compose network, except for published localhost ports used
+for debugging.
 
 ## Writing Tests
 
@@ -246,3 +300,9 @@ CI=true
 ```
 
 The config automatically sets `retries: 2` and uses `workers` from `PARALLEL_WORKERS` when `CI=true`.
+
+The `BDD – Local Critical Journeys` workflow checks out the pinned submodules and
+runs `npm run docker:test`. For private repositories, add a
+`NICE_DICE_REPOS_TOKEN` Actions secret with read access to TAF, backend, and
+frontend. Updating which application revisions CI tests is done by committing
+new submodule pointers, not by silently following a moving branch during a run.

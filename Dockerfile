@@ -1,11 +1,11 @@
 # Base image with Node.js and Playwright dependencies
-FROM mcr.microsoft.com/playwright:v1.48.0-jammy
+FROM mcr.microsoft.com/playwright:v1.56.1-noble
 
 # Set working directory
 WORKDIR /app
 
 # Set environment variables
-ENV NODE_ENV=test
+ENV NODE_ENV=local
 ENV CI=true
 
 # Copy package files
@@ -13,9 +13,6 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm ci
-
-# Install Playwright browsers (if not already in base image)
-RUN npx playwright install --with-deps chromium firefox webkit
 
 # Copy application code
 COPY . .
@@ -27,7 +24,7 @@ RUN mkdir -p reports test-results .features-gen
 RUN chmod -R 777 reports test-results .features-gen
 
 # Default command (can be overridden in docker-compose)
-CMD ["npm", "run", "test"]
+CMD ["sh", "-c", "npm run test:generate && npm run test:critical"]
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \

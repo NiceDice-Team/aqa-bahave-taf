@@ -122,7 +122,8 @@ export class CatalogPage extends BasePage {
   }
 
   async getProductCount(): Promise<number> {
-    return this.productGrid.locator('[data-testid="product-card"]').count();
+    await this.page.locator('a[href*="/product/"] article').first().waitFor({ state: 'visible', timeout: 10000 });
+    return this.page.locator('a[href*="/product/"] article').count();
   }
 
   /** Navigate to the first available product in the catalog, returns its name */

@@ -32,6 +32,9 @@ export class ProductSDK implements IProduct {
   getProducts(filter?: ProductFilter) {
     return this.adapter.getProducts(filter);
   }
+  getCatalogProductCount() {
+    return this.adapter.getCatalogProductCount();
+  }
   getActiveCategoryName() {
     return this.adapter.getActiveCategoryName();
   }

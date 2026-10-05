@@ -8,6 +8,9 @@ export class CheckoutPage {
   readonly totalAmount: Locator;
   readonly orderConfirmation: Locator;
   readonly errorMessage: Locator;
+  readonly orderReviewButton: Locator;
+  readonly orderReviewHeading: Locator;
+  readonly orderSummary: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -19,6 +22,9 @@ export class CheckoutPage {
       '[data-testid="order-confirmation"], .order-confirmation, h1:has-text("Order Confirmed")'
     );
     this.errorMessage = page.locator('[role="alert"], .error-message, .alert-danger, .error').first();
+    this.orderReviewButton = page.getByRole('button', { name: /^order review$/i });
+    this.orderReviewHeading = page.getByRole('heading', { name: /^order review$/i });
+    this.orderSummary = page.getByRole('heading', { name: /^your order$/i });
   }
 
   async navigate(url: string): Promise<void> {
@@ -39,6 +45,7 @@ export class CheckoutPage {
   }
 
   async fillShippingDetails(details: {
+    country?: string;
     firstName?: string;
     lastName?: string;
     email?: string;
@@ -47,18 +54,37 @@ export class CheckoutPage {
     city?: string;
     zipCode?: string;
   }): Promise<void> {
+    if (details.country) {
+      await this.page.locator('select[name="shippingCountry"]').selectOption({ label: details.country });
+    }
     const f = async (selectors: string[], value: string) => {
       const loc = this.page.locator(selectors.join(', ')).first();
       if ((await loc.count()) > 0) await loc.fill(value);
     };
-    if (details.firstName)
-      await f(['input[name="firstName"]', '#firstName', 'input[name="first_name"]'], details.firstName);
-    if (details.lastName) await f(['input[name="lastName"]', '#lastName', 'input[name="last_name"]'], details.lastName);
-    if (details.address) await f(['input[name="address"]', '#address', 'input[name="street"]'], details.address);
-    if (details.city) await f(['input[name="city"]', '#city'], details.city);
-    if (details.zipCode) await f(['input[name="zipCode"]', '#zipCode', 'input[name="zip"]'], details.zipCode);
-    if (details.phone) await f(['input[name="phone"]', 'input[type="tel"]'], details.phone);
-    if (details.email) await f(['input[name="email"]', '#email'], details.email);
+    if (details.firstName) await f(['input[name="shippingFirstName"]', '#shippingFirstName'], details.firstName);
+    if (details.lastName) await f(['input[name="shippingLastName"]', '#shippingLastName'], details.lastName);
+    if (details.address) await f(['input[name="shippingAddress"]', '#shippingAddress'], details.address);
+    if (details.city) await f(['input[name="shippingCity"]', '#shippingCity'], details.city);
+    if (details.zipCode) await f(['input[name="shippingZipCode"]', '#shippingZipCode'], details.zipCode);
+    if (details.phone) await f(['input[name="shippingPhone"]', 'input[type="tel"]'], details.phone);
+    if (details.email) await f(['input[name="shippingEmail"]', '#shippingEmail'], details.email);
+  }
+
+  async continueToOrderReview(): Promise<void> {
+    await this.orderReviewButton.click();
+    await this.page.waitForURL(/\/checkout-order\/order-review$/, { timeout: 10000 });
+  }
+
+  async isOrderReviewVisible(): Promise<boolean> {
+    return this.orderReviewHeading.isVisible();
+  }
+
+  async isOrderSummaryVisible(): Promise<boolean> {
+    return this.orderSummary.isVisible();
+  }
+
+  async isPlaceOrderAvailable(): Promise<boolean> {
+    return this.placeOrderButton.isVisible();
   }
 
   async fillBillingDetails(details: { address?: string; city?: string; zip?: string }): Promise<void> {

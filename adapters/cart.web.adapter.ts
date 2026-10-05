@@ -91,6 +91,15 @@ export class CartWebAdapter extends WebAdapter implements ICart {
     await this.getCartPage().clickRemoveByName(productName);
   }
 
+  async increaseItemQuantity(productName: string): Promise<void> {
+    await this.getCartPage().increaseQuantity(productName);
+  }
+
+  async clearCart(): Promise<void> {
+    await this.navigateToCart();
+    await this.getCartPage().clear();
+  }
+
   // ── Queries ────────────────────────────────────────────────────────────
 
   async getSubtotal(): Promise<string> {
@@ -120,5 +129,9 @@ export class CartWebAdapter extends WebAdapter implements ICart {
   async getCartItems(): Promise<CartItem[]> {
     // Not implemented for web — items must be read via individual product checks
     return [];
+  }
+
+  async isCheckoutAvailable(): Promise<boolean> {
+    return this.getCartPage().isCheckoutAvailable();
   }
 }

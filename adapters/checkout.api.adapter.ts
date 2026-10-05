@@ -29,6 +29,7 @@ export class CheckoutApiAdapter extends ApiAdapter implements ICheckout {
     const resp = await this.sendRequest<{ orderId: string }>('POST', API_ENDPOINTS.POST_API_ORDERS);
     return resp.orderId;
   }
+  async continueToOrderReview(): Promise<void> {}
 
   // ── Fine-grained interactions (no-op for API) ─────────────────────
   async selectPaymentMethod(_method: string): Promise<void> {}
@@ -67,5 +68,14 @@ export class CheckoutApiAdapter extends ApiAdapter implements ICheckout {
 
   async getOrderTotalText(): Promise<string> {
     return '';
+  }
+  async isOrderReviewVisible(): Promise<boolean> {
+    return false;
+  }
+  async isOrderSummaryVisible(): Promise<boolean> {
+    return false;
+  }
+  async isPlaceOrderAvailable(): Promise<boolean> {
+    return false;
   }
 }

@@ -34,12 +34,8 @@ export class ProductWebAdapter extends WebAdapter implements IProduct {
   }
 
   async navigateToFirstProductDetail(): Promise<void> {
-    // Navigate directly to a known product instead of going through the catalog.
-    // The catalog route requires 2 page loads + a click and is flaky on staging.
-    const slug = '3';
-    await this.navigateTo(ENDPOINTS.PRODUCTS.DETAILS(slug));
-    await this.page.waitForLoadState('domcontentloaded');
-    this.lastProductSlug = slug;
+    await this.getCatalogPage().clickFirstProduct();
+    this.lastProductSlug = new URL(this.page.url()).pathname.split('/product/')[1] ?? '';
   }
 
   async navigateToOutOfStockProduct(): Promise<void> {
@@ -79,6 +75,10 @@ export class ProductWebAdapter extends WebAdapter implements IProduct {
 
   async getProducts(_filter?: ProductFilter): Promise<ProductDetails[]> {
     return [];
+  }
+
+  async getCatalogProductCount(): Promise<number> {
+    return this.getCatalogPage().getProductCount();
   }
 
   async getActiveCategoryName(): Promise<string> {

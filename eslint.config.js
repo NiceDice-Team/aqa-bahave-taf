@@ -13,6 +13,7 @@ module.exports = [
       '.features-gen/**',
       'reports/**',
       'test-results/**',
+      'services/**',
       'eslint.config.js',
     ],
   },

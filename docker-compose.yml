@@ -1,119 +1,117 @@
-version: '3.8'
-
 services:
-  # Playwright Test Runner Service
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: backend_user
+      POSTGRES_PASSWORD: backend_pass
+      POSTGRES_DB: backend_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U backend_user -d backend_db"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - critical-db:/var/lib/postgresql/data
+
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
+  backend:
+    build:
+      context: services/backend
+      dockerfile: Dockerfiletest
+    command: >
+      sh -c "python src/manage.py migrate &&
+             python src/manage.py runserver 0.0.0.0:8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: src.settings
+      DB_NAME: backend_db
+      DB_USER: backend_user
+      DB_PASSWORD: backend_pass
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_SSLMODE: disable
+      EMAIL_HOST: mailcatcher
+      EMAIL_PORT: 1025
+      EMAIL_USE_TLS: "false"
+      EMAIL_USE_SSL: "false"
+      DEFAULT_FROM_EMAIL: Dice & Decks Support <no-reply@localhost>
+      REPLY_TO_EMAIL: no-reply@localhost
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      mailcatcher:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8000/api/products/"]
+      interval: 3s
+      timeout: 5s
+      retries: 40
+
+  seed:
+    build:
+      context: services/backend
+      dockerfile: Dockerfiletest
+    command: ["python", "src/manage.py", "load_test_data"]
+    environment:
+      DJANGO_SETTINGS_MODULE: src.settings
+      DB_NAME: backend_db
+      DB_USER: backend_user
+      DB_PASSWORD: backend_pass
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_SSLMODE: disable
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: services/frontend
+      dockerfile: Dockerfile.dev
+      args:
+        NODE_ENV: development
+        NEXT_PUBLIC_BACKEND_URL: http://backend:8000/api/
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_BACKEND_URL: http://backend:8000/api/
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/catalog"]
+      interval: 3s
+      timeout: 5s
+      retries: 60
+
   playwright-tests:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nicedice-playwright-tests
     environment:
-      # Environment
-      - NODE_ENV=${NODE_ENV:-local}
-      
-      # API Configuration
-      - API_BASE_URL=${API_BASE_URL}
-      - API_HOST=${API_HOST:-api}
-      - API_PORT=${API_PORT:-3000}
-      - API_PROTOCOL=${API_PROTOCOL:-http}
-      - API_TIMEOUT=${API_TIMEOUT:-30000}
-      
-      # Frontend Configuration
-      - FRONTEND_BASE_URL=${FRONTEND_BASE_URL}
-      - FRONTEND_HOST=${FRONTEND_HOST:-frontend}
-      - FRONTEND_PORT=${FRONTEND_PORT:-3001}
-      - FRONTEND_PROTOCOL=${FRONTEND_PROTOCOL:-http}
-      - FRONTEND_TIMEOUT=${FRONTEND_TIMEOUT:-30000}
-      
-      # Browser Settings
-      - HEADLESS=${HEADLESS:-true}
-      - SLOW_MO=${SLOW_MO:-0}
-      - BROWSER=${BROWSER:-chromium}
-      - PARALLEL_WORKERS=${PARALLEL_WORKERS:-2}
-      
-      # Test User
-      - TEST_USER_EMAIL=${TEST_USER_EMAIL}
-      - TEST_USER_PASSWORD=${TEST_USER_PASSWORD}
-      
-      # Reporting
-      - REPORT_DIR=${REPORT_DIR:-./reports}
-      - SCREENSHOT_ON_FAILURE=${SCREENSHOT_ON_FAILURE:-true}
-      - VIDEO_ON_FAILURE=${VIDEO_ON_FAILURE:-true}
-      
-      # Feature Flags
-      - ENABLE_API_LOGGING=${ENABLE_API_LOGGING:-true}
-      - ENABLE_NETWORK_LOGS=${ENABLE_NETWORK_LOGS:-false}
-    
+      NODE_ENV: local
+      API_BASE_URL: http://backend:8000
+      FRONTEND_BASE_URL: http://frontend:3000
+      MAILCATCHER_BASE_URL: http://mailcatcher:1080
+      HEADLESS: "true"
+      PARALLEL_WORKERS: "1"
+      REPORT_DIR: ./reports
+    depends_on:
+      seed:
+        condition: service_completed_successfully
+      frontend:
+        condition: service_healthy
     volumes:
-      # Mount source code
-      - .:/app
-      - /app/node_modules
-      
-      # Mount reports output
       - ./reports:/app/reports
       - ./test-results:/app/test-results
-    
-    networks:
-      - nicedice-network
-    
-    # Keep container running for interactive testing
-    # Comment out for CI/CD or one-time runs
-    stdin_open: true
-    tty: true
-    
-    # Uncomment to run tests automatically on startup
-    # command: npm run test
-    
-    depends_on:
-      - api
-      - frontend
-    
-    # Resource limits
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 4G
-        reservations:
-          cpus: '1'
-          memory: 2G
 
-  # Mock API Backend (optional - for local development)
-  api:
-    image: mockserver/mockserver:latest
-    container_name: nicedice-api
-    ports:
-      - "${API_PORT:-3000}:1080"
-    environment:
-      - MOCKSERVER_LOG_LEVEL=INFO
-      - MOCKSERVER_SERVER_PORT=1080
-    networks:
-      - nicedice-network
-    profiles:
-      - local-only
-    # Uncomment to mount mock expectations
-    # volumes:
-    #   - ./mocks/api-expectations.json:/mockserver/expectations.json
-
-  # Mock Frontend (optional - for local development)
-  frontend:
-    image: nginx:alpine
-    container_name: nicedice-frontend
-    ports:
-      - "${FRONTEND_PORT:-3001}:80"
-    networks:
-      - nicedice-network
-    profiles:
-      - local-only
-    # Uncomment to serve static frontend files
-    # volumes:
-    #   - ./mocks/frontend:/usr/share/nginx/html
-
-networks:
-  nicedice-network:
-    driver: bridge
-
-# Volumes for persistent data
 volumes:
-  test-reports:
-  playwright-cache:
+  critical-db:

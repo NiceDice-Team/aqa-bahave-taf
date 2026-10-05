@@ -52,6 +52,7 @@ export interface IAuth {
   requestPasswordReset(email: string): Promise<void>;
   resetPassword(params: PasswordResetParams): Promise<void>;
   logout(): Promise<void>;
+  activateAccountFromLocalEmail(email: string): Promise<boolean>;
 
   // ── Result / state queries ─────────────────────────────────────────────────
   isAuthenticated(): Promise<boolean>;
@@ -59,4 +60,5 @@ export interface IAuth {
   getStatusMessage(): Promise<string | null>;
   getValidationErrors(): Promise<string[]>;
   navigateToAccountPage(): Promise<void>;
+  isOnPath(path: string): Promise<boolean>;
 }

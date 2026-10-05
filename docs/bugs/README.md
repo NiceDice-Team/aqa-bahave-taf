@@ -92,6 +92,8 @@ When a bug is discovered through automated testing:
 2. Include screenshot/video from test results
 3. Reference the error line number
 4. Link to the corresponding feature file
+5. State whether the failure is tagged `@critical-journey` or `@broken`
+6. Include local frontend, backend, and Mailcatcher status when relevant
 
 **Example:**
 
@@ -101,6 +103,11 @@ Scenario: Logged-in user can add product to cart and view cart
 Error Location: steps/cart.steps.ts:45
 Evidence: test-results/features-cart-shopping_cart.f-*/video.webm
 ```
+
+Critical journey blockers are summarized in
+[`docs/CRITICAL_USER_JOURNEYS.md`](../CRITICAL_USER_JOURNEYS.md). A quarantined
+scenario remains executable with `npm run test:critical:all` and must link to a
+reproducible application defect before receiving the `@broken` tag.
 
 ## Querying Bugs
 
@@ -128,4 +135,4 @@ See bug reports in this directory for examples of properly formatted bug documen
 
 ---
 
-**Last Updated:** 2026-06-08
+**Last Updated:** 2026-10-06

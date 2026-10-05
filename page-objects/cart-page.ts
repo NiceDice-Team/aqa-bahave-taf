@@ -63,6 +63,24 @@ export class CartPage {
     await this.page.waitForLoadState('load');
   }
 
+  async increaseQuantity(productName: string): Promise<void> {
+    const row = this.itemRowByName(productName);
+    const button = row.getByRole('button', { name: new RegExp(`increase quantity of ${productName}`, 'i') });
+    const previous = await this.getItemQuantity(productName);
+    await button.click();
+    await this.page.getByLabel(`Quantity: ${previous + 1}`).waitFor({ state: 'visible', timeout: 10000 });
+  }
+
+  async clear(): Promise<void> {
+    for (let remaining = 20; remaining > 0; remaining--) {
+      const remove = this.page.getByRole('button', { name: /^remove .+ from cart$/i }).first();
+      if (!(await remove.isVisible().catch(() => false))) return;
+      await remove.click();
+      await this.page.waitForTimeout(150);
+    }
+    throw new Error('Cart still contains items after 20 removal attempts');
+  }
+
   /** Set quantity on the quantity input that is currently visible (product page or cart) */
   async setQuantity(quantity: string): Promise<void> {
     const input = this.page
@@ -86,8 +104,9 @@ export class CartPage {
     }
 
     // Fallback: try text content of quantity element
-    const qtyEl = row.locator('[class*="quantity"], [data-testid*="quantity"], span:has-text(/^\\d+$/)').first();
-    const text = await qtyEl.textContent().catch(() => '1');
+    const qtyEl = row.locator('[aria-label^="Quantity:"]').first();
+    const label = await qtyEl.getAttribute('aria-label').catch(() => null);
+    const text = label?.replace(/[^0-9]/g, '') || (await qtyEl.textContent().catch(() => '1'));
     const parsed = parseInt(text ?? '1', 10);
     return isNaN(parsed) ? 1 : parsed;
   }
@@ -155,6 +174,10 @@ export class CartPage {
   async getTotal(): Promise<number> {
     const text = await this.totalEl.textContent();
     return parseFloat(text || '0');
+  }
+
+  async isCheckoutAvailable(): Promise<boolean> {
+    return this.page.getByRole('button', { name: /^checkout$/i }).isEnabled();
   }
 
   private itemRowByName(productName: string): Locator {

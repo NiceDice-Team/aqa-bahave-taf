@@ -1,4 +1,5 @@
 export interface ShippingDetails {
+  country: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -32,6 +33,7 @@ export interface ICheckout {
   useShippingAsBilling(): Promise<void>;
   fillPaymentDetails(details: PaymentDetails): Promise<void>;
   placeOrder(): Promise<string>;
+  continueToOrderReview(): Promise<void>;
 
   // ── Fine-grained field interactions ───────────────────────────────────────
   selectPaymentMethod(method: string): Promise<void>;
@@ -54,4 +56,7 @@ export interface ICheckout {
   getOrders(): Promise<OrderStatus[]>;
   isOrderConfirmationVisible(): Promise<boolean>;
   getOrderTotalText(): Promise<string>;
+  isOrderReviewVisible(): Promise<boolean>;
+  isOrderSummaryVisible(): Promise<boolean>;
+  isPlaceOrderAvailable(): Promise<boolean>;
 }

@@ -65,9 +65,8 @@ export class ProductPage extends BasePage {
 
     // Quantity controls — use the number input's parent to find +/- buttons (aria-label
     // buttons are 0×0 in current layout; the visible +/− buttons are siblings of the input)
-    const qtyContainer = page.locator('input[type="number"]').locator('..');
-    this.incrementButton = qtyContainer.locator('button').last();
-    this.decrementButton = qtyContainer.locator('button').first();
+    this.incrementButton = page.getByRole('button', { name: /^increase quantity$/i }).last();
+    this.decrementButton = page.getByRole('button', { name: /^decrease quantity$/i }).last();
 
     // Cart feedback (toast / alert)
     this.cartConfirmation = page.locator('[role="status"], [role="alert"], [aria-live]');
@@ -209,7 +208,9 @@ export class ProductPage extends BasePage {
   }
 
   async getQuantityValue(): Promise<string> {
-    return (await this.quantityInput.inputValue()) ?? '1';
+    if ((await this.quantityInput.count()) > 0) return (await this.quantityInput.inputValue()) ?? '1';
+    const container = this.incrementButton.locator('..');
+    return (await container.locator('span').textContent())?.trim() ?? '1';
   }
 
   async isAddToCartDisabled(): Promise<boolean> {
