@@ -1,10 +1,13 @@
+// JavaScript exception: ESLint requires the optional `jiti` runtime to load a
+// TypeScript config. Keep this bootstrap file in CommonJS until that dependency
+// is intentionally added to the lockfile.
 // @ts-check
 const tseslint = require('@typescript-eslint/eslint-plugin');
 const tsParser = require('@typescript-eslint/parser');
 const playwright = require('eslint-plugin-playwright');
 const prettierConfig = require('eslint-config-prettier');
 
-/** @type {import('eslint').Linter.FlatConfig[]} */
+/** @type {import('eslint').Linter.Config[]} */
 module.exports = [
   {
     ignores: [

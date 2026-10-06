@@ -3,7 +3,7 @@
  *
  * Adjust the values below to match your SLA/SLO targets.
  */
-export const COMMON_THRESHOLDS = {
+export const COMMON_THRESHOLDS: Record<string, string[]> = {
   // 95-th percentile response time must stay under 2 s
   http_req_duration: ['p(95)<2000'],
   // Error rate must not exceed 1 %

@@ -14,7 +14,21 @@
 import http from 'k6/http';
 import { check, group, sleep } from 'k6';
 import { Trend, Rate } from 'k6/metrics';
-import { COMMON_THRESHOLDS } from '../thresholds.js';
+import { COMMON_THRESHOLDS } from '../thresholds.ts';
+
+interface ProductListResponse {
+  results?: unknown[];
+}
+
+interface GuestCartResponse {
+  session_token?: string;
+  token?: string;
+}
+
+function hasGuestSessionToken(response: unknown): boolean {
+  const body = response as GuestCartResponse;
+  return Boolean(body.session_token || body.token);
+}
 
 // ── Custom metrics ────────────────────────────────────────────────────────────
 const productListDuration = new Trend('guest_product_list_duration', true);
@@ -49,9 +63,9 @@ export const options = {
 };
 
 // ── Scenario ──────────────────────────────────────────────────────────────────
-export default function () {
+export default function (): void {
   const headers = { 'Content-Type': 'application/json' };
-  let sessionToken = null;
+  let sessionToken: string | null = null;
 
   // 1. Browse product catalogue
   group('Guest – product catalogue', () => {
@@ -61,8 +75,8 @@ export default function () {
       'products list: status 200': (r) => r.status === 200,
       'products list: has results': (r) => {
         try {
-          const body = r.json();
-          return Array.isArray(body) || (body.results && body.results.length >= 0);
+          const body = r.json() as ProductListResponse | unknown[];
+          return Array.isArray(body) ? body.length > 0 : Boolean(body.results?.length);
         } catch {
           return false;
         }
@@ -91,15 +105,22 @@ export default function () {
     guestCartDuration.add(createRes.timings.duration);
     const ok = check(createRes, {
       'guest cart create: status 200 or 201': (r) => r.status === 200 || r.status === 201,
+      'guest cart create: has session token': (r) => {
+        try {
+          return hasGuestSessionToken(r.json());
+        } catch {
+          return false;
+        }
+      },
     });
     errorRate.add(!ok);
 
     if (ok) {
       try {
-        const body = createRes.json();
+        const body = createRes.json() as GuestCartResponse;
         sessionToken = body.session_token || body.token || null;
       } catch {
-        // session token not critical for the scenario
+        sessionToken = null;
       }
     }
   });
@@ -108,8 +129,10 @@ export default function () {
 
   // 4. Add item to guest cart (requires session token from step 3)
   if (sessionToken) {
+    const activeSessionToken = sessionToken;
+
     group('Guest – add item to cart', () => {
-      const cartHeaders = { ...headers, 'X-Session-Token': sessionToken };
+      const cartHeaders = { ...headers, 'X-Session-Token': activeSessionToken };
       const payload = JSON.stringify({ product_id: parseInt(PRODUCT_ID), quantity: 1 });
       const res = http.post(`${BASE_URL}/api/cart/guest/item/`, payload, { headers: cartHeaders });
       guestCartDuration.add(res.timings.duration);
@@ -123,7 +146,7 @@ export default function () {
 
     // 5. View guest cart
     group('Guest – view cart', () => {
-      const cartHeaders = { ...headers, 'X-Session-Token': sessionToken };
+      const cartHeaders = { ...headers, 'X-Session-Token': activeSessionToken };
       const res = http.get(`${BASE_URL}/api/cart/guest/`, { headers: cartHeaders });
       guestCartDuration.add(res.timings.duration);
       const ok = check(res, {

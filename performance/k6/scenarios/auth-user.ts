@@ -17,8 +17,17 @@ import http from 'k6/http';
 import { check, group, sleep } from 'k6';
 import { Trend, Rate } from 'k6/metrics';
 import { SharedArray } from 'k6/data';
-import { COMMON_THRESHOLDS } from '../thresholds.js';
-import { authHeaders } from '../helpers/auth.js';
+import { COMMON_THRESHOLDS } from '../thresholds.ts';
+import { authHeaders } from '../helpers/auth.ts';
+
+interface Credentials {
+  email: string;
+  password: string;
+}
+
+interface AccessTokenResponse {
+  access: string;
+}
 
 // ── Custom metrics ────────────────────────────────────────────────────────────
 const loginDuration = new Trend('auth_login_duration', true);
@@ -32,7 +41,7 @@ const PRODUCT_ID = __ENV.PRODUCT_ID || '1';
 
 // Credentials are read once from env and shared across all VUs.
 // Using SharedArray avoids replicating the array per VU in memory.
-const credentials = new SharedArray('credentials', function () {
+const credentials = new SharedArray<Credentials>('credentials', function () {
   return [
     {
       email: __ENV.TEST_USER_EMAIL || '',
@@ -64,28 +73,34 @@ export const options = {
 };
 
 // ── Scenario ──────────────────────────────────────────────────────────────────
-export default function () {
+export default function (): void {
   const cred = credentials[0];
 
-  if (!cred.email || !cred.password) {
+  const credentialsConfigured = check(cred, {
+    'configuration: authentication credentials provided': ({ email, password }) => Boolean(email && password),
+  });
+  errorRate.add(!credentialsConfigured);
+
+  if (!credentialsConfigured) {
+    // eslint-disable-next-line no-console -- k6 exposes console as its runtime logger.
     console.error('TEST_USER_EMAIL and TEST_USER_PASSWORD must be set.');
     return;
   }
 
   // ── Step 1: Login ──────────────────────────────────────────────────────────
-  let accessToken;
+  let accessToken: string | undefined;
   group('Auth – login', () => {
     const res = http.post(
       `${BASE_URL}/api/users/token/`,
       JSON.stringify({ email: cred.email, password: cred.password }),
-      { headers: { 'Content-Type': 'application/json' } },
+      { headers: { 'Content-Type': 'application/json' } }
     );
     loginDuration.add(res.timings.duration);
     const ok = check(res, {
       'login: status 200': (r) => r.status === 200,
       'login: has access token': (r) => {
         try {
-          return !!r.json().access;
+          return Boolean((r.json() as AccessTokenResponse).access);
         } catch {
           return false;
         }
@@ -93,7 +108,7 @@ export default function () {
     });
     errorRate.add(!ok);
     if (ok) {
-      accessToken = res.json().access;
+      accessToken = (res.json() as AccessTokenResponse).access;
     }
   });
 
@@ -168,9 +183,10 @@ export default function () {
   // ── Step 7: Logout ─────────────────────────────────────────────────────────
   group('Auth – logout', () => {
     const res = http.post(`${BASE_URL}/api/users/logout/`, null, { headers });
-    check(res, {
+    const ok = check(res, {
       'logout: status 200 or 205': (r) => r.status === 200 || r.status === 205,
     });
+    errorRate.add(!ok);
   });
 
   sleep(1);
