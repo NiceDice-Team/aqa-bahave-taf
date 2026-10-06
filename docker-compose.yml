@@ -24,8 +24,8 @@ services:
       context: services/backend
       dockerfile: Dockerfiletest
     command: >
-      sh -c "python src/manage.py migrate &&
-             python src/manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
     environment:
       DJANGO_SETTINGS_MODULE: src.settings
       DB_NAME: backend_db
@@ -57,7 +57,9 @@ services:
     build:
       context: services/backend
       dockerfile: Dockerfiletest
-    command: ["python", "src/manage.py", "load_test_data"]
+    command: >
+      sh -c "python manage.py load_test_data &&
+             python manage.py shell < /taf/normalize-local-seed.py"
     environment:
       DJANGO_SETTINGS_MODULE: src.settings
       DB_NAME: backend_db
@@ -69,18 +71,25 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    volumes:
+      - ./scripts/normalize-local-seed.py:/taf/normalize-local-seed.py:ro
 
   frontend:
     build:
       context: services/frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: ../../Dockerfile.frontend
       args:
+        NODE_VERSION: 24.21.0
         NODE_ENV: development
         NEXT_PUBLIC_BACKEND_URL: http://backend:8000/api/
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_BACKEND_URL: http://backend:8000/api/
       NEXT_TELEMETRY_DISABLED: "1"
+      AUTH_SECRET: local-critical-journey-only
+      GOOGLE_CLIENT_ID: local-disabled
+      GOOGLE_CLIENT_SECRET: local-disabled
+      NEXTAUTH_URL: http://frontend:3000
     ports:
       - "3000:3000"
     depends_on:
@@ -96,6 +105,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NODE_VERSION: 24.21.0
     environment:
       NODE_ENV: local
       API_BASE_URL: http://backend:8000

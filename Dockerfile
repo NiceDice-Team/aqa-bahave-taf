@@ -1,5 +1,12 @@
 # Base image with Node.js and Playwright dependencies
-FROM mcr.microsoft.com/playwright:v1.56.1-noble
+ARG NODE_VERSION=24.21.0
+
+FROM node:${NODE_VERSION}-bookworm-slim AS node-runtime
+
+FROM mcr.microsoft.com/playwright:v1.58.0-noble
+
+# Keep Playwright's browser/runtime image while using the current Node LTS.
+COPY --from=node-runtime /usr/local/ /usr/local/
 
 # Set working directory
 WORKDIR /app
@@ -13,6 +20,9 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm ci
+
+# Make the runtime version visible in CI build logs.
+RUN node --version && npm --version
 
 # Copy application code
 COPY . .

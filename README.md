@@ -74,7 +74,8 @@ aqa-bahave-taf/
 │   └── api-endpoints.ts   # AUTO-GENERATED API endpoints (from OpenAPI)
 ├── config/                # Environment configuration
 ├── scripts/
-│   └── generate-endpoints.ts  # OpenAPI → TypeScript generator
+│   ├── generate-endpoints.ts  # OpenAPI → TypeScript generator
+│   └── normalize-local-seed.py # Docker-only seed compatibility
 ├── helpers/               # Email, auth helpers
 ├── services/
 │   ├── backend/           # Pinned backend Git submodule
@@ -84,6 +85,7 @@ aqa-bahave-taf/
 ├── .vscode/
 │   └── mcp.json           # Playwright MCP server for VS Code Copilot
 ├── Dockerfile
+├── Dockerfile.frontend
 ├── docker-compose.yml
 └── playwright.config.ts
 ```
@@ -263,7 +265,8 @@ npm run docker:down
 The root Compose stack contains PostgreSQL, Mailcatcher, backend, a deterministic
 seed job, frontend, and Playwright. Browser requests use Docker service DNS names
 and never leave the Compose network, except for published localhost ports used
-for debugging.
+for debugging. Both Node-based containers use Node.js `24.21.0` LTS. The test
+container uses the matching Playwright `1.58.0` browser image.
 
 ## Writing Tests
 

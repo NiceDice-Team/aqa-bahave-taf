@@ -100,6 +100,10 @@ To build the complete pinned stack and execute the same gate in Docker:
 npm run docker:test
 ```
 
+The Docker-managed frontend and Playwright runner use Node.js `24.21.0` LTS.
+The runner image is pinned to Playwright `1.58.0`, matching the locked test
+dependency and its installed browser binaries.
+
 The seeded account expected by the authenticated journey is local-only:
 
 - email: `customer@nicedice.com`
@@ -138,7 +142,9 @@ The `critical-journeys.yml` workflow:
 1. Checks out TAF and its pinned frontend/backend submodule commits.
 2. Builds the full stack from the root `docker-compose.yml`.
 3. Starts PostgreSQL, Mailcatcher, and the backend.
-4. Loads deterministic backend test data in a one-shot seed container.
+4. Loads deterministic backend test data in a one-shot seed container and
+   replaces unsupported remote image hosts with the frontend-approved local
+   test placeholder host.
 5. Starts the frontend with Docker-local backend configuration.
 6. Runs BDD generation and `npm run test:critical` in the Playwright container.
 7. Uploads Playwright artifacts and Compose logs, then removes the stack.
