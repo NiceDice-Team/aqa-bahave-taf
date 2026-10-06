@@ -10,6 +10,7 @@ test-results/
 reports/
 playwright-report/
 .features-gen/
+services/
 screenshots/
 videos/
 traces/

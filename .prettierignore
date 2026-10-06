@@ -3,4 +3,5 @@ dist
 .features-gen
 reports
 test-results
+services
 *.json

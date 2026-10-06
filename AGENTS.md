@@ -80,3 +80,17 @@ Steps → SDK → Adapter → PageObject → Component
 4. Add a stub to the ApiAdapter (return default / make HTTP call)
 5. Delegate in the SDK
 6. Call `world.sdk.xxx.method()` from the step
+
+### Critical Journey Suite
+
+- Critical release journeys use `@critical-journey @local-only` and run through
+  `npm run test:critical`.
+- Frontend and backend revisions are pinned Git submodules under `services/`.
+- Tests may target loopback hosts or the exact Compose service names `backend`,
+  `frontend`, and `mailcatcher`; they must not target deployed environments.
+- Registration must use the real Mailcatcher activation link and token.
+- Checkout stops at order review and must not call an external payment provider.
+- `@broken` is allowed only for a documented, reproducible application blocker.
+  Keep quarantined scenarios executable with `npm run test:critical:all`.
+- Do not weaken critical assertions to make a red application behavior pass.
+- See `docs/CRITICAL_USER_JOURNEYS.md` for setup and current blockers.

@@ -11,6 +11,7 @@ import {
   OAuthProvider,
   RegistrationStatus,
 } from '../interfaces/auth.interface';
+import { activateAccountFromMailcatcher } from '../helpers/mailcatcher';
 
 export class AuthWebAdapter extends WebAdapter implements IAuth {
   // ── Page object accessors ───────────────────────────────────────────────────
@@ -166,6 +167,10 @@ export class AuthWebAdapter extends WebAdapter implements IAuth {
     await this.page.getByRole('button', { name: /log ?out|sign ?out/i }).click();
   }
 
+  async activateAccountFromLocalEmail(email: string): Promise<boolean> {
+    return activateAccountFromMailcatcher(this.page.request, email);
+  }
+
   // ── Result / state queries ───────────────────────────────────────────────────
 
   async isAuthenticated(): Promise<boolean> {
@@ -236,6 +241,11 @@ export class AuthWebAdapter extends WebAdapter implements IAuth {
 
     // Handle potential redirects (e.g., /account → /profile)
     await this.page.waitForURL(/\/(account|profile)/, { timeout: 5000 }).catch(() => {});
+  }
+
+  async isOnPath(path: string): Promise<boolean> {
+    await this.page.waitForURL((url) => url.pathname === path, { timeout: 10000 }).catch(() => {});
+    return new URL(this.page.url()).pathname === path;
   }
 
   // ── Extra registration helpers ───────────────────────────────────────────────

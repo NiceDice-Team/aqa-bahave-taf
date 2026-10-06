@@ -35,6 +35,7 @@ export interface IProduct {
 
   // ── Catalog queries ────────────────────────────────────────────────────────
   getProducts(filter?: ProductFilter): Promise<ProductDetails[]>;
+  getCatalogProductCount(): Promise<number>;
   getActiveCategoryName(): Promise<string>;
   isSortedByPriceAscending(): Promise<boolean>;
   isSortedByPriceDescending(): Promise<boolean>;

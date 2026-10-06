@@ -45,6 +45,10 @@ export class CheckoutWebAdapter extends WebAdapter implements ICheckout {
     return '';
   }
 
+  async continueToOrderReview(): Promise<void> {
+    await this.getCheckoutPage().continueToOrderReview();
+  }
+
   // ── Fine-grained interactions ───────────────────────────────────────────
 
   async selectPaymentMethod(method: string): Promise<void> {
@@ -105,5 +109,17 @@ export class CheckoutWebAdapter extends WebAdapter implements ICheckout {
 
   async getOrderTotalText(): Promise<string> {
     return (await this.getCheckoutPage().getTotalAmount()) ?? '';
+  }
+
+  async isOrderReviewVisible(): Promise<boolean> {
+    return this.getCheckoutPage().isOrderReviewVisible();
+  }
+
+  async isOrderSummaryVisible(): Promise<boolean> {
+    return this.getCheckoutPage().isOrderSummaryVisible();
+  }
+
+  async isPlaceOrderAvailable(): Promise<boolean> {
+    return this.getCheckoutPage().isPlaceOrderAvailable();
   }
 }

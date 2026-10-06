@@ -65,6 +65,9 @@ export class AuthSDK implements IAuth {
   logout() {
     return this.adapter.logout();
   }
+  activateAccountFromLocalEmail(email: string) {
+    return this.adapter.activateAccountFromLocalEmail(email);
+  }
 
   // State queries
   isAuthenticated() {
@@ -81,5 +84,8 @@ export class AuthSDK implements IAuth {
   }
   navigateToAccountPage() {
     return this.adapter.navigateToAccountPage();
+  }
+  isOnPath(path: string) {
+    return this.adapter.isOnPath(path);
   }
 }

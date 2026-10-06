@@ -165,10 +165,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Setup Node.js 22
+      - name: Setup Node.js 24 LTS
         uses: actions/setup-node@v5
         with:
-          node-version: '22'
+          node-version: '24.21.0'
           cache: 'npm'
 
       - name: Install dependencies (generate lock file snapshot)

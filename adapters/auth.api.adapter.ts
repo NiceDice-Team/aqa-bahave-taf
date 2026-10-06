@@ -1,6 +1,7 @@
 import { ApiAdapter } from './base.adapters';
 import { API_ENDPOINTS } from '../constants/api-endpoints';
 import { IAuth, RegisterParams, LoginParams, PasswordResetParams, OAuthProvider } from '../interfaces/auth.interface';
+import { activateAccountFromMailcatcher } from '../helpers/mailcatcher';
 
 export class AuthApiAdapter extends ApiAdapter implements IAuth {
   // ── Navigation (no-op for API adapter) ───────────────────────────────
@@ -51,6 +52,9 @@ export class AuthApiAdapter extends ApiAdapter implements IAuth {
     await this.sendRequest('POST', API_ENDPOINTS.POST_API_USERS_LOGOUT);
     this.authToken = undefined;
   }
+  async activateAccountFromLocalEmail(email: string): Promise<boolean> {
+    return activateAccountFromMailcatcher(this.request, email);
+  }
 
   // ── State queries ──────────────────────────────────────────────────
   async isAuthenticated(): Promise<boolean> {
@@ -70,4 +74,7 @@ export class AuthApiAdapter extends ApiAdapter implements IAuth {
   }
 
   async navigateToAccountPage(): Promise<void> {}
+  async isOnPath(_path: string): Promise<boolean> {
+    return false;
+  }
 }

@@ -24,6 +24,8 @@ export interface ICart {
   clickAddToCart(): Promise<void>;
   setQuantity(quantity: string): Promise<void>;
   clickRemove(productName: string): Promise<void>;
+  increaseItemQuantity(productName: string): Promise<void>;
+  clearCart(): Promise<void>;
 
   // ── Queries ────────────────────────────────────────────────────────────────
   viewCart(): Promise<void>;
@@ -34,4 +36,5 @@ export interface ICart {
   isProductInCart(productName: string): Promise<boolean>;
   isCartEmpty(): Promise<boolean>;
   getCartItems(): Promise<CartItem[]>;
+  isCheckoutAvailable(): Promise<boolean>;
 }

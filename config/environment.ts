@@ -11,6 +11,7 @@ export interface EnvironmentConfig {
   // URLs
   apiBaseUrl: string;
   frontendBaseUrl: string;
+  mailcatcherBaseUrl: string;
 
   // Hosts and Ports (for Docker/local)
   apiHost: string;
@@ -61,6 +62,14 @@ class ConfigValidator {
     }
   }
 
+  private static validateLocalUrl(url: string, name: string): void {
+    const hostname = new URL(url).hostname;
+    const localHosts = ['localhost', '127.0.0.1', '::1', 'backend', 'frontend', 'mailcatcher'];
+    if (!localHosts.includes(hostname)) {
+      throw new Error(`${name} must target localhost when NODE_ENV=local; received ${hostname}`);
+    }
+  }
+
   private static parseBoolean(value: string | undefined, defaultValue: boolean): boolean {
     if (value === undefined) return defaultValue;
     return value.toLowerCase() === 'true';
@@ -108,11 +117,22 @@ class ConfigValidator {
     } else {
       frontendBaseUrl = this.buildUrl(frontendHost, frontendPort, frontendProtocol);
     }
+    const mailcatcherBaseUrl = this.validateUrl(
+      process.env.MAILCATCHER_BASE_URL || 'http://localhost:1080',
+      'MAILCATCHER_BASE_URL'
+    );
+
+    if (nodeEnv === 'local') {
+      this.validateLocalUrl(apiBaseUrl, 'API_BASE_URL');
+      this.validateLocalUrl(frontendBaseUrl, 'FRONTEND_BASE_URL');
+      this.validateLocalUrl(mailcatcherBaseUrl, 'MAILCATCHER_BASE_URL');
+    }
 
     return {
       nodeEnv,
       apiBaseUrl,
       frontendBaseUrl,
+      mailcatcherBaseUrl,
       apiHost,
       apiPort,
       frontendHost,

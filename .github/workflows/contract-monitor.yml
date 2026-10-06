@@ -37,10 +37,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js 22
+      - name: Setup Node.js 24 LTS
         uses: actions/setup-node@v5
         with:
-          node-version: '22'
+          node-version: '24.21.0'
           cache: 'npm'
 
       - name: Install dependencies
@@ -77,7 +77,7 @@ jobs:
             const diff = fs.existsSync('/tmp/schema-diff.txt') 
               ? fs.readFileSync('/tmp/schema-diff.txt', 'utf-8').substring(0, 2000)
               : '';
-            
+
             const body = `## ⚠️ API Schema Drift Detected\n\n` +
               `**Date:** ${new Date().toISOString()}\n\n` +
               `The live OpenAPI schema at **${process.env.API_BASE_URL}/api/schema/** ` +
@@ -93,7 +93,7 @@ jobs:
               `- Run \`npm run generate:endpoints\` locally to regenerate\n` +
               `- Run \`npm run validate:endpoints\` to check adapter compatibility\n` +
               `- Run \`npm run validate:endpoints:verbose\` to see endpoint usage\n`;
-            
+
             // Get or create a contract-drift issue
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -102,7 +102,7 @@ jobs:
               labels: 'contract-drift',
               per_page: 1
             });
-            
+
             if (issues.data.length > 0) {
               // Update existing issue
               await github.rest.issues.createComment({
@@ -126,8 +126,20 @@ jobs:
         env:
           API_BASE_URL: ${{ vars.API_BASE_URL }}
 
+      - name: Detect Slack notification configuration
+        if: steps.diff.outputs.changed == 'true'
+        id: slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Slack notification (drift detected)
-        if: steps.diff.outputs.changed == 'true' && secrets.SLACK_WEBHOOK != ''
+        if: steps.diff.outputs.changed == 'true' && steps.slack.outputs.configured == 'true'
         uses: slackapi/slack-github-action@v1.24.0
         with:
           payload: |

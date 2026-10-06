@@ -47,6 +47,12 @@ export class CartSDK implements ICart {
   clickRemove(name: string) {
     return this.adapter.clickRemove(name);
   }
+  increaseItemQuantity(name: string) {
+    return this.adapter.increaseItemQuantity(name);
+  }
+  clearCart() {
+    return this.adapter.clearCart();
+  }
 
   // Queries
   getSubtotal() {
@@ -69,5 +75,8 @@ export class CartSDK implements ICart {
   }
   getCartItems() {
     return this.adapter.getCartItems();
+  }
+  isCheckoutAvailable() {
+    return this.adapter.isCheckoutAvailable();
   }
 }

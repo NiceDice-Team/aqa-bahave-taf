@@ -37,6 +37,9 @@ export class ProductApiAdapter extends ApiAdapter implements IProduct {
     const resp = await this.sendRequest<{ products: ProductDetails[] }>('GET', API_ENDPOINTS.GET_API_PRODUCTS, filter);
     return resp.products ?? [];
   }
+  async getCatalogProductCount(): Promise<number> {
+    return (await this.getProducts()).length;
+  }
 
   async switchImage(_index: number): Promise<void> {}
 

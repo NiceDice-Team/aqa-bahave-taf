@@ -24,6 +24,9 @@ export class CheckoutSDK implements ICheckout {
   placeOrder() {
     return this.adapter.placeOrder();
   }
+  continueToOrderReview() {
+    return this.adapter.continueToOrderReview();
+  }
 
   // Fine-grained interactions
   selectPaymentMethod(method: string) {
@@ -71,5 +74,14 @@ export class CheckoutSDK implements ICheckout {
   }
   getOrderTotalText() {
     return this.adapter.getOrderTotalText();
+  }
+  isOrderReviewVisible() {
+    return this.adapter.isOrderReviewVisible();
+  }
+  isOrderSummaryVisible() {
+    return this.adapter.isOrderSummaryVisible();
+  }
+  isPlaceOrderAvailable() {
+    return this.adapter.isPlaceOrderAvailable();
   }
 }

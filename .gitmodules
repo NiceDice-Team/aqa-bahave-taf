@@ -1,0 +1,8 @@
+[submodule "services/backend"]
+	path = services/backend
+	url = https://github.com/NiceDice-Team/backend.git
+	branch = main
+[submodule "services/frontend"]
+	path = services/frontend
+	url = https://github.com/NiceDice-Team/team-challange-front.git
+	branch = main
