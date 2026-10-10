@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-10T15:39:31.434Z",
+  "existingProductCount": 42,
+  "additionalProductCount": 58,
+  "totalProductCount": 100,
+  "duplicateNames": [],
+  "purpose": [
+    "local",
+    "test",
+    "staging",
+    "load",
+    "performance"
+  ],
+  "productionImportRecommended": false,
+  "sources": {
+    "bgg": "https://boardgamegeek.com/browse/boardgame",
+    "stonemaier": "https://store.stonemaiergames.com/collections/all/base-game",
+    "cmon": "https://www.cmon.com/products/",
+    "ravensburger": "https://www.ravensburger.us/en-US/products/games/board-games",
+    "cephalofair": "https://cephalofair.com/collections/all/frosthaven",
+    "leder": "https://ledergames.com/collections/new-to-root/root",
+    "asmodee": "https://store.asmodee.com/products/splendor"
+  }
+}
