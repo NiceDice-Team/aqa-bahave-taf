@@ -1,0 +1,1568 @@
+[
+  {
+    "id": 43,
+    "name": "Wingspan",
+    "description": "Wingspan is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "19.99",
+    "discount": "10.00",
+    "stock": 5,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Stonemaier Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-5",
+      "ages": "10+",
+      "play time": "40-70 minutes"
+    },
+    "seed_source": "https://store.stonemaiergames.com/collections/all/base-game"
+  },
+  {
+    "id": 44,
+    "name": "Scythe",
+    "description": "Scythe is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "26.99",
+    "discount": "0.00",
+    "stock": 16,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Stonemaier Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-5",
+      "ages": "14+",
+      "play time": "90-140 minutes"
+    },
+    "seed_source": "https://store.stonemaiergames.com/collections/all/base-game"
+  },
+  {
+    "id": 45,
+    "name": "Viticulture Essential Edition",
+    "description": "Viticulture Essential Edition is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "33.99",
+    "discount": "0.00",
+    "stock": 27,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Stonemaier Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-6",
+      "ages": "13+",
+      "play time": "45-90 minutes"
+    },
+    "seed_source": "https://store.stonemaiergames.com/collections/all/base-game"
+  },
+  {
+    "id": 46,
+    "name": "Wyrmspan",
+    "description": "Wyrmspan is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "40.99",
+    "discount": "0.00",
+    "stock": 38,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Stonemaier Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-5",
+      "ages": "14+",
+      "play time": "90 minutes"
+    },
+    "seed_source": "https://store.stonemaiergames.com/collections/all/base-game"
+  },
+  {
+    "id": 47,
+    "name": "Finspan",
+    "description": "Finspan is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "47.99",
+    "discount": "0.00",
+    "stock": 49,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Stonemaier Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-5",
+      "ages": "10+",
+      "play time": "45-60 minutes"
+    },
+    "seed_source": "https://store.stonemaiergames.com/collections/all/base-game"
+  },
+  {
+    "id": 48,
+    "name": "Tapestry",
+    "description": "Tapestry is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "54.99",
+    "discount": "0.00",
+    "stock": 60,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Stonemaier Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-5",
+      "ages": "12+",
+      "play time": "90-120 minutes"
+    },
+    "seed_source": "https://store.stonemaiergames.com/collections/all/base-game"
+  },
+  {
+    "id": 49,
+    "name": "Apiary",
+    "description": "Apiary is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "61.99",
+    "discount": "0.00",
+    "stock": 71,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Stonemaier Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-5",
+      "ages": "14+",
+      "play time": "60-90 minutes"
+    },
+    "seed_source": "https://store.stonemaiergames.com/collections/all/base-game"
+  },
+  {
+    "id": 50,
+    "name": "Libertalia: Winds of Galecrest",
+    "description": "Libertalia: Winds of Galecrest is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "68.99",
+    "discount": "0.00",
+    "stock": 82,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Stonemaier Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Friends"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-6",
+      "ages": "14+",
+      "play time": "45-60 minutes"
+    },
+    "seed_source": "https://store.stonemaiergames.com/collections/all/base-game"
+  },
+  {
+    "id": 51,
+    "name": "Expeditions",
+    "description": "Expeditions is represented as a curated adventure board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated adventure game for performance-test catalog coverage.",
+    "price": "75.99",
+    "discount": "0.00",
+    "stock": 93,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Stonemaier Games",
+    "type_names": [
+      "Adventure"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-5",
+      "ages": "14+",
+      "play time": "60-90 minutes"
+    },
+    "seed_source": "https://store.stonemaiergames.com/collections/all/base-game"
+  },
+  {
+    "id": 52,
+    "name": "Root",
+    "description": "Root is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "82.99",
+    "discount": "10.00",
+    "stock": 8,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Leder Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "10+",
+      "play time": "60-90 minutes"
+    },
+    "seed_source": "https://ledergames.com/collections/new-to-root/root"
+  },
+  {
+    "id": 53,
+    "name": "Spirit Island",
+    "description": "Spirit Island is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "24.99",
+    "discount": "0.00",
+    "stock": 19,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Greater Than Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "13+",
+      "play time": "90-120 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 54,
+    "name": "Brass: Birmingham",
+    "description": "Brass: Birmingham is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "31.99",
+    "discount": "0.00",
+    "stock": 30,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Roxley Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "14+",
+      "play time": "60-120 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 55,
+    "name": "Ark Nova",
+    "description": "Ark Nova is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "38.99",
+    "discount": "0.00",
+    "stock": 41,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Capstone Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "14+",
+      "play time": "90-150 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 56,
+    "name": "Terraforming Mars",
+    "description": "Terraforming Mars is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "45.99",
+    "discount": "0.00",
+    "stock": 52,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "FryxGames",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-5",
+      "ages": "12+",
+      "play time": "120 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 57,
+    "name": "Gloomhaven",
+    "description": "Gloomhaven is represented as a curated adventure board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated adventure game for performance-test catalog coverage.",
+    "price": "52.99",
+    "discount": "0.00",
+    "stock": 63,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Cephalofair Games",
+    "type_names": [
+      "Adventure"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "14+",
+      "play time": "60-120 minutes"
+    },
+    "seed_source": "https://cephalofair.com/collections/all/frosthaven"
+  },
+  {
+    "id": 58,
+    "name": "Gloomhaven: Jaws of the Lion",
+    "description": "Gloomhaven: Jaws of the Lion is represented as a curated adventure board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated adventure game for performance-test catalog coverage.",
+    "price": "59.99",
+    "discount": "0.00",
+    "stock": 74,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Cephalofair Games",
+    "type_names": [
+      "Adventure"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "14+",
+      "play time": "30-120 minutes"
+    },
+    "seed_source": "https://cephalofair.com/collections/all/frosthaven"
+  },
+  {
+    "id": 59,
+    "name": "Dune: Imperium",
+    "description": "Dune: Imperium is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "66.99",
+    "discount": "0.00",
+    "stock": 85,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Dire Wolf",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "14+",
+      "play time": "60-120 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 60,
+    "name": "Lost Ruins of Arnak",
+    "description": "Lost Ruins of Arnak is represented as a curated adventure board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated adventure game for performance-test catalog coverage.",
+    "price": "73.99",
+    "discount": "0.00",
+    "stock": 96,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Czech Games Edition",
+    "type_names": [
+      "Adventure"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "12+",
+      "play time": "30-120 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 61,
+    "name": "Everdell",
+    "description": "Everdell is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "80.99",
+    "discount": "10.00",
+    "stock": 11,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Tabletop Tycoon",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "10+",
+      "play time": "40-80 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 62,
+    "name": "Cascadia",
+    "description": "Cascadia is represented as a curated abstract board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated abstract game for performance-test catalog coverage.",
+    "price": "22.99",
+    "discount": "0.00",
+    "stock": 22,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Flatout Games",
+    "type_names": [
+      "Abstract"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "10+",
+      "play time": "30-45 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 63,
+    "name": "Agricola",
+    "description": "Agricola is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "29.99",
+    "discount": "0.00",
+    "stock": 33,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Lookout Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "12+",
+      "play time": "30-120 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 64,
+    "name": "A Feast for Odin",
+    "description": "A Feast for Odin is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "36.99",
+    "discount": "0.00",
+    "stock": 44,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Feuerland Spiele",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "12+",
+      "play time": "30-120 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 65,
+    "name": "Great Western Trail",
+    "description": "Great Western Trail is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "43.99",
+    "discount": "0.00",
+    "stock": 55,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Eggertspiele",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "12+",
+      "play time": "75-150 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 66,
+    "name": "The Castles of Burgundy",
+    "description": "The Castles of Burgundy is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "50.99",
+    "discount": "0.00",
+    "stock": 66,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Ravensburger",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "12+",
+      "play time": "70-120 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 67,
+    "name": "Concordia",
+    "description": "Concordia is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "57.99",
+    "discount": "0.00",
+    "stock": 77,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "PD-Verlag",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-5",
+      "ages": "13+",
+      "play time": "100 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 68,
+    "name": "Power Grid",
+    "description": "Power Grid is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "64.99",
+    "discount": "0.00",
+    "stock": 88,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Rio Grande Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-6",
+      "ages": "12+",
+      "play time": "120 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 69,
+    "name": "El Grande",
+    "description": "El Grande is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "71.99",
+    "discount": "0.00",
+    "stock": 99,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Hans im Glück",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-5",
+      "ages": "12+",
+      "play time": "90 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 70,
+    "name": "Puerto Rico 1897",
+    "description": "Puerto Rico 1897 is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "78.99",
+    "discount": "10.00",
+    "stock": 14,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Ravensburger",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-5",
+      "ages": "12+",
+      "play time": "70-120 minutes"
+    },
+    "seed_source": "https://www.ravensburger.us/en-US/products/games/board-games"
+  },
+  {
+    "id": 71,
+    "name": "Five Tribes",
+    "description": "Five Tribes is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "20.99",
+    "discount": "0.00",
+    "stock": 25,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Days of wonder",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "13+",
+      "play time": "40-80 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 72,
+    "name": "Race for the Galaxy",
+    "description": "Race for the Galaxy is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "27.99",
+    "discount": "0.00",
+    "stock": 36,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Rio Grande Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "12+",
+      "play time": "30-60 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 73,
+    "name": "Dominion",
+    "description": "Dominion is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "34.99",
+    "discount": "0.00",
+    "stock": 47,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Rio Grande Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Friends"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "13+",
+      "play time": "30 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 74,
+    "name": "Res Arcana",
+    "description": "Res Arcana is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "41.99",
+    "discount": "0.00",
+    "stock": 58,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Sand Castle Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "12+",
+      "play time": "30-60 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 75,
+    "name": "Splendor",
+    "description": "Splendor is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "48.99",
+    "discount": "0.00",
+    "stock": 69,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Asmodee",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "10+",
+      "play time": "30 minutes"
+    },
+    "seed_source": "https://store.asmodee.com/products/splendor"
+  },
+  {
+    "id": 76,
+    "name": "Jaipur",
+    "description": "Jaipur is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "55.99",
+    "discount": "0.00",
+    "stock": 80,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Asmodee",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Couples"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2",
+      "ages": "10+",
+      "play time": "30 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 77,
+    "name": "Love Letter",
+    "description": "Love Letter is represented as a curated party board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated party game for performance-test catalog coverage.",
+    "price": "62.99",
+    "discount": "0.00",
+    "stock": 91,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Asmodee",
+    "type_names": [
+      "Party"
+    ],
+    "audience_names": [
+      "Friends"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-6",
+      "ages": "10+",
+      "play time": "20 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 78,
+    "name": "Hanabi",
+    "description": "Hanabi is represented as a curated party board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated party game for performance-test catalog coverage.",
+    "price": "69.99",
+    "discount": "0.00",
+    "stock": 6,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Asmodee",
+    "type_names": [
+      "Party"
+    ],
+    "audience_names": [
+      "Friends"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-5",
+      "ages": "8+",
+      "play time": "25 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 79,
+    "name": "Bohnanza",
+    "description": "Bohnanza is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "76.99",
+    "discount": "10.00",
+    "stock": 17,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Amigo",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-7",
+      "ages": "10+",
+      "play time": "45 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 80,
+    "name": "Sushi Go Party!",
+    "description": "Sushi Go Party! is represented as a curated party board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated party game for performance-test catalog coverage.",
+    "price": "83.99",
+    "discount": "0.00",
+    "stock": 28,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Gamewright",
+    "type_names": [
+      "Party"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-8",
+      "ages": "8+",
+      "play time": "20 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 81,
+    "name": "Codenames",
+    "description": "Codenames is represented as a curated party board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated party game for performance-test catalog coverage.",
+    "price": "25.99",
+    "discount": "0.00",
+    "stock": 39,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Czech Games Edition",
+    "type_names": [
+      "Party"
+    ],
+    "audience_names": [
+      "Friends"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-8+",
+      "ages": "10+",
+      "play time": "15 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 82,
+    "name": "Just One",
+    "description": "Just One is represented as a curated party board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated party game for performance-test catalog coverage.",
+    "price": "32.99",
+    "discount": "0.00",
+    "stock": 50,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Repos Production",
+    "type_names": [
+      "Party"
+    ],
+    "audience_names": [
+      "Friends"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "3-7",
+      "ages": "8+",
+      "play time": "20 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 83,
+    "name": "Decrypto",
+    "description": "Decrypto is represented as a curated party board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated party game for performance-test catalog coverage.",
+    "price": "39.99",
+    "discount": "0.00",
+    "stock": 61,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Le Scorpion Masqué",
+    "type_names": [
+      "Party"
+    ],
+    "audience_names": [
+      "Friends"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "3-8",
+      "ages": "12+",
+      "play time": "30 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 84,
+    "name": "Mysterium",
+    "description": "Mysterium is represented as a curated thematic board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated thematic game for performance-test catalog coverage.",
+    "price": "46.99",
+    "discount": "0.00",
+    "stock": 72,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Asmodee",
+    "type_names": [
+      "Thematic"
+    ],
+    "audience_names": [
+      "Friends"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-7",
+      "ages": "10+",
+      "play time": "40 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 85,
+    "name": "The Mind",
+    "description": "The Mind is represented as a curated abstract board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated abstract game for performance-test catalog coverage.",
+    "price": "53.99",
+    "discount": "0.00",
+    "stock": 83,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Pandasaurus Games",
+    "type_names": [
+      "Abstract"
+    ],
+    "audience_names": [
+      "Friends"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "8+",
+      "play time": "20 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 86,
+    "name": "Skull",
+    "description": "Skull is represented as a curated party board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated party game for performance-test catalog coverage.",
+    "price": "60.99",
+    "discount": "0.00",
+    "stock": 94,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Asmodee",
+    "type_names": [
+      "Party"
+    ],
+    "audience_names": [
+      "Friends"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "3-6",
+      "ages": "10+",
+      "play time": "30 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 87,
+    "name": "Coup",
+    "description": "Coup is represented as a curated party board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated party game for performance-test catalog coverage.",
+    "price": "67.99",
+    "discount": "0.00",
+    "stock": 9,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Indie Boards & Cards",
+    "type_names": [
+      "Party"
+    ],
+    "audience_names": [
+      "Friends"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-6",
+      "ages": "13+",
+      "play time": "15 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 88,
+    "name": "King of Tokyo",
+    "description": "King of Tokyo is represented as a curated thematic board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated thematic game for performance-test catalog coverage.",
+    "price": "74.99",
+    "discount": "10.00",
+    "stock": 20,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "IELLO",
+    "type_names": [
+      "Thematic"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-6",
+      "ages": "8+",
+      "play time": "30 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 89,
+    "name": "The Quacks of Quedlinburg",
+    "description": "The Quacks of Quedlinburg is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "81.99",
+    "discount": "0.00",
+    "stock": 31,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "CMYK",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "10+",
+      "play time": "45 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 90,
+    "name": "Patchwork",
+    "description": "Patchwork is represented as a curated abstract board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated abstract game for performance-test catalog coverage.",
+    "price": "23.99",
+    "discount": "0.00",
+    "stock": 42,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Lookout Games",
+    "type_names": [
+      "Abstract"
+    ],
+    "audience_names": [
+      "Couples"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2",
+      "ages": "8+",
+      "play time": "30 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 91,
+    "name": "Sagrada",
+    "description": "Sagrada is represented as a curated abstract board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated abstract game for performance-test catalog coverage.",
+    "price": "30.99",
+    "discount": "0.00",
+    "stock": 53,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Floodgate Games",
+    "type_names": [
+      "Abstract"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "10+",
+      "play time": "30-45 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 92,
+    "name": "Calico",
+    "description": "Calico is represented as a curated abstract board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated abstract game for performance-test catalog coverage.",
+    "price": "37.99",
+    "discount": "0.00",
+    "stock": 64,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Flatout Games",
+    "type_names": [
+      "Abstract"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-4",
+      "ages": "10+",
+      "play time": "30-45 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 93,
+    "name": "PARKS",
+    "description": "PARKS is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "44.99",
+    "discount": "0.00",
+    "stock": 75,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Keymaster Games",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-5",
+      "ages": "10+",
+      "play time": "40-70 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 94,
+    "name": "Photosynthesis",
+    "description": "Photosynthesis is represented as a curated abstract board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated abstract game for performance-test catalog coverage.",
+    "price": "51.99",
+    "discount": "0.00",
+    "stock": 86,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Blue Orange Games",
+    "type_names": [
+      "Abstract"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "8+",
+      "play time": "30-60 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 95,
+    "name": "Takenoko",
+    "description": "Takenoko is represented as a curated strategy board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated strategy game for performance-test catalog coverage.",
+    "price": "58.99",
+    "discount": "0.00",
+    "stock": 97,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Asmodee",
+    "type_names": [
+      "Strategy"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "8+",
+      "play time": "45 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 96,
+    "name": "Santorini",
+    "description": "Santorini is represented as a curated abstract board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated abstract game for performance-test catalog coverage.",
+    "price": "65.99",
+    "discount": "0.00",
+    "stock": 12,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Roxley Games",
+    "type_names": [
+      "Abstract"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2-4",
+      "ages": "8+",
+      "play time": "20 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 97,
+    "name": "Onitama",
+    "description": "Onitama is represented as a curated abstract board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated abstract game for performance-test catalog coverage.",
+    "price": "72.99",
+    "discount": "10.00",
+    "stock": 23,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Arcane Wonders",
+    "type_names": [
+      "Abstract"
+    ],
+    "audience_names": [
+      "Couples"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2",
+      "ages": "10+",
+      "play time": "15-20 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 98,
+    "name": "Hive",
+    "description": "Hive is represented as a curated abstract board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated abstract game for performance-test catalog coverage.",
+    "price": "79.99",
+    "discount": "0.00",
+    "stock": 34,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Gen42 Games",
+    "type_names": [
+      "Abstract"
+    ],
+    "audience_names": [
+      "Couples"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "2",
+      "ages": "9+",
+      "play time": "20 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  },
+  {
+    "id": 99,
+    "name": "Horrified: Universal Monsters",
+    "description": "Horrified: Universal Monsters is represented as a curated thematic board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated thematic game for performance-test catalog coverage.",
+    "price": "21.99",
+    "discount": "0.00",
+    "stock": 45,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Ravensburger",
+    "type_names": [
+      "Thematic"
+    ],
+    "audience_names": [
+      "Family"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-5",
+      "ages": "10+",
+      "play time": "60 minutes"
+    },
+    "seed_source": "https://www.ravensburger.us/en-US/products/games/board-games"
+  },
+  {
+    "id": 100,
+    "name": "Sherlock Holmes Consulting Detective: The Thames Murders & Other Cases",
+    "description": "Sherlock Holmes Consulting Detective: The Thames Murders & Other Cases is represented as a curated adventure board-game entry for catalog, search, pagination, load, and performance testing. This original test description intentionally avoids copying publisher marketing text.",
+    "short_description": "Curated adventure game for performance-test catalog coverage.",
+    "price": "28.99",
+    "discount": "0.00",
+    "stock": 56,
+    "stars": "0.00",
+    "categories": [
+      3
+    ],
+    "brand_name": "Space Cowboys",
+    "type_names": [
+      "Adventure"
+    ],
+    "audience_names": [
+      "Adults"
+    ],
+    "images": [],
+    "game_information": {
+      "players": "1-8",
+      "ages": "13+",
+      "play time": "90 minutes"
+    },
+    "seed_source": "https://boardgamegeek.com/browse/boardgame"
+  }
+]

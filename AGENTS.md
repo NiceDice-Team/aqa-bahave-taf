@@ -45,6 +45,18 @@ If a requested change touches any restricted file/path, agent must:
 - Environment and credential files are always treated as sensitive.
 - If unsure whether a file is restricted, treat it as restricted and ask first.
 
+## TypeScript-First Rule
+
+- Write and maintain project-owned Node.js and k6 source code in TypeScript (`.ts`).
+- JavaScript (`.js`, `.cjs`, or `.mjs`) is allowed only when a runtime, framework, or
+  external tool cannot consume TypeScript directly.
+- Any new project-owned JavaScript exception must include a nearby comment or
+  documentation entry explaining the technical constraint.
+- Generated JavaScript (for example `.features-gen/**`) and JavaScript embedded in
+  third-party workflow actions are exempt and must not be manually converted.
+- Code inside Git submodules follows the rules of the owning repository and is not
+  changed solely to satisfy this repository's TypeScript-first rule.
+
 ---
 
 ## Architecture Rules

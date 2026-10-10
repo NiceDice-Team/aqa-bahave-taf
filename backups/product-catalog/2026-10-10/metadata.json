@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-10T15:41:33.135Z",
+  "source": {
+    "catalogUrl": "https://team-challange-front-yx5j.vercel.app/catalog",
+    "apiBaseUrl": "https://bgshop.work.gd/api"
+  },
+  "counts": {
+    "products": 42,
+    "productImageRecords": 148,
+    "imageFiles": 592,
+    "downloadedOrReusedImageFiles": 592,
+    "failedImageFiles": 0,
+    "totalImageBytes": 76025962,
+    "categories": 6,
+    "brands": 9,
+    "gameTypes": 5,
+    "audiences": 4
+  }
+}

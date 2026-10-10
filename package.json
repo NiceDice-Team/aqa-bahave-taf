@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "backup:products": "ts-node scripts/backup-product-catalog.ts",
+    "seed:performance-products": "ts-node scripts/build-performance-product-seed.ts",
+    "seed:catalog:docker": "docker compose run --rm catalog-loader",
     "generate:endpoints": "cross-env TS_NODE_COMPILER_OPTIONS={\"module\":\"CommonJS\"} ts-node --skip-project scripts/generate-endpoints.ts",
     "validate:endpoints": "npx ts-node scripts/validate-endpoints.ts",
     "validate:endpoints:verbose": "npx ts-node scripts/validate-endpoints.ts --verbose",

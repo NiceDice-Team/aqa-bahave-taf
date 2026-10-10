@@ -1,0 +1,124 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "New arrivals",
+      "image": "",
+      "creationAt": "2025-05-19T13:48:23.000Z",
+      "updatedAt": "2025-05-19T13:48:23.000Z"
+    },
+    {
+      "id": 2,
+      "name": "Bestsellers",
+      "image": "",
+      "creationAt": "2025-05-19T13:48:23.000Z",
+      "updatedAt": "2025-05-19T13:48:23.000Z"
+    },
+    {
+      "id": 3,
+      "name": "Board games",
+      "image": "",
+      "creationAt": "2025-05-19T13:54:33.000Z",
+      "updatedAt": "2025-05-19T13:54:33.000Z"
+    },
+    {
+      "id": 4,
+      "name": "Sale",
+      "image": "",
+      "creationAt": "2025-05-19T13:54:33.000Z",
+      "updatedAt": "2025-05-19T13:54:33.000Z"
+    },
+    {
+      "id": 5,
+      "name": "Coming soon",
+      "image": "",
+      "creationAt": "2025-05-19T13:54:33.000Z",
+      "updatedAt": "2025-05-19T13:54:33.000Z"
+    },
+    {
+      "id": 6,
+      "name": "Sold out",
+      "image": "",
+      "creationAt": "2025-11-08T16:47:56.000Z",
+      "updatedAt": "2025-11-08T16:59:59.000Z"
+    }
+  ],
+  "brands": [
+    {
+      "id": 1,
+      "name": "Days of wonder"
+    },
+    {
+      "id": 2,
+      "name": "Lucky Duck Games"
+    },
+    {
+      "id": 3,
+      "name": "CMON"
+    },
+    {
+      "id": 4,
+      "name": "Fantasy Flight Games"
+    },
+    {
+      "id": 5,
+      "name": "Asmodee"
+    },
+    {
+      "id": 6,
+      "name": "Kosmos"
+    },
+    {
+      "id": 7,
+      "name": "Mattel"
+    },
+    {
+      "id": 8,
+      "name": "Ravensburger"
+    },
+    {
+      "id": 9,
+      "name": "Hasbro"
+    }
+  ],
+  "gameTypes": [
+    {
+      "id": 1,
+      "name": "Adventure"
+    },
+    {
+      "id": 2,
+      "name": "Thematic"
+    },
+    {
+      "id": 3,
+      "name": "Party"
+    },
+    {
+      "id": 4,
+      "name": "Strategy"
+    },
+    {
+      "id": 5,
+      "name": "Abstract"
+    }
+  ],
+  "audiences": [
+    {
+      "id": 2,
+      "name": "Family"
+    },
+    {
+      "id": 3,
+      "name": "Friends"
+    },
+    {
+      "id": 4,
+      "name": "Couples"
+    },
+    {
+      "id": 5,
+      "name": "Kids"
+    }
+  ]
+}
