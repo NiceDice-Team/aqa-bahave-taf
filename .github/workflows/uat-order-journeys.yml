@@ -1,0 +1,56 @@
+name: BDD - UAT order journeys
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [uat-deployed]
+
+concurrency:
+  group: uat-order-journeys
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  uat-order-journeys:
+    name: Guest, COD, and Stripe journeys
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NODE_ENV: staging
+      FRONTEND_BASE_URL: https://nd-uat.oleksandrdoroshenko.com
+      API_BASE_URL: https://nd-api.oleksandrdoroshenko.com
+      MAILCATCHER_BASE_URL: https://nd-mc.oleksandrdoroshenko.com
+      HEADLESS: 'true'
+      PARALLEL_WORKERS: '3'
+
+    steps:
+      - name: Checkout TAF
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run UAT order journeys
+        run: npm run test:uat:orders
+
+      - name: Upload UAT journey evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: uat-order-journey-evidence-${{ github.run_id }}
+          path: |
+            reports/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14

@@ -36,8 +36,20 @@ export class CheckoutPage {
     await this.checkoutButton.click();
   }
 
-  async placeOrder(): Promise<void> {
+  async placeOrder(): Promise<string> {
+    const responsePromise = this.page.waitForResponse(
+      (response) => response.request().method() === 'POST' && /\/api\/orders\/?(?:\?|$)/.test(response.url()),
+      { timeout: 15000 }
+    );
     await this.placeOrderButton.click();
+    const response = await responsePromise;
+    if (!response.ok()) {
+      throw new Error(`Order creation failed with HTTP ${response.status()}: ${await response.text()}`);
+    }
+    const payload = (await response.json()) as { id?: string | number; orderId?: string | number };
+    const orderId = payload.id ?? payload.orderId;
+    if (orderId === undefined) throw new Error('Order creation response did not contain an order id');
+    return String(orderId);
   }
 
   async cancelOrder(): Promise<void> {
@@ -187,12 +199,22 @@ export class CheckoutPage {
     );
   }
 
+  async isPaymentMethodAvailable(method: string): Promise<boolean> {
+    const option = this.page
+      .locator('label, [role="radio"], [class*="payment"]')
+      .filter({ hasText: new RegExp(method, 'i') })
+      .first();
+    return option.isVisible().catch(() => false);
+  }
+
   async fillCardDetails(details: { cardNumber?: string; expiry?: string; cvv?: string; name?: string }): Promise<void> {
-    if (details.cardNumber) await this.page.locator('input[name="cardNumber"], #cardNumber').fill(details.cardNumber);
-    if (details.expiry)
-      await this.page.locator('input[name="cardExpiry"], input[name="expiry"], #cardExpiry').fill(details.expiry);
-    if (details.cvv) await this.page.locator('input[name="cardCvv"], input[name="cvv"], #cardCvv').fill(details.cvv);
-    if (details.name) await this.page.locator('input[name="cardName"], #cardName').fill(details.name);
+    const [firstName = 'Uat', lastName = 'Customer'] = (details.name ?? 'Uat Customer').split(' ');
+    await this.page.locator('input[name="firstName"]').fill(firstName);
+    await this.page.locator('input[name="lastName"]').fill(lastName);
+    const stripeFrames = this.page.locator('iframe[name^="__privateStripeFrame"]');
+    if (details.cardNumber) await stripeFrames.nth(0).contentFrame().locator('input').fill(details.cardNumber);
+    if (details.expiry) await stripeFrames.nth(1).contentFrame().locator('input').fill(details.expiry);
+    if (details.cvv) await stripeFrames.nth(2).contentFrame().locator('input').fill(details.cvv);
   }
 
   /** Enter any named form field by a human-readable field name */
@@ -232,6 +254,18 @@ export class CheckoutPage {
       .first();
     if ((await btn.count()) > 0) await btn.click();
     await this.page.waitForURL(/\/order|confirmation|success/, { timeout: 10000 }).catch(() => {});
+  }
+
+  async submitCardPayment(): Promise<void> {
+    await this.page.getByRole('button', { name: /^pay$/i }).click();
+    const success = this.page.getByText(/payment successful/i).first();
+    const failure = this.page.getByText(/payment failed/i).first();
+    await Promise.race([
+      success.waitFor({ state: 'visible', timeout: 20000 }),
+      failure.waitFor({ state: 'visible', timeout: 20000 }).then(async () => {
+        throw new Error((await failure.textContent()) ?? 'Stripe test payment failed');
+      }),
+    ]);
   }
 
   async isOrderConfirmationVisible(): Promise<boolean> {

@@ -40,6 +40,7 @@ export class CheckoutApiAdapter extends ApiAdapter implements ICheckout {
   async enterExpiryDate(_date: string): Promise<void> {}
   async enterCVV(_cvv: string): Promise<void> {}
   async completeLiqPayTransaction(): Promise<void> {}
+  async submitCardPayment(): Promise<void> {}
   async enterPromoCode(code: string): Promise<void> {
     // No promo endpoint in OpenAPI schema; kept inline until schema is updated
     await this.sendRequest('POST', '/api/promo/apply', { code });
@@ -76,6 +77,10 @@ export class CheckoutApiAdapter extends ApiAdapter implements ICheckout {
     return false;
   }
   async isPlaceOrderAvailable(): Promise<boolean> {
+    return false;
+  }
+
+  async isPaymentMethodAvailable(_method: string): Promise<boolean> {
     return false;
   }
 }

@@ -11,7 +11,7 @@ export interface ShippingDetails {
 }
 
 export interface PaymentDetails {
-  method: 'credit_card' | 'liqpay';
+  method: 'credit_card' | 'cash_on_delivery' | 'liqpay';
   cardNumber?: string;
   expiryDate?: string;
   cvv?: string;
@@ -44,6 +44,7 @@ export interface ICheckout {
   enterExpiryDate(date: string): Promise<void>;
   enterCVV(cvv: string): Promise<void>;
   completeLiqPayTransaction(): Promise<void>;
+  submitCardPayment(): Promise<void>;
 
   // ── Promo codes ───────────────────────────────────────────────────────────
   enterPromoCode(code: string): Promise<void>;
@@ -59,4 +60,5 @@ export interface ICheckout {
   isOrderReviewVisible(): Promise<boolean>;
   isOrderSummaryVisible(): Promise<boolean>;
   isPlaceOrderAvailable(): Promise<boolean>;
+  isPaymentMethodAvailable(method: string): Promise<boolean>;
 }

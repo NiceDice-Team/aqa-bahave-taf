@@ -53,6 +53,9 @@ export class CheckoutSDK implements ICheckout {
   completeLiqPayTransaction() {
     return this.adapter.completeLiqPayTransaction();
   }
+  submitCardPayment() {
+    return this.adapter.submitCardPayment();
+  }
   enterPromoCode(code: string) {
     return this.adapter.enterPromoCode(code);
   }
@@ -83,5 +86,8 @@ export class CheckoutSDK implements ICheckout {
   }
   isPlaceOrderAvailable() {
     return this.adapter.isPlaceOrderAvailable();
+  }
+  isPaymentMethodAvailable(method: string) {
+    return this.adapter.isPaymentMethodAvailable(method);
   }
 }

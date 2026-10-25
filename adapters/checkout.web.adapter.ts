@@ -29,7 +29,12 @@ export class CheckoutWebAdapter extends WebAdapter implements ICheckout {
 
   async fillPaymentDetails(details: PaymentDetails): Promise<void> {
     const cp = this.getCheckoutPage();
-    await cp.selectPaymentMethod(details.method);
+    const labels = {
+      credit_card: 'Credit Card',
+      cash_on_delivery: 'Cash on Delivery',
+      liqpay: 'LiqPay',
+    } as const;
+    await cp.selectPaymentMethod(labels[details.method]);
     if (details.method === 'credit_card') {
       await cp.fillCardDetails({
         cardNumber: details.cardNumber,
@@ -40,9 +45,9 @@ export class CheckoutWebAdapter extends WebAdapter implements ICheckout {
   }
 
   async placeOrder(): Promise<string> {
-    await this.getCheckoutPage().placeOrder();
+    const orderId = await this.getCheckoutPage().placeOrder();
     await this.page.waitForURL(/\/order|confirmation/, { timeout: 15000 }).catch(() => {});
-    return '';
+    return orderId;
   }
 
   async continueToOrderReview(): Promise<void> {
@@ -83,6 +88,10 @@ export class CheckoutWebAdapter extends WebAdapter implements ICheckout {
     await this.getCheckoutPage().completeLiqPayTransaction();
   }
 
+  async submitCardPayment(): Promise<void> {
+    await this.getCheckoutPage().submitCardPayment();
+  }
+
   async enterPromoCode(code: string): Promise<void> {
     await this.getCheckoutPage().enterPromoCode(code);
   }
@@ -121,5 +130,9 @@ export class CheckoutWebAdapter extends WebAdapter implements ICheckout {
 
   async isPlaceOrderAvailable(): Promise<boolean> {
     return this.getCheckoutPage().isPlaceOrderAvailable();
+  }
+
+  async isPaymentMethodAvailable(method: string): Promise<boolean> {
+    return this.getCheckoutPage().isPaymentMethodAvailable(method);
   }
 }
