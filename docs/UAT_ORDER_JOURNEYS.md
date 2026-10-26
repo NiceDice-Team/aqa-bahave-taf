@@ -25,10 +25,6 @@ GitHub Actions can run the suite manually or from a `repository_dispatch` event
 named `uat-deployed`. Failures remain failures and the HTML report, JSON report,
 screenshots, traces, and videos are uploaded for diagnosis.
 
-The repository currently has no committed npm lockfile, so remote runners use
-`npm install`. Add a reviewed lockfile in a dedicated dependency change before
-switching these jobs to the more reproducible `npm ci` command.
-
 ## Current UAT blockers (2026-10-26)
 
 - `GET /api/orders/payment-methods/` returns HTTP 404.
