@@ -60,7 +60,13 @@ export class CartWebAdapter extends WebAdapter implements ICart {
   async proceedToCheckout(): Promise<void> {
     await this.navigateTo(ENDPOINTS.CART.MAIN);
     await this.page.getByRole('button', { name: /checkout/i }).click();
-    await this.page.waitForLoadState('networkidle');
+
+    const continueAsGuest = this.page.getByRole('link', { name: /continue as a guest/i });
+    if (await continueAsGuest.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await continueAsGuest.click();
+    }
+
+    await this.page.waitForURL(/\/checkout-order\/?$/, { waitUntil: 'commit', timeout: 15000 });
   }
 
   // ── Fine-grained UI actions ──────────────────────────────────────────

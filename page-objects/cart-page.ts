@@ -21,8 +21,7 @@ export class CartPage {
   }
 
   async navigate(): Promise<void> {
-    await this.page.goto('/cart');
-    await this.page.waitForLoadState('load');
+    await this.page.goto('/cart', { waitUntil: 'commit' });
   }
 
   /** Add product by its data-testid id */
@@ -177,7 +176,10 @@ export class CartPage {
   }
 
   async isCheckoutAvailable(): Promise<boolean> {
-    return this.page.getByRole('button', { name: /^checkout$/i }).isEnabled();
+    return this.page
+      .getByRole('button', { name: /^checkout$/i })
+      .isEnabled({ timeout: 10000 })
+      .catch(() => false);
   }
 
   private itemRowByName(productName: string): Locator {

@@ -43,7 +43,13 @@ const getMessages = async (request: APIRequestContext): Promise<MailcatcherMessa
 };
 
 const getMessageBody = async (request: APIRequestContext, message: MailcatcherMessage): Promise<string> => {
-  if (message.Content?.Body) return message.Content.Body;
+  if (message.Content?.Body) {
+    const transferEncoding = message.Content.Headers?.['Content-Transfer-Encoding']?.[0]?.toLowerCase();
+    if (transferEncoding === 'base64') {
+      return Buffer.from(message.Content.Body.replace(/\s/g, ''), 'base64').toString('utf8');
+    }
+    return message.Content.Body;
+  }
 
   if (message.id === undefined) throw new Error('Mailcatcher message does not contain an id');
   const response = await request.get(`${config.mailcatcherBaseUrl}/messages/${message.id}.plain`);

@@ -29,8 +29,7 @@ export abstract class WebAdapter {
   }
 
   protected async navigateTo(url: string): Promise<void> {
-    await this.page.goto(this.resolveUrl(url));
-    await this.page.waitForLoadState('networkidle');
+    await this.page.goto(this.resolveUrl(url), { waitUntil: 'commit' });
   }
 
   protected resolveUrl(url: string): string {

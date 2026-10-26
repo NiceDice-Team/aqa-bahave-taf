@@ -105,7 +105,43 @@ export class ProductPage extends BasePage {
     if (quantity > 1) {
       await this.quantityInput.fill(quantity.toString());
     }
+
+    // SSR makes the button visible before React has attached its event handler.
+    // Wait for hydration explicitly so a fast headless browser cannot lose the click.
+    const buttonHandle = await this.addToCartButton.elementHandle();
+    await this.page.waitForFunction(
+      (button: HTMLElement | SVGElement | null) =>
+        button !== null && Object.keys(button).some((key) => key.startsWith('__reactProps$')),
+      buttonHandle,
+      { timeout: 15000 }
+    );
+
+    const previousBadgeCount = await this.getCartBadgeCount();
     await this.addToCartButton.click();
+
+    // The badge is updated optimistically. Waiting for it alone allows navigation
+    // to abort the mutation before the API/local fallback has persisted the cart.
+    await this.page.waitForFunction(
+      (previous: number) => {
+        const badge = document.querySelector('button[aria-label="Open cart"] > span');
+        const count = Number.parseInt(badge?.textContent?.trim() ?? '0', 10);
+        return Number.isFinite(count) && count > previous;
+      },
+      previousBadgeCount,
+      { timeout: 15000 }
+    );
+
+    await this.page.getByRole('button', { name: /adding/i }).last().waitFor({
+      state: 'visible',
+      timeout: 15000,
+    });
+    await this.addToCartButton.waitFor({ state: 'visible', timeout: 15000 });
+    await this.addToCartButton.waitFor({ state: 'attached', timeout: 15000 });
+
+    const persistedBadgeCount = await this.getCartBadgeCount();
+    if (persistedBadgeCount <= previousBadgeCount) {
+      throw new Error('Add-to-cart mutation was rolled back before the cart was persisted');
+    }
   }
 
   async getPrice(): Promise<string> {

@@ -119,7 +119,10 @@ export class AuthWebAdapter extends WebAdapter implements IAuth {
     await rp.enterPassword(params.password);
     await rp.enterConfirmPassword(params.confirmPassword);
     await rp.setPrivacyPolicyAcceptance(params.privacyPolicyAccepted);
-    await rp.submitForm();
+    await Promise.all([
+      this.page.waitForURL('**/confirm-signup**', { waitUntil: 'commit', timeout: 15000 }),
+      rp.submitForm(),
+    ]);
   }
 
   async fillRegistrationForm(params: Partial<RegisterParams>): Promise<void> {

@@ -25,10 +25,20 @@ GitHub Actions can run the suite manually or from a `repository_dispatch` event
 named `uat-deployed`. Failures remain failures and the HTML report, JSON report,
 screenshots, traces, and videos are uploaded for diagnosis.
 
-## Current UAT blockers (2026-10-25)
+The repository currently has no committed npm lockfile, so remote runners use
+`npm install`. Add a reviewed lockfile in a dedicated dependency change before
+switching these jobs to the more reproducible `npm ci` command.
+
+## Current UAT blockers (2026-10-26)
 
 - `GET /api/orders/payment-methods/` returns HTTP 404.
 - `GET /api/orders/delivery-options/` returns HTTP 404.
+- authenticated cart requests use frontend routes `/api/cart/` and
+  `/api/cart/item/` with `product_id`, while the deployed backend exposes
+  `/api/carts/` and requires `user`, `product`, and `quantity`;
+- the guest cart can fall back to browser storage, but order creation still
+  requires a backend-issued `guest_cart_token` that the deployed backend does
+  not provide;
 - the deployed backend order endpoint requires `user_id`, while the frontend
   sends authenticated `cart_id` or anonymous `guest_cart_token` plus delivery,
   payment, and address fields;
